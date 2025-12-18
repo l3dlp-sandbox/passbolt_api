@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 41c2572bd9bd4cc908d3e09e0cbed6e5\n"
 "POT-Creation-Date: 2025-10-01 06:12+0000\n"
-"PO-Revision-Date: 2025-10-01 07:30\n"
+"PO-Revision-Date: 2025-12-12 18:40\n"
 "Last-Translator: NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Russian\n"
 "MIME-Version: 1.0\n"
@@ -398,7 +398,7 @@ msgid "Invalid expiry time {0}."
 msgstr "Некорректное время истечения {0}."
 
 msgid "The user role ID must be one of the admin or user roles."
-msgstr ""
+msgstr "Идентификатор роли пользователя должен соответствовать роли администратора или пользователя."
 
 msgid "The identifier should not be empty."
 msgstr "Идентификатор не должен быть пустым."
@@ -911,7 +911,7 @@ msgid "The metadata key is marked as expired."
 msgstr "Ключ метаданных помечен как просроченный."
 
 msgid "The shared metadata key should be unique."
-msgstr ""
+msgstr "Ключ совместно используемых метаданных должен быть уникальным."
 
 msgid "It is not allowed to create v5-password-string resource types."
 msgstr "Запрещено создавать типы ресурсов v5-password-string."
@@ -932,7 +932,7 @@ msgid "The user cannot delete this resource."
 msgstr "Пользователь не может удалить этот ресурс."
 
 msgid "The resource type for this resource does not exist."
-msgstr ""
+msgstr "Тип ресурса для данного ресурса не существует."
 
 msgid "The name should be a valid ASCII string."
 msgstr "Имя должно быть допустимой строкой ASCII."
@@ -1109,7 +1109,7 @@ msgid "{0} deleted the password {1}"
 msgstr "{0} удалил пароль {1}"
 
 msgid "{0} deleted a password"
-msgstr ""
+msgstr "{0} удалил пароль"
 
 msgid "You edited a resource"
 msgstr "Вы изменили ресурс"
@@ -1466,13 +1466,13 @@ msgid "Cache is NOT working."
 msgstr "Кэш не работает."
 
 msgid "Deprecated `_cake_core_` cache configuration found."
-msgstr ""
+msgstr "Обнаружена устаревшая конфигурация кэша `_cake_core_`."
 
 msgid "Check the settings in {0}"
 msgstr "Проверьте настройки в {0}"
 
 msgid "Replace `_cake_core_` with `_cake_translations_` in your {0} configuration file."
-msgstr ""
+msgstr "Замените `_cake_core_` на `_cake_translations_` в вашем конфигурационном файле {0}."
 
 msgid "Debug mode is off."
 msgstr "Режим отладки выключен."
@@ -1601,10 +1601,10 @@ msgid "See: https://secure.php.net/manual/en/book.intl.php"
 msgstr "См.: https://secure.php.net/manual/en/book.intl.php"
 
 msgid "The logs directory {0} and its content are writable."
-msgstr ""
+msgstr "Каталог журналов {0} и его содержимое доступны для записи."
 
 msgid "The logs directory {0} and its content are not writable."
-msgstr ""
+msgstr "Каталог журналов {0} и его содержимое недоступны для записи."
 
 msgid "Ensure the logs directory and its content are writable by the webserver user."
 msgstr "Убедитесь, что каталог logs и его содержимое доступны для записи пользователю веб-сервера."
@@ -2012,10 +2012,10 @@ msgid "Validation success for permission {0}"
 msgstr "Успешная проверка разрешения {0}"
 
 msgid "The permissions data must be an array."
-msgstr ""
+msgstr "Данные разрешений должны быть массивом."
 
 msgid "The permissions data array keys must be integers."
-msgstr ""
+msgstr "Ключи массива данных разрешений должны быть целыми числами."
 
 msgid "Could not validate permissions data."
 msgstr "Не удалось проверить данные разрешений."
@@ -2042,13 +2042,13 @@ msgid "Validation success for resource {0}"
 msgstr "Успешная проверка ресурса {0}"
 
 msgid "Metadata key exist and present for resource {0}."
-msgstr ""
+msgstr "Ключ метаданных существует и присутствует для ресурса {0}."
 
 msgid "Metadata key does not exists or soft-deleted for resource {0}."
-msgstr ""
+msgstr "Ключ метаданных не существует или помечен как удалён для ресурса {0}."
 
 msgid "The resource types associated to this resource does not exist."
-msgstr ""
+msgstr "Связанные с этим ресурсом типы ресурсов не существуют."
 
 msgid "You are not allowed to update this resource."
 msgstr "Вам не разрешено обновлять этот ресурс."
@@ -2372,7 +2372,7 @@ msgid "The metadata key does not exist."
 msgstr "Ключ метаданных не существует."
 
 msgid "The folder metadata provided cannot be decrypted."
-msgstr ""
+msgstr "Не удалось расшифровать предоставленные метаданные папки."
 
 msgid "A folder of type personal cannot be shared with other users or a group."
 msgstr "Папка типа personal не может быть передана другим пользователям или группе."
@@ -2792,10 +2792,10 @@ msgid "The data should be a valid ASCII string."
 msgstr "Данные должны быть корректной строкой ASCII."
 
 msgid "The expired field value should be a valid ISO 80601 date."
-msgstr ""
+msgstr "Значение поля expired должно быть корректной датой ISO 80601."
 
 msgid "The expired field value should be parseable."
-msgstr ""
+msgstr "Значение поля expired должно быть распознаваемым."
 
 msgid "The setting should be a valid boolean."
 msgstr "Параметр настройки должен быть допустимым логическим значением."
@@ -2804,13 +2804,13 @@ msgid "The setting is required."
 msgstr "Настройка обязательна."
 
 msgid "The metadata private keys is required."
-msgstr ""
+msgstr "Требуется указать приватные ключи метаданных."
 
 msgid "The metadata private keys should not be empty."
-msgstr ""
+msgstr "Приватные ключи метаданных не должны быть пустыми."
 
 msgid "Need at most one metadata private key."
-msgstr ""
+msgstr "Допускается не более одного приватного ключа метаданных."
 
 msgid "A metadata key identifier is required."
 msgstr "Требуется идентификатор ключа метаданных."
@@ -2819,7 +2819,7 @@ msgid "The metadata key identifier should be a valid UUID."
 msgstr "Идентификатор ключа метаданных должен быть действительным UUID."
 
 msgid "The user identifier should be null."
-msgstr ""
+msgstr "Идентификатор пользователя должен быть null."
 
 msgid "The data is required."
 msgstr "Требуются данные."
@@ -3014,28 +3014,28 @@ msgid "You edited the metadata settings"
 msgstr "Вы изменили настройки метаданных"
 
 msgid "No metadata private keys found for metadata key {0}."
-msgstr ""
+msgstr "Для ключа метаданных {0} не найдено приватных ключей."
 
 msgid "Metadata keys present for metadata key {0}"
-msgstr ""
+msgstr "Ключи метаданных присутствуют для ключа {0}."
 
 msgid "No active metadata key found."
-msgstr ""
+msgstr "Активный ключ метаданных не найден."
 
 msgid "Active metadata key found or not required."
-msgstr ""
+msgstr "Активный ключ метаданных найден или не требуется."
 
 msgid "The server has access to the metadata keys or does not require access to it."
-msgstr ""
+msgstr "Сервер имеет доступ к ключам метаданных или не требует такого доступа."
 
 msgid "The server does not have access to metadata key."
-msgstr ""
+msgstr "У сервера нет доступа к ключу метаданных."
 
 msgid "When zero-knowledge mode is off, the server must have access to the metadata key."
-msgstr ""
+msgstr "Когда режим нулевого знания отключён, сервер должен иметь доступ к ключу метаданных."
 
 msgid "Without having access, the server won't be able to share the metadata private key with the users."
-msgstr ""
+msgstr "Без доступа сервер не сможет поделиться приватным ключом метаданных с пользователями."
 
 msgid "No server metadata private key found."
 msgstr "Не найден закрытый ключ метаданных сервера."
@@ -3050,22 +3050,22 @@ msgid "Unable to decrypt the metadata private key."
 msgstr "Не удалось расшифровать закрытый ключ метаданных."
 
 msgid "Unable to decrypt the metadata private key (id: {0}) data."
-msgstr ""
+msgstr "Не удалось расшифровать данные приватного ключа метаданных (идентификатор: {0})."
 
 msgid "The metadata private key (id: {0}) cleartext data should be in JSON format."
-msgstr ""
+msgstr "Данные приватного ключа метаданных (идентификатор: {0}) в открытом виде должны быть в формате JSON."
 
 msgid "The metadata private key (id: {0}) cleartext data should not be empty."
-msgstr ""
+msgstr "Данные приватного ключа метаданных (идентификатор: {0}) в открытом виде не должны быть пустыми."
 
 msgid "Unable to validate metadata private key (id: {0}) cleartext data."
-msgstr ""
+msgstr "Не удалось проверить данные приватного ключа метаданных (идентификатор: {0}) в открытом виде."
 
 msgid "The server metadata private key is valid."
-msgstr ""
+msgstr "Приватный ключ метаданных сервера действителен."
 
 msgid "The server metadata private key is not valid."
-msgstr ""
+msgstr "Приватный ключ метаданных сервера недействителен."
 
 msgid "The metadata key does not exist or has been deleted."
 msgstr "Ключ метаданных не существует или был удалён."
@@ -3128,7 +3128,7 @@ msgid "Could not validate the settings."
 msgstr "Не удалось проверить настройки."
 
 msgid "The server metadata private keys data are invalid."
-msgstr ""
+msgstr "Данные приватных ключей метаданных сервера недействительны."
 
 msgid "The server metadata private key is required to enable these settings."
 msgstr "Для включения этих настроек необходим закрытый ключ метаданных сервера."
@@ -3194,10 +3194,10 @@ msgid "Could not save the metadata session keys, please try again later."
 msgstr "Не удалось сохранить сеансовые ключи метаданных, повторите попытку позже."
 
 msgid "Unable to save the metadata settings."
-msgstr ""
+msgstr "Не удалось сохранить настройки метаданных."
 
 msgid "An active metadata key could not be found, create a key first."
-msgstr ""
+msgstr "Не удалось найти активный ключ метаданных. Сначала создайте ключ."
 
 msgid "Could not prepare private key for server key."
 msgstr "Не удалось подготовить закрытый ключ для ключа сервера."
@@ -3284,7 +3284,7 @@ msgid "The provided modified by does not match."
 msgstr "Указанный идентификатор пользователя, который внёс изменения, не совпадает."
 
 msgid "The folder metadata key data could not be updated."
-msgstr ""
+msgstr "Не удалось обновить данные ключа метаданных папки."
 
 msgid "The resource metadata key data could not be updated."
 msgstr "Не удалось обновить данные ключа метаданных ресурса."
@@ -3311,13 +3311,13 @@ msgid "Tag creation/modification with encrypted metadata not allowed."
 msgstr "Создание/изменение тэга с зашифрованными метаданными не допускается."
 
 msgid "Resource creation with cleartext metadata not allowed."
-msgstr ""
+msgstr "Создание ресурса с метаданными в открытом виде не разрешено."
 
 msgid "Folder creation with cleartext metadata not allowed."
-msgstr ""
+msgstr "Создание папки с метаданными в открытом виде не разрешено."
 
 msgid "Tag creation with cleartext metadata not allowed."
-msgstr ""
+msgstr "Создание тега с метаданными в открытом виде не разрешено."
 
 msgid "You created a new metadata key."
 msgstr "Вы создали новый ключ метаданных."
@@ -3359,7 +3359,7 @@ msgid "You have created a new password."
 msgstr "Вы создали новый пароль."
 
 msgid "{0} deleted a password."
-msgstr ""
+msgstr "{0} удалил пароль."
 
 msgid "{0} shared a resource with you"
 msgstr "{0} поделился с вами ресурсом"
@@ -3371,7 +3371,7 @@ msgid "You have edited a resource."
 msgstr "Вы изменили ресурс."
 
 msgid "{0} has edited a resource."
-msgstr ""
+msgstr "{0} отредактировал ресурс."
 
 msgid "Information about the transfer is required."
 msgstr "Информация о переводе обязательна."
@@ -3899,7 +3899,7 @@ msgid "You have passwords requiring your attention"
 msgstr "У вас есть пароли, требующие вашего внимания"
 
 msgid "Some of your passwords are expiring today."
-msgstr ""
+msgstr "Некоторые из ваших паролей истекают сегодня."
 
 msgid "{0} marked the password {1} as expired"
 msgstr "{0} отметил пароль {1} как истекший"
@@ -4520,58 +4520,58 @@ msgid "Errors: "
 msgstr "Ошибка: "
 
 msgid "Could not retrieve the user key policies."
-msgstr ""
+msgstr "Не удалось получить политики пользовательских ключей."
 
 msgid "Conflicting authentication parameters, provide user_id/token only when the user is not already signed in."
-msgstr ""
+msgstr "Конфликт параметров аутентификации: указывайте user_id/токен только если пользователь ещё не вошёл в систему."
 
 msgid "You are not authorized to access this location."
-msgstr ""
+msgstr "У вас нет прав для доступа к этому местоположению."
 
 msgid "Sign-in to passbolt, or provide a valid user ID and authentication token."
-msgstr ""
+msgstr "Войдите в Passbolt или предоставьте действительный идентификатор пользователя и токен аутентификации."
 
 msgid "The user ID must be a valid UUID."
-msgstr ""
+msgstr "Идентификатор пользователя должен быть действительным UUID."
 
 msgid "The authentication token must be a valid UUID."
-msgstr ""
+msgstr "Маркер аутентификации должен быть действительным UUID."
 
 msgid "Unable to authenticate the guest user with the provided credentials."
-msgstr ""
+msgstr "Не удалось аутентифицировать гостевого пользователя с предоставленными учётными данными."
 
 msgid "No registration authentication token found for the given user."
-msgstr ""
+msgstr "Для указанного пользователя не найден маркер аутентификации регистрации."
 
 msgid "The registration authentication token is expired."
-msgstr ""
+msgstr "Срок действия маркера аутентификации регистрации истёк."
 
 msgid "The preferred key type is required."
-msgstr ""
+msgstr "Необходимо указать предпочитаемый тип ключа."
 
 msgid "The preferred key type should not be empty."
-msgstr ""
+msgstr "Предпочитаемый тип ключа не должен быть пустым."
 
 msgid "The preferred key type should be one of the following: {0}."
-msgstr ""
+msgstr "Предпочитаемый тип ключа должен быть одним из следующих: {0}."
 
 msgid "The preferred key type and size combination does not match."
-msgstr ""
+msgstr "Сочетание предпочитаемого типа и размера ключа не соответствует."
 
 msgid "The preferred key type and curve combination does not match."
-msgstr ""
+msgstr "Сочетание предпочитаемого типа ключа и кривой не соответствует."
 
 msgid "The preferred key size is required."
-msgstr ""
+msgstr "Необходимо указать предпочитаемый размер ключа."
 
 msgid "The preferred key size should be one of the following: {0}."
-msgstr ""
+msgstr "Предпочитаемый размер ключа должен быть одним из следующих: {0}."
 
 msgid "The preferred key curve is required."
-msgstr ""
+msgstr "Необходимо указать предпочитаемую кривую ключа."
 
 msgid "The preferred key curve should be one of the following: {0}."
-msgstr ""
+msgstr "Предпочитаемая кривая ключа должна быть одной из следующих: {0}."
 
 msgid "The data entered are not correct"
 msgstr "Введенные данные неверны"
@@ -5159,7 +5159,7 @@ msgid "This user is missing the encryption key for the shared resource metadata.
 msgstr "У этого пользователя отсутствует ключ шифрования для общих метаданных ресурса. Пожалуйста, войдите и перейдите в рабочую область пользователя, чтобы вручную предоставить ему ключ."
 
 msgid "View users"
-msgstr ""
+msgstr "Просмотреть пользователей"
 
 msgid "You have initiated an account recovery!"
 msgstr "Вы инициировали восстановление аккаунта!"

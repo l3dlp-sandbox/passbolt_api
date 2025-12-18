@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 41c2572bd9bd4cc908d3e09e0cbed6e5\n"
 "POT-Creation-Date: 2025-10-01 06:12+0000\n"
-"PO-Revision-Date: 2025-10-01 07:29\n"
+"PO-Revision-Date: 2025-12-12 18:39\n"
 "Last-Translator: NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Japanese\n"
 "MIME-Version: 1.0\n"
@@ -398,7 +398,7 @@ msgid "Invalid expiry time {0}."
 msgstr "有効期限 {0} が無効です。"
 
 msgid "The user role ID must be one of the admin or user roles."
-msgstr ""
+msgstr "ユーザーロールIDは admin または user ロールのいずれかでなければなりません。"
 
 msgid "The identifier should not be empty."
 msgstr "識別子は空にしないでください。"
@@ -911,7 +911,7 @@ msgid "The metadata key is marked as expired."
 msgstr "メタデータキーは期限切れとしてマークされています。"
 
 msgid "The shared metadata key should be unique."
-msgstr ""
+msgstr "共有メタデータキーは一意でなければなりません。"
 
 msgid "It is not allowed to create v5-password-string resource types."
 msgstr "V5-password-string リソースタイプの作成は許可されていません。"
@@ -932,7 +932,7 @@ msgid "The user cannot delete this resource."
 msgstr "そのユーザーはこのリソースを削除できません。"
 
 msgid "The resource type for this resource does not exist."
-msgstr ""
+msgstr "このリソースのリソース型が存在しません。"
 
 msgid "The name should be a valid ASCII string."
 msgstr "名前は有効な ASCII 文字列でなければなりません。"
@@ -1109,7 +1109,7 @@ msgid "{0} deleted the password {1}"
 msgstr "{0} さんがパスワード {1} を削除しました"
 
 msgid "{0} deleted a password"
-msgstr ""
+msgstr "{0} さんがパスワードを削除しました"
 
 msgid "You edited a resource"
 msgstr "リソースを編集しました"
@@ -1466,13 +1466,13 @@ msgid "Cache is NOT working."
 msgstr "キャッシュは動作していません。"
 
 msgid "Deprecated `_cake_core_` cache configuration found."
-msgstr ""
+msgstr "非推奨の `_cake_core_` キャッシュ設定が見つかりました。"
 
 msgid "Check the settings in {0}"
 msgstr "{0} の設定を確認してください"
 
 msgid "Replace `_cake_core_` with `_cake_translations_` in your {0} configuration file."
-msgstr ""
+msgstr "{0} の設定ファイルで `_cake_core_` を `_cake_translations_` に置き換えてください。"
 
 msgid "Debug mode is off."
 msgstr "デバッグモードはオフです。"
@@ -1601,10 +1601,10 @@ msgid "See: https://secure.php.net/manual/en/book.intl.php"
 msgstr "参照: https://secure.php.net/manual/en/book.intl.php"
 
 msgid "The logs directory {0} and its content are writable."
-msgstr ""
+msgstr "ログディレクトリ {0} とその内容は書き込み可能です。"
 
 msgid "The logs directory {0} and its content are not writable."
-msgstr ""
+msgstr "ログディレクトリ {0} とその内容は書き込み不可です。"
 
 msgid "Ensure the logs directory and its content are writable by the webserver user."
 msgstr "ログディレクトリとその内容がウェブサーバーユーザーによって書き込み可能であることを確認してください。"
@@ -2012,10 +2012,10 @@ msgid "Validation success for permission {0}"
 msgstr "パーミッション {0} の検証に成功しました"
 
 msgid "The permissions data must be an array."
-msgstr ""
+msgstr "パーミッションデータは配列でなければなりません。"
 
 msgid "The permissions data array keys must be integers."
-msgstr ""
+msgstr "パーミッションデータ配列のキーは整数でなければなりません。"
 
 msgid "Could not validate permissions data."
 msgstr "パーミッションデータを検証できませんでした。"
@@ -2042,13 +2042,13 @@ msgid "Validation success for resource {0}"
 msgstr "リソース {0} の検証に成功しました"
 
 msgid "Metadata key exist and present for resource {0}."
-msgstr ""
+msgstr "リソース {0} にメタデータキーが存在し、利用可能です。"
 
 msgid "Metadata key does not exists or soft-deleted for resource {0}."
-msgstr ""
+msgstr "リソース {0} のメタデータキーが存在しないか、ソフト削除されています。"
 
 msgid "The resource types associated to this resource does not exist."
-msgstr ""
+msgstr "このリソースに関連付けられているリソース型が存在しません。"
 
 msgid "You are not allowed to update this resource."
 msgstr "このリソースを更新することはできません。"
@@ -2372,7 +2372,7 @@ msgid "The metadata key does not exist."
 msgstr "メタデータキーが存在しません。"
 
 msgid "The folder metadata provided cannot be decrypted."
-msgstr ""
+msgstr "提供されたフォルダーのメタデータを復号できません。"
 
 msgid "A folder of type personal cannot be shared with other users or a group."
 msgstr "Personalタイプのフォルダーは他のユーザーやグループと共有できません。"
@@ -2792,10 +2792,10 @@ msgid "The data should be a valid ASCII string."
 msgstr "データは有効なASCII文字列である必要があります。"
 
 msgid "The expired field value should be a valid ISO 80601 date."
-msgstr ""
+msgstr "expired フィールドの値は有効な ISO 80601 日付でなければなりません。"
 
 msgid "The expired field value should be parseable."
-msgstr ""
+msgstr "expired フィールドの値は解析可能でなければなりません。"
 
 msgid "The setting should be a valid boolean."
 msgstr "設定は有効なブール値でなければなりません。"
@@ -2804,13 +2804,13 @@ msgid "The setting is required."
 msgstr "設定が必要です。"
 
 msgid "The metadata private keys is required."
-msgstr ""
+msgstr "メタデータ秘密鍵が必要です。"
 
 msgid "The metadata private keys should not be empty."
-msgstr ""
+msgstr "メタデータ秘密鍵を空にしないでください。"
 
 msgid "Need at most one metadata private key."
-msgstr ""
+msgstr "メタデータ秘密鍵は1つ以下でなければなりません。"
 
 msgid "A metadata key identifier is required."
 msgstr "メタデータ鍵の識別子が必要です。"
@@ -2819,7 +2819,7 @@ msgid "The metadata key identifier should be a valid UUID."
 msgstr "メタデータ鍵の識別子は有効なUUIDでなければなりません。"
 
 msgid "The user identifier should be null."
-msgstr ""
+msgstr "ユーザー識別子は null でなければなりません。"
 
 msgid "The data is required."
 msgstr "データが必要です。"
@@ -3014,28 +3014,28 @@ msgid "You edited the metadata settings"
 msgstr "メタデータ設定を編集しました"
 
 msgid "No metadata private keys found for metadata key {0}."
-msgstr ""
+msgstr "メタデータキー {0} に対するメタデータ秘密鍵が見つかりません。"
 
 msgid "Metadata keys present for metadata key {0}"
-msgstr ""
+msgstr "メタデータキー {0} に対するメタデータ鍵が存在します。"
 
 msgid "No active metadata key found."
-msgstr ""
+msgstr "アクティブなメタデータキーが見つかりません。"
 
 msgid "Active metadata key found or not required."
-msgstr ""
+msgstr "アクティブなメタデータキーが見つかった、または不要です。"
 
 msgid "The server has access to the metadata keys or does not require access to it."
-msgstr ""
+msgstr "サーバーはメタデータキーにアクセスできるか、アクセスを必要としません。"
 
 msgid "The server does not have access to metadata key."
-msgstr ""
+msgstr "サーバーはメタデータキーにアクセスできません。"
 
 msgid "When zero-knowledge mode is off, the server must have access to the metadata key."
-msgstr ""
+msgstr "ゼロナレッジモードがオフの場合、サーバーはメタデータキーにアクセスできなければなりません。"
 
 msgid "Without having access, the server won't be able to share the metadata private key with the users."
-msgstr ""
+msgstr "アクセス権がない場合、サーバーはメタデータ秘密鍵をユーザーと共有できません。"
 
 msgid "No server metadata private key found."
 msgstr "サーバのメタデータ秘密鍵が見つかりません。"
@@ -3050,22 +3050,22 @@ msgid "Unable to decrypt the metadata private key."
 msgstr "メタデータ秘密鍵を復号できません。"
 
 msgid "Unable to decrypt the metadata private key (id: {0}) data."
-msgstr ""
+msgstr "メタデータ秘密鍵 (ID: {0}) のデータを復号できません。"
 
 msgid "The metadata private key (id: {0}) cleartext data should be in JSON format."
-msgstr ""
+msgstr "メタデータ秘密鍵 (ID: {0}) の平文データは JSON 形式でなければなりません。"
 
 msgid "The metadata private key (id: {0}) cleartext data should not be empty."
-msgstr ""
+msgstr "メタデータ秘密鍵 (ID: {0}) の平文データを空にしてはいけません。"
 
 msgid "Unable to validate metadata private key (id: {0}) cleartext data."
-msgstr ""
+msgstr "メタデータ秘密鍵 (ID: {0}) の平文データを検証できません。"
 
 msgid "The server metadata private key is valid."
-msgstr ""
+msgstr "サーバーのメタデータ秘密鍵は有効です。"
 
 msgid "The server metadata private key is not valid."
-msgstr ""
+msgstr "サーバーのメタデータ秘密鍵は無効です。"
 
 msgid "The metadata key does not exist or has been deleted."
 msgstr "メタデータ鍵が存在しないか、削除されています。"
@@ -3128,7 +3128,7 @@ msgid "Could not validate the settings."
 msgstr "設定を検証できませんでした。"
 
 msgid "The server metadata private keys data are invalid."
-msgstr ""
+msgstr "サーバーのメタデータ秘密鍵データが無効です。"
 
 msgid "The server metadata private key is required to enable these settings."
 msgstr "これらの設定を有効にするにはサーバのメタデータ秘密鍵が必要です。"
@@ -3194,10 +3194,10 @@ msgid "Could not save the metadata session keys, please try again later."
 msgstr "メタデータセッション鍵を保存できませんでした。後でもう一度試してください。"
 
 msgid "Unable to save the metadata settings."
-msgstr ""
+msgstr "メタデータ設定を保存できません。"
 
 msgid "An active metadata key could not be found, create a key first."
-msgstr ""
+msgstr "アクティブなメタデータキーが見つかりません。まずキーを作成してください。"
 
 msgid "Could not prepare private key for server key."
 msgstr "サーバ鍵用の秘密鍵を準備できませんでした。"
@@ -3284,7 +3284,7 @@ msgid "The provided modified by does not match."
 msgstr "指定された変更者が一致しません。"
 
 msgid "The folder metadata key data could not be updated."
-msgstr ""
+msgstr "フォルダーメタデータキーのデータを更新できませんでした。"
 
 msgid "The resource metadata key data could not be updated."
 msgstr "リソースのメタデータ鍵データを更新できませんでした。"
@@ -3311,13 +3311,13 @@ msgid "Tag creation/modification with encrypted metadata not allowed."
 msgstr "暗号化されたメタデータでのタグ作成・変更は許可されていません。"
 
 msgid "Resource creation with cleartext metadata not allowed."
-msgstr ""
+msgstr "平文メタデータでのリソース作成は許可されていません。"
 
 msgid "Folder creation with cleartext metadata not allowed."
-msgstr ""
+msgstr "平文メタデータでのフォルダー作成は許可されていません。"
 
 msgid "Tag creation with cleartext metadata not allowed."
-msgstr ""
+msgstr "平文メタデータでのタグ作成は許可されていません。"
 
 msgid "You created a new metadata key."
 msgstr "新しいメタデータ鍵を作成しました。"
@@ -3359,7 +3359,7 @@ msgid "You have created a new password."
 msgstr "新しいパスワードを作成しました。"
 
 msgid "{0} deleted a password."
-msgstr ""
+msgstr "{0} さんがパスワードを削除しました。"
 
 msgid "{0} shared a resource with you"
 msgstr "{0} さんがリソースを共有しました"
@@ -3371,7 +3371,7 @@ msgid "You have edited a resource."
 msgstr "リソースを編集しました。"
 
 msgid "{0} has edited a resource."
-msgstr ""
+msgstr "{0} さんがリソースを編集しました。"
 
 msgid "Information about the transfer is required."
 msgstr "転送に関する情報が必要です。"
@@ -3899,7 +3899,7 @@ msgid "You have passwords requiring your attention"
 msgstr "あなたの対応が必要なパスワードがあります"
 
 msgid "Some of your passwords are expiring today."
-msgstr ""
+msgstr "いくつかのパスワードが本日期限切れになります。"
 
 msgid "{0} marked the password {1} as expired"
 msgstr "{0} さんがパスワード {1} を期限切れとしてマークしました"
@@ -4520,58 +4520,58 @@ msgid "Errors: "
 msgstr "エラー: "
 
 msgid "Could not retrieve the user key policies."
-msgstr ""
+msgstr "ユーザー鍵ポリシーを取得できませんでした。"
 
 msgid "Conflicting authentication parameters, provide user_id/token only when the user is not already signed in."
-msgstr ""
+msgstr "認証パラメーターが競合しています。ユーザーが既にサインインしていない場合にのみ user_id とトークンを指定してください。"
 
 msgid "You are not authorized to access this location."
-msgstr ""
+msgstr "この場所にアクセスする権限がありません。"
 
 msgid "Sign-in to passbolt, or provide a valid user ID and authentication token."
-msgstr ""
+msgstr "passbolt にサインインするか、有効なユーザーIDと認証トークンを入力してください。"
 
 msgid "The user ID must be a valid UUID."
-msgstr ""
+msgstr "ユーザーIDは有効な UUID でなければなりません。"
 
 msgid "The authentication token must be a valid UUID."
-msgstr ""
+msgstr "認証トークンは有効な UUID でなければなりません。"
 
 msgid "Unable to authenticate the guest user with the provided credentials."
-msgstr ""
+msgstr "提供された認証情報ではゲストユーザーを認証できません。"
 
 msgid "No registration authentication token found for the given user."
-msgstr ""
+msgstr "指定されたユーザーの登録認証トークンが見つかりません。"
 
 msgid "The registration authentication token is expired."
-msgstr ""
+msgstr "登録認証トークンが期限切れです。"
 
 msgid "The preferred key type is required."
-msgstr ""
+msgstr "希望する鍵タイプが必要です。"
 
 msgid "The preferred key type should not be empty."
-msgstr ""
+msgstr "希望する鍵タイプを空にしないでください。"
 
 msgid "The preferred key type should be one of the following: {0}."
-msgstr ""
+msgstr "希望する鍵タイプは次のいずれかでなければなりません: {0}。"
 
 msgid "The preferred key type and size combination does not match."
-msgstr ""
+msgstr "希望する鍵タイプとサイズの組み合わせが一致しません。"
 
 msgid "The preferred key type and curve combination does not match."
-msgstr ""
+msgstr "希望する鍵タイプと曲線の組み合わせが一致しません。"
 
 msgid "The preferred key size is required."
-msgstr ""
+msgstr "希望する鍵サイズが必要です。"
 
 msgid "The preferred key size should be one of the following: {0}."
-msgstr ""
+msgstr "希望する鍵サイズは次のいずれかでなければなりません: {0}。"
 
 msgid "The preferred key curve is required."
-msgstr ""
+msgstr "希望する鍵曲線が必要です。"
 
 msgid "The preferred key curve should be one of the following: {0}."
-msgstr ""
+msgstr "希望する鍵曲線は次のいずれかでなければなりません: {0}。"
 
 msgid "The data entered are not correct"
 msgstr "入力されたデータが正しくありません"
@@ -5159,7 +5159,7 @@ msgid "This user is missing the encryption key for the shared resource metadata.
 msgstr "このユーザーには共有リソースメタデータを復号する鍵がありません。ログインしてユーザーのワークスペースに移動し、手動で鍵を共有してください。"
 
 msgid "View users"
-msgstr ""
+msgstr "ユーザーを表示"
 
 msgid "You have initiated an account recovery!"
 msgstr "アカウントの復旧を開始しました！"
