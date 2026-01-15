@@ -81,7 +81,7 @@
         "spomky-labs/otphp": "^11.3.0",
         "bacon/bacon-qr-code": "^3.0.1",
         "enygma/yubikey": "^3.8",
-        "duosecurity/duo_universal_php": "^1.0.2"
+        "duosecurity/duo_universal_php": "^1.1.0"
     },
     "require-dev": {
         "phpstan/phpstan": "^1.12.10",
