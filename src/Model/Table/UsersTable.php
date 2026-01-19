@@ -69,7 +69,7 @@ use Cake\Validation\Validator;
  * @method \Cake\ORM\Query\SelectQuery findById(string $id)
  * @method \Cake\ORM\Query\SelectQuery findByUsername(string $username)
  */
-class UsersTable extends Table
+class UsersTable extends Table implements TableCleanupProviderInterface
 {
     use UsersFindersTrait;
 
@@ -637,5 +637,17 @@ class UsersTable extends Table
         }
 
         return $this->updateAll(['deleted' => true], ['id IN' => $toDeletedIds, 'active' => false]);
+    }
+
+    /**
+     * Retrieves a list of cleanup methods (first-class callables) implemented by this table.
+     *
+     * @return array<int, callable> List of callables
+     */
+    public function getCleanupMethods(): array
+    {
+        return [
+            $this->cleanupInactiveUsersWithDuplicatedUsername(...),
+        ];
     }
 }
