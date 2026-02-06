@@ -77,11 +77,11 @@
         "league/flysystem": "^3.29.1",
         "cakephp/authentication": "^3.0",
         "bcrowe/cakephp-api-pagination": "dev-cakephp5#b103542e1b02c2a000862d91a804ecde6d4669b0",
-        "firebase/php-jwt": "^6.2.0",
+        "firebase/php-jwt": "^7.0.0",
         "spomky-labs/otphp": "^11.3.0",
         "bacon/bacon-qr-code": "^3.0.1",
         "enygma/yubikey": "^3.8",
-        "duosecurity/duo_universal_php": "^1.1.0"
+        "duosecurity/duo_universal_php": "^1.1.2"
     },
     "require-dev": {
         "phpstan/phpstan": "^1.12.10",
