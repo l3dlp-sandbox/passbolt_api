@@ -321,6 +321,9 @@ return [
             'userKeyPolicies' => [
                 'enabled' => filter_var(env('PASSBOLT_PLUGINS_USER_KEY_POLICIES_ENABLED', true), FILTER_VALIDATE_BOOLEAN),
             ],
+            'exportPolicies' => [
+                'enabled' => filter_var(env('PASSBOLT_PLUGINS_EXPORT_POLICIES_ENABLED', true), FILTER_VALIDATE_BOOLEAN),
+            ],
         ],
 
         // Activate specific entry points for selenium testing.

@@ -125,7 +125,8 @@
             "Passbolt\\PasswordPolicies\\": "./plugins/PassboltCe/PasswordPolicies/src",
             "Passbolt\\SecretRevisions\\": "./plugins/PassboltCe/SecretRevisions/src",
             "Passbolt\\Metadata\\": "./plugins/PassboltCe/Metadata/src",
-            "Passbolt\\UserKeyPolicies\\": "./plugins/PassboltCe/UserKeyPolicies/src"
+            "Passbolt\\UserKeyPolicies\\": "./plugins/PassboltCe/UserKeyPolicies/src",
+            "Passbolt\\ExportPolicies\\": "./plugins/PassboltCe/ExportPolicies/src"
         }
     },
     "autoload-dev": {
@@ -155,7 +156,8 @@
             "Passbolt\\PasswordPolicies\\Test\\": "./plugins/PassboltCe/PasswordPolicies/tests",
             "Passbolt\\SecretRevisions\\Test\\": "./plugins/PassboltCe/SecretRevisions/tests",
             "Passbolt\\Metadata\\Test\\": "./plugins/PassboltCe/Metadata/tests",
-            "Passbolt\\UserKeyPolicies\\Test\\": "./plugins/PassboltCe/UserKeyPolicies/tests"
+            "Passbolt\\UserKeyPolicies\\Test\\": "./plugins/PassboltCe/UserKeyPolicies/tests",
+            "Passbolt\\ExportPolicies\\Test\\": "./plugins/PassboltCe/ExportPolicies/tests"
         }
     },
     "scripts": {
