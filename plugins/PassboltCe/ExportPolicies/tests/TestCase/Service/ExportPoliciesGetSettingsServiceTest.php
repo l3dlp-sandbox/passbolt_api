@@ -74,8 +74,7 @@ class ExportPoliciesGetSettingsServiceTest extends AppTestCase
      */
     public function testExportPoliciesGetSettingsService_FromFile(): void
     {
-        $rootConfigKey = ExportPoliciesPlugin::EXPORT_POLICIES_CONFIG_KEY;
-        Configure::write($rootConfigKey . '.' . 'allow_csv_format', true);
+        Configure::write(ExportPoliciesPlugin::EXPORT_POLICIES_ALLOW_CSV_FORMAT_CONFIG_KEY, true);
 
         $result = $this->service->get();
 
@@ -110,8 +109,7 @@ class ExportPoliciesGetSettingsServiceTest extends AppTestCase
      */
     public function testExportPoliciesGetSettingsService_FilePriorityOverEnv(): void
     {
-        $rootConfigKey = ExportPoliciesPlugin::EXPORT_POLICIES_CONFIG_KEY;
-        Configure::write($rootConfigKey . '.' . 'allow_csv_format', true);
+        Configure::write(ExportPoliciesPlugin::EXPORT_POLICIES_ALLOW_CSV_FORMAT_CONFIG_KEY, true);
 
         putenv('PASSBOLT_PLUGINS_EXPORT_POLICIES_ALLOW_CSV_FORMAT=false');
 

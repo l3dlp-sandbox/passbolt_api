@@ -55,9 +55,8 @@ class ExportPoliciesGetSettingsService
 
         switch ($settingsSource) {
             case ExportPoliciesSettingsDto::SOURCE_FILE:
-                $rootConfigKey = ExportPoliciesPlugin::EXPORT_POLICIES_CONFIG_KEY;
                 $settings = [
-                    'allow_csv_format' => Configure::read($rootConfigKey . '.' . 'allow_csv_format'),
+                    'allow_csv_format' => Configure::read(ExportPoliciesPlugin::EXPORT_POLICIES_ALLOW_CSV_FORMAT_CONFIG_KEY), // phpcs:ignore
                     'source' => ExportPoliciesSettingsDto::SOURCE_FILE,
                 ];
                 break;
@@ -109,8 +108,6 @@ class ExportPoliciesGetSettingsService
      */
     private function isSourceFile(): bool
     {
-        $rootConfigKey = ExportPoliciesPlugin::EXPORT_POLICIES_CONFIG_KEY;
-
-        return Configure::check($rootConfigKey . '.' . 'allow_csv_format');
+        return Configure::check(ExportPoliciesPlugin::EXPORT_POLICIES_ALLOW_CSV_FORMAT_CONFIG_KEY);
     }
 }
