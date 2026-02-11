@@ -71,8 +71,7 @@ class ExportPoliciesSettingsGetControllerTest extends AppIntegrationTestCase
 
     public function testExportPoliciesSettingsGetController_Success_FromFile(): void
     {
-        $rootConfigKey = ExportPoliciesPlugin::EXPORT_POLICIES_CONFIG_KEY;
-        Configure::write($rootConfigKey . '.' . 'allow_csv_format', true);
+        Configure::write(ExportPoliciesPlugin::EXPORT_POLICIES_ALLOW_CSV_FORMAT_CONFIG_KEY, true);
         $this->logInAsUser();
 
         $this->getJson('/export-policies/settings.json');
@@ -88,8 +87,7 @@ class ExportPoliciesSettingsGetControllerTest extends AppIntegrationTestCase
 
     public function testExportPoliciesSettingsGetController_Success_FallbackToDefaultsIfInvalidValuesSet(): void
     {
-        $rootConfigKey = ExportPoliciesPlugin::EXPORT_POLICIES_CONFIG_KEY;
-        Configure::write($rootConfigKey . '.' . 'allow_csv_format', 'invalid');
+        Configure::write(ExportPoliciesPlugin::EXPORT_POLICIES_ALLOW_CSV_FORMAT_CONFIG_KEY, 'invalid');
         $this->logInAsUser();
 
         $this->getJson('/export-policies/settings.json');

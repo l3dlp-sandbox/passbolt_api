@@ -23,7 +23,7 @@ class ExportPoliciesPlugin extends BasePlugin
 {
     use FeaturePluginAwareTrait;
 
-    public const EXPORT_POLICIES_CONFIG_KEY = 'passbolt.plugins.exportPolicies';
+    public const EXPORT_POLICIES_ALLOW_CSV_FORMAT_CONFIG_KEY = 'passbolt.plugins.exportPolicies.allowCsvFormat';
 
     public const ALLOW_CSV_FORMAT_ENV_KEY = 'PASSBOLT_PLUGINS_EXPORT_POLICIES_ALLOW_CSV_FORMAT';
 }
