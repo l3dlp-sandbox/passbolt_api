@@ -40,7 +40,7 @@ aimed at improving stability and long-term performance as more areas move to the
 This release also includes additional fixes and improvements beyond the highlights above. Check out the release notes to learn more. Thanks to the community members and teams who
 reported issues and helped validate fixes.
 
-## [5.9.0] - 2026-01-22
+## [5.9.0] - 2026-01-26
 ### Added
 - PB-44749 As an administrator I should get notified in the healthcheck about the deprecation of the database type and version
 - PB-47893 As an administrator running the bin/cron command, I can see in the logs the number of emails left to send

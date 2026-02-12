@@ -2,7 +2,7 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## [5.9.0] - 2026-01-22
+## [5.9.0] - 2026-01-26
 ### Added
 - PB-44749 As an administrator I should get notified in the healthcheck about the deprecation of the database type and version
 - PB-47893 As an administrator running the bin/cron command, I can see in the logs the number of emails left to send
