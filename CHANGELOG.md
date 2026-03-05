@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [5.10.0-test.3] - 2026-05-05
+### Fixed
+- PB-43183 Improve folders cascade delete performance by refactoring code using iterative BFS and batch operations
+- PB-49323 As a user creating a resource, I should not get a 500 if the secret passed is not an array of secrets
+- PB-40266 Health-check issues on Ubuntu 24 when running while being in a directory without the +x permission bit for www-data user (GITHUB #571)
+
 ## [5.10.0-test.1] - 2026-02-12
 ### Added
 - PB-48415 As an administrator, I can define the export policies to prevent CSV Export RCE
