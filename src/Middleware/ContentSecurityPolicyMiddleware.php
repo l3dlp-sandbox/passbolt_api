@@ -46,17 +46,20 @@ class ContentSecurityPolicyMiddleware implements MiddlewareInterface
         }
 
         $defaultCsp = [
-            "default-src 'self'",
-            "script-src 'self'", // eval needed by canjs for templates
-            "style-src 'self' 'unsafe-inline'", // inline needed to perform extension iframe resizing
+            "default-src 'none'",
+            "script-src 'self'",
+            "style-src 'self'",
             "img-src 'self'",
-            "frame-src 'self' https://*.duosecurity.com",
+            "font-src 'self'",
+            "connect-src 'self'",
+            "base-uri 'self'",
+            "frame-src 'self'",
             "frame-ancestors 'none'",
             "form-action 'self' https://*.duosecurity.com",
         ];
 
         if ($cspFromConfig === null || $cspFromConfig === true) {
-            $csp = $defaultCsp;
+            $csp = implode('; ', $defaultCsp);
         } elseif (is_string($cspFromConfig)) {
             $csp = $cspFromConfig;
         } else {
