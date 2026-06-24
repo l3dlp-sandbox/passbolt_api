@@ -49,6 +49,7 @@ class EeSolutionBootstrapperTest extends SolutionBootstrapperTestCase
         'Passbolt/Edition',
         'Passbolt/Metadata',
         'Passbolt/Rbacs',
+        'Passbolt/OfflineMode',
         'Passbolt/AccountSettings',
         'Passbolt/Import',
         'Passbolt/InFormIntegration',
