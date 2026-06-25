@@ -21,6 +21,16 @@ use InvalidArgumentException;
 class OfflineSettingsDto
 {
     /**
+     * Default max session duration (seconds) — used when no settings row exists.
+     */
+    public const DEFAULT_MAX_SESSION_DURATION = 86400;
+
+    /**
+     * Default offline-cache retention period (seconds) — used when no settings row exists.
+     */
+    public const DEFAULT_DATA_RETENTION_PERIOD = 120000;
+
+    /**
      * @var int Maximum offline session duration in seconds.
      */
     public int $maxSessionDuration;
