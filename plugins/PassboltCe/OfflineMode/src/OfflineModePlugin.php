@@ -20,6 +20,7 @@ use Cake\Core\BasePlugin;
 use Cake\Core\ContainerInterface;
 use Cake\Core\PluginApplicationInterface;
 use Cake\Event\EventManager;
+use Passbolt\OfflineMode\Event\OfflineItemsResourceDeleteListener;
 use Passbolt\OfflineMode\Event\OfflineItemsSettingsDeleteListener;
 use Passbolt\OfflineMode\Event\OfflineItemsUserDeleteListener;
 use Passbolt\OfflineMode\Event\OfflineResourceIndexListener;
@@ -48,7 +49,8 @@ class OfflineModePlugin extends BasePlugin
             ->on(new OfflineModeSettingsRedactorPool())
             ->on(new OfflineResourceIndexListener())
             ->on(new OfflineItemsSettingsDeleteListener())
-            ->on(new OfflineItemsUserDeleteListener());
+            ->on(new OfflineItemsUserDeleteListener())
+            ->on(new OfflineItemsResourceDeleteListener());
     }
 
     /**

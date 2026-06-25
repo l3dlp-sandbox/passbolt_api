@@ -90,6 +90,8 @@ class ResourcesTable extends Table implements TableCleanupProviderInterface
     public const URI_MAX_LENGTH = 1024;
     public const USERNAME_MAX_LENGTH = 255;
 
+    public const EVENT_MODEL_RESOURCE_AFTER_SOFT_DELETE = 'Model.Resource.afterSoftDelete';
+
     /**
      * Initialize method
      *
@@ -629,7 +631,7 @@ class ResourcesTable extends Table implements TableCleanupProviderInterface
         }
 
         // Notify other components about the resource soft delete.
-        $event = new Event('Model.Resource.afterSoftDelete', $resource);
+        $event = new Event(self::EVENT_MODEL_RESOURCE_AFTER_SOFT_DELETE, $resource);
         $this->getEventManager()->dispatch($event);
 
         return true;
