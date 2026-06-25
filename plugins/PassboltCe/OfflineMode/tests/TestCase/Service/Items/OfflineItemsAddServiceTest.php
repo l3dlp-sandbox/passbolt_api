@@ -14,24 +14,24 @@ declare(strict_types=1);
  * @link          https://www.passbolt.com Passbolt(tm)
  * @since         5.14.0
  */
-namespace Passbolt\OfflineMode\Test\TestCase\Service;
+namespace Passbolt\OfflineMode\Test\TestCase\Service\Items;
 
 use App\Test\Factory\ResourceFactory;
 use App\Test\Factory\UserFactory;
-use App\Test\Lib\AppTestCaseV5;
+use App\Test\Lib\AppTestCase;
 use App\Test\Lib\Utility\UserAccessControlTrait;
 use App\Utility\UuidFactory;
 use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\NotFoundException;
 use Passbolt\OfflineMode\Model\Entity\OfflineItem;
 use Passbolt\OfflineMode\Model\Table\OfflineItemsTable;
-use Passbolt\OfflineMode\Service\OfflineItemsAddService;
+use Passbolt\OfflineMode\Service\Items\OfflineItemsAddService;
 use Passbolt\OfflineMode\Test\Factory\OfflineItemFactory;
 
 /**
- * @covers \Passbolt\OfflineMode\Service\OfflineItemsAddService
+ * @covers \Passbolt\OfflineMode\Service\Items\OfflineItemsAddService
  */
-class OfflineItemsAddServiceTest extends AppTestCaseV5
+class OfflineItemsAddServiceTest extends AppTestCase
 {
     use UserAccessControlTrait;
 
@@ -41,6 +41,12 @@ class OfflineItemsAddServiceTest extends AppTestCaseV5
     {
         parent::setUp();
         $this->service = new OfflineItemsAddService();
+    }
+
+    public function tearDown(): void
+    {
+        unset($this->service);
+        parent::tearDown();
     }
 
     public function testOfflineItemsAddService_Success_PersistsRowAndReturnsEntity(): void

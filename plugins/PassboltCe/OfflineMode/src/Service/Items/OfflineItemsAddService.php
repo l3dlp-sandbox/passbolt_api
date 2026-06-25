@@ -14,7 +14,7 @@ declare(strict_types=1);
  * @link          https://www.passbolt.com Passbolt(tm)
  * @since         5.14.0
  */
-namespace Passbolt\OfflineMode\Service;
+namespace Passbolt\OfflineMode\Service\Items;
 
 use App\Error\Exception\ValidationException;
 use App\Utility\UserAccessControl;
@@ -25,11 +25,6 @@ use Cake\Validation\Validation;
 use Passbolt\OfflineMode\Model\Entity\OfflineItem;
 use Passbolt\OfflineMode\Model\Table\OfflineItemsTable;
 
-/**
- * Marks a foreign object (phase 1: a resource) as available offline for the
- * caller. Idempotent: returns the existing row if the user has already marked
- * the same `(foreign_model, foreign_key)`.
- */
 class OfflineItemsAddService
 {
     use LocatorAwareTrait;
@@ -57,21 +52,6 @@ class OfflineItemsAddService
         /** @var \Passbolt\OfflineMode\Model\Table\OfflineItemsTable $OfflineItems */
         $OfflineItems = $this->fetchTable('Passbolt/OfflineMode.OfflineItems');
 
-        // Idempotency: a second mark on the same (user, model, key) returns the
-        // existing row rather than erroring. The endpoint contract is 200 OK
-        // on both first mark and re-mark.
-        /** @var \Passbolt\OfflineMode\Model\Entity\OfflineItem|null $existing */
-        $existing = $OfflineItems->find()
-            ->where([
-                'user_id' => $uac->getId(),
-                'foreign_model' => $foreignModel,
-                'foreign_key' => $foreignKey,
-            ])
-            ->first();
-        if ($existing !== null) {
-            return $existing;
-        }
-
         // The entity defaults to `$_accessible = ['*' => false]`. Open the
         // four service-pinned fields per call via `accessibleFields` rather
         // than relaxing the entity-level whitelist — keeps mass-assignment
@@ -93,10 +73,27 @@ class OfflineItemsAddService
                 ],
             ]
         );
-        $this->handleValidationErrors($entity, $OfflineItems);
 
-        $OfflineItems->save($entity);
-        $this->handleValidationErrors($entity, $OfflineItems);
+        if (!$OfflineItems->save($entity)) {
+            $errors = $entity->getErrors();
+            if (
+                isset($errors['user_id']['offline_item_unique'])
+                || isset($errors['foreign_model']['offline_item_unique'])
+                || isset($errors['foreign_key']['offline_item_unique'])
+            ) {
+                /** @var \Passbolt\OfflineMode\Model\Entity\OfflineItem $existing */
+                $existing = $OfflineItems->find()
+                    ->where([
+                        'user_id' => $uac->getId(),
+                        'foreign_model' => $foreignModel,
+                        'foreign_key' => $foreignKey,
+                    ])
+                    ->firstOrFail();
+
+                return $existing;
+            }
+            $this->handleValidationErrors($entity, $OfflineItems);
+        }
 
         return $entity;
     }
