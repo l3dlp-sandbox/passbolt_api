@@ -17,7 +17,6 @@ declare(strict_types=1);
 namespace Passbolt\OfflineMode\Test\TestCase\Controller;
 
 use App\Test\Lib\AppIntegrationTestCase;
-use Passbolt\OfflineMode\Model\Dto\OfflineSettingsDto;
 use Passbolt\OfflineMode\OfflineModePlugin;
 use Passbolt\OfflineMode\Test\Factory\OfflineModeSettingFactory;
 
@@ -32,19 +31,13 @@ class OfflineSettingsGetControllerTest extends AppIntegrationTestCase
         $this->enableFeaturePlugin(OfflineModePlugin::class);
     }
 
-    public function testOfflineSettingsGetController_Success_DefaultsWhenNoRow(): void
+    public function testOfflineSettingsGetController_Success_EmptyBodyWhenNoRow(): void
     {
         $this->logInAsUser();
         $this->getJson('/offline/settings.json');
 
         $this->assertResponseOk();
-        $this->assertArrayEqualsCanonicalizing(
-            [
-                'max_session_duration' => OfflineSettingsDto::DEFAULT_MAX_SESSION_DURATION,
-                'data_retention_period' => OfflineSettingsDto::DEFAULT_DATA_RETENTION_PERIOD,
-            ],
-            $this->getResponseBodyAsArray()
-        );
+        $this->assertEmpty($this->getResponseBodyAsArray());
     }
 
     public function testOfflineSettingsGetController_Success_StoredValuesWithAuditFields(): void

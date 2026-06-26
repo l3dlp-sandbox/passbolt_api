@@ -32,21 +32,18 @@ class OfflineSettingsGetService
     private ?OfflineModeSetting $cachedEntity = null;
 
     /**
-     * Read the offline-mode settings.
+     * Read the offline-mode settings. Returns null when the org has not configured the feature.
      *
-     * @return \Passbolt\OfflineMode\Model\Dto\OfflineSettingsDto
+     * @return \Passbolt\OfflineMode\Model\Dto\OfflineSettingsDto|null
      */
-    public function get(): OfflineSettingsDto
+    public function get(): ?OfflineSettingsDto
     {
         $entity = $this->getEntity();
-        if ($entity !== null) {
-            return OfflineSettingsDto::createFromEntity($entity);
+        if ($entity === null) {
+            return null;
         }
 
-        return OfflineSettingsDto::createFromArray([
-            'max_session_duration' => OfflineSettingsDto::DEFAULT_MAX_SESSION_DURATION,
-            'data_retention_period' => OfflineSettingsDto::DEFAULT_DATA_RETENTION_PERIOD,
-        ]);
+        return OfflineSettingsDto::createFromEntity($entity);
     }
 
     /**
@@ -56,7 +53,7 @@ class OfflineSettingsGetService
      */
     public function isEnabled(): bool
     {
-        return $this->get()->id !== null;
+        return $this->get() !== null;
     }
 
     /**

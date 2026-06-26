@@ -17,8 +17,8 @@ declare(strict_types=1);
 namespace Passbolt\OfflineMode\Controller;
 
 use App\Controller\AppController;
-use Passbolt\OfflineMode\Model\Dto\OfflineSettingsDto;
 use Passbolt\OfflineMode\Service\Settings\OfflineSettingsGetService;
+use stdClass;
 
 class OfflineSettingsGetController extends AppController
 {
@@ -31,25 +31,13 @@ class OfflineSettingsGetController extends AppController
     {
         $this->assertJson();
         $dto = (new OfflineSettingsGetService())->get();
-        $this->success(__('The operation was successful.'), $this->filterNullAuditFields($dto));
-    }
 
-    /**
-     * Strip null audit properties so the wire body only carries fields that actually have
-     * values. When no settings row exists, this leaves just the two settings keys — the
-     * absence of `id` is the client's "not configured" signal (specs.md §14.2).
-     *
-     * @param \Passbolt\OfflineMode\Model\Dto\OfflineSettingsDto $dto Source DTO.
-     * @return \Passbolt\OfflineMode\Model\Dto\OfflineSettingsDto
-     */
-    private function filterNullAuditFields(OfflineSettingsDto $dto): OfflineSettingsDto
-    {
-        foreach (['id', 'created', 'created_by', 'modified', 'modified_by'] as $property) {
-            if ($dto->{$property} === null) {
-                unset($dto->{$property});
-            }
+        if ($dto === null) {
+            $body = new stdClass();
+        } else {
+            $body = $dto->toArray();
         }
 
-        return $dto;
+        $this->success(__('The operation was successful.'), $body);
     }
 }

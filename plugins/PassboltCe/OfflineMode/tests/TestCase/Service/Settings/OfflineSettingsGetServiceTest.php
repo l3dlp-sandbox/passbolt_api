@@ -19,7 +19,6 @@ namespace Passbolt\OfflineMode\Test\TestCase\Service\Settings;
 use App\Test\Lib\AppTestCase;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use InvalidArgumentException;
-use Passbolt\OfflineMode\Model\Dto\OfflineSettingsDto;
 use Passbolt\OfflineMode\Service\Settings\OfflineSettingsGetService;
 use Passbolt\OfflineMode\Test\Factory\OfflineModeSettingFactory;
 
@@ -50,22 +49,11 @@ class OfflineSettingsGetServiceTest extends AppTestCase
         parent::tearDown();
     }
 
-    public function testOfflineSettingsGetService_Get_Success_ReturnsDefaultValues(): void
+    public function testOfflineSettingsGetService_Get_Success_ReturnsNullWhenNoRow(): void
     {
         $result = $this->service->get();
 
-        $this->assertArrayEqualsCanonicalizing(
-            [
-                'id' => null,
-                'max_session_duration' => OfflineSettingsDto::DEFAULT_MAX_SESSION_DURATION,
-                'data_retention_period' => OfflineSettingsDto::DEFAULT_DATA_RETENTION_PERIOD,
-                'created' => null,
-                'created_by' => null,
-                'modified' => null,
-                'modified_by' => null,
-            ],
-            $result->toArray()
-        );
+        $this->assertNull($result);
     }
 
     public function testOfflineSettingsGetService_Get_Success_ReturnsFromDB(): void
@@ -132,7 +120,7 @@ class OfflineSettingsGetServiceTest extends AppTestCase
         $this->assertTrue($this->service->isEnabled(), 'Second isEnabled() call should hit the cache, not the DB.');
         $this->assertSame(
             $setting->get('id'),
-            $this->service->get()->id,
+            $this->service->get()?->id,
             'Second get() call should also hit the cache.'
         );
     }
