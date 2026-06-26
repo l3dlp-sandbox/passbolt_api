@@ -16,69 +16,118 @@ declare(strict_types=1);
  */
 namespace Passbolt\OfflineMode\Model\Dto;
 
+use Cake\I18n\DateTime;
 use InvalidArgumentException;
+use Passbolt\OfflineMode\Model\Entity\OfflineModeSetting;
 
 class OfflineSettingsDto
 {
-    /**
-     * Default max session duration (seconds) — used when no settings row exists.
-     */
     public const DEFAULT_MAX_SESSION_DURATION = 86400;
-
-    /**
-     * Default offline-cache retention period (seconds) — used when no settings row exists.
-     */
     public const DEFAULT_DATA_RETENTION_PERIOD = 120000;
 
-    /**
-     * @var int Maximum offline session duration in seconds.
-     */
-    public int $maxSessionDuration;
-
-    /**
-     * @var int Offline-cache retention window in seconds.
-     */
-    public int $dataRetentionPeriod;
+    public int $max_session_duration;
+    public int $data_retention_period;
+    public ?string $id = null;
+    public ?DateTime $created = null;
+    public ?string $created_by = null;
+    public ?DateTime $modified = null;
+    public ?string $modified_by = null;
 
     /**
      * @param int $maxSessionDuration Maximum session duration (in seconds).
      * @param int $dataRetentionPeriod Data retention period (in seconds).
+     * @param string|null $id Backing organization-settings row id, when present.
+     * @param \Cake\I18n\DateTime|null $created Row creation timestamp, when present.
+     * @param string|null $createdBy Creator user id, when present.
+     * @param \Cake\I18n\DateTime|null $modified Row modification timestamp, when present.
+     * @param string|null $modifiedBy Last-modifier user id, when present.
      */
-    public function __construct(int $maxSessionDuration, int $dataRetentionPeriod)
-    {
-        $this->maxSessionDuration = $maxSessionDuration;
-        $this->dataRetentionPeriod = $dataRetentionPeriod;
+    public function __construct(
+        int $maxSessionDuration,
+        int $dataRetentionPeriod,
+        ?string $id = null,
+        ?DateTime $created = null,
+        ?string $createdBy = null,
+        ?DateTime $modified = null,
+        ?string $modifiedBy = null
+    ) {
+        $this->max_session_duration = $maxSessionDuration;
+        $this->data_retention_period = $dataRetentionPeriod;
+        $this->id = $id;
+        $this->created = $created;
+        $this->created_by = $createdBy;
+        $this->modified = $modified;
+        $this->modified_by = $modifiedBy;
     }
 
     /**
      * @param array $data Data to create DTO from.
      * @return self
-     * @throws \InvalidArgumentException When data assertions fails.
+     * @throws \InvalidArgumentException When data assertions fail.
      */
     public static function createFromArray(array $data): self
     {
         self::assertMaxSessionDuration($data);
         self::assertDataRetentionPeriod($data);
 
-        return new self($data['max_session_duration'], $data['data_retention_period']);
+        return new self(
+            $data['max_session_duration'],
+            $data['data_retention_period'],
+            $data['id'] ?? null,
+            $data['created'] ?? null,
+            $data['created_by'] ?? null,
+            $data['modified'] ?? null,
+            $data['modified_by'] ?? null,
+        );
+    }
+
+    /**
+     * Build a DTO from a persisted entity. Decodes the JSON-encoded `value` column and merges
+     * audit columns into the flat DTO shape.
+     *
+     * @param \Passbolt\OfflineMode\Model\Entity\OfflineModeSetting $entity Persisted settings row.
+     * @return self
+     * @throws \InvalidArgumentException When the stored `value` is not a decodable JSON object.
+     */
+    public static function createFromEntity(OfflineModeSetting $entity): self
+    {
+        $raw = $entity->get('value');
+        if (!is_string($raw)) {
+            throw new InvalidArgumentException('OfflineSettingsDto: entity `value` must be a JSON string.');
+        }
+        $decoded = json_decode($raw, true);
+        if (!is_array($decoded)) {
+            throw new InvalidArgumentException('OfflineSettingsDto: entity `value` must decode to an array.');
+        }
+
+        $decoded['id'] = $entity->get('id');
+        $decoded['created'] = $entity->get('created');
+        $decoded['created_by'] = $entity->get('created_by');
+        $decoded['modified'] = $entity->get('modified');
+        $decoded['modified_by'] = $entity->get('modified_by');
+
+        return self::createFromArray($decoded);
     }
 
     /**
      * Array representation of the DTO.
      *
-     * @return array{max_session_duration: int, data_retention_period: int}
+     * @return array
      */
     public function toArray(): array
     {
         return [
-            'max_session_duration' => $this->maxSessionDuration,
-            'data_retention_period' => $this->dataRetentionPeriod,
+            'id' => $this->id,
+            'max_session_duration' => $this->max_session_duration,
+            'data_retention_period' => $this->data_retention_period,
+            'created' => $this->created,
+            'created_by' => $this->created_by,
+            'modified' => $this->modified,
+            'modified_by' => $this->modified_by,
         ];
     }
 
     /**
-     * JSON representation of the DTO.
-     *
      * @return string
      * @throws \JsonException When the payload cannot be encoded.
      */

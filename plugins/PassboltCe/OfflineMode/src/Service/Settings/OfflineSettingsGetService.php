@@ -16,45 +16,62 @@ declare(strict_types=1);
  */
 namespace Passbolt\OfflineMode\Service\Settings;
 
-use Cake\Http\Exception\InternalErrorException;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Passbolt\OfflineMode\Model\Dto\OfflineSettingsDto;
+use Passbolt\OfflineMode\Model\Entity\OfflineModeSetting;
 
 class OfflineSettingsGetService
 {
     use LocatorAwareTrait;
 
     /**
-     * Read the offline-mode settings row and return a typed DTO.
-     * Returns default values when no row exists.
+     * Cached settings row.
+     *
+     * @var \Passbolt\OfflineMode\Model\Entity\OfflineModeSetting|null
+     */
+    private ?OfflineModeSetting $cachedEntity = null;
+
+    /**
+     * Read the offline-mode settings.
      *
      * @return \Passbolt\OfflineMode\Model\Dto\OfflineSettingsDto
-     * @throws \Cake\Http\Exception\InternalErrorException When the stored value is not a decodable JSON object.
      */
     public function get(): OfflineSettingsDto
     {
-        /** @var \Passbolt\OfflineMode\Model\Table\OfflineModeSettingsTable $offlineModeSettingsTable */
-        $offlineModeSettingsTable = $this->fetchTable('Passbolt/OfflineMode.OfflineModeSettings');
-
-        /** @var \Passbolt\OfflineMode\Model\Entity\OfflineModeSetting|null $offlineModeSetting */
-        $offlineModeSetting = $offlineModeSettingsTable->find()->first();
-
-        if ($offlineModeSetting !== null) {
-            $raw = $offlineModeSetting->get('value');
-            if (!is_string($raw)) {
-                throw new InternalErrorException('The offline settings value should be a JSON string.');
-            }
-            $decoded = json_decode($raw, true);
-            if (!is_array($decoded)) {
-                throw new InternalErrorException('The offline settings value should decode to an array.');
-            }
-
-            return OfflineSettingsDto::createFromArray($decoded);
+        $entity = $this->getEntity();
+        if ($entity !== null) {
+            return OfflineSettingsDto::createFromEntity($entity);
         }
 
         return OfflineSettingsDto::createFromArray([
             'max_session_duration' => OfflineSettingsDto::DEFAULT_MAX_SESSION_DURATION,
             'data_retention_period' => OfflineSettingsDto::DEFAULT_DATA_RETENTION_PERIOD,
         ]);
+    }
+
+    /**
+     * Whether Offline Mode is enabled for the organisation.
+     *
+     * @return bool
+     */
+    public function isEnabled(): bool
+    {
+        return $this->get()->id !== null;
+    }
+
+    /**
+     * @return \Passbolt\OfflineMode\Model\Entity\OfflineModeSetting|null
+     */
+    private function getEntity(): ?OfflineModeSetting
+    {
+        if (is_null($this->cachedEntity)) {
+            /** @var \Passbolt\OfflineMode\Model\Table\OfflineModeSettingsTable $table */
+            $table = $this->fetchTable('Passbolt/OfflineMode.OfflineModeSettings');
+            /** @var \Passbolt\OfflineMode\Model\Entity\OfflineModeSetting|null $entity */
+            $entity = $table->find()->first();
+            $this->cachedEntity = $entity;
+        }
+
+        return $this->cachedEntity;
     }
 }

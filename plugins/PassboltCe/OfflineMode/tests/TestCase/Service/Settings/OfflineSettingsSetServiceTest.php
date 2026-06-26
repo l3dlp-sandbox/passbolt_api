@@ -55,8 +55,8 @@ class OfflineSettingsSetServiceTest extends AppTestCase
         ]);
 
         $this->assertInstanceOf(OfflineSettingsDto::class, $dto);
-        $this->assertSame(3600, $dto->maxSessionDuration);
-        $this->assertSame(7200, $dto->dataRetentionPeriod);
+        $this->assertSame(3600, $dto->max_session_duration);
+        $this->assertSame(7200, $dto->data_retention_period);
         // assert entry saved in the DB
         $row = OfflineModeSettingFactory::find()->firstOrFail();
         $this->assertSame($dto->toJson(), $row->get('value'));
@@ -82,8 +82,8 @@ class OfflineSettingsSetServiceTest extends AppTestCase
             'data_retention_period' => 7200,
         ]);
 
-        $this->assertSame(3600, $dto->maxSessionDuration);
-        $this->assertSame(7200, $dto->dataRetentionPeriod);
+        $this->assertSame(3600, $dto->max_session_duration);
+        $this->assertSame(7200, $dto->data_retention_period);
         $this->assertSame(1, OfflineModeSettingFactory::find()->count());
         $this->assertSame($dto->toJson(), OfflineModeSettingFactory::find()->firstOrFail()->get('value'));
     }

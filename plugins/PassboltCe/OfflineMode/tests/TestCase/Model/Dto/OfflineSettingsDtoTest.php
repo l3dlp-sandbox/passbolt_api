@@ -16,9 +16,12 @@ declare(strict_types=1);
  */
 namespace Passbolt\OfflineMode\Test\TestCase\Model\Dto;
 
+use App\Utility\UuidFactory;
+use Cake\I18n\DateTime;
 use Cake\TestSuite\TestCase;
 use InvalidArgumentException;
 use Passbolt\OfflineMode\Model\Dto\OfflineSettingsDto;
+use Passbolt\OfflineMode\Model\Entity\OfflineModeSetting;
 
 /**
  * @covers \Passbolt\OfflineMode\Model\Dto\OfflineSettingsDto
@@ -32,9 +35,36 @@ class OfflineSettingsDtoTest extends TestCase
             'data_retention_period' => 120000,
         ]);
 
-        $result = $dto->toArray();
-        $this->assertSame(86400, $result['max_session_duration']);
-        $this->assertSame(120000, $result['data_retention_period']);
+        $this->assertSame(86400, $dto->max_session_duration);
+        $this->assertSame(120000, $dto->data_retention_period);
+        $this->assertNull($dto->id);
+        $this->assertNull($dto->created);
+        $this->assertNull($dto->created_by);
+        $this->assertNull($dto->modified);
+        $this->assertNull($dto->modified_by);
+    }
+
+    public function testOfflineSettingsDto_CreateFromArray_Success_PopulatesAuditFields(): void
+    {
+        $created = new DateTime('2026-04-23T09:00:00+00:00');
+        $modified = new DateTime('2026-04-24T09:00:00+00:00');
+        $userId = UuidFactory::uuid('user.admin');
+
+        $dto = OfflineSettingsDto::createFromArray([
+            'max_session_duration' => 86400,
+            'data_retention_period' => 120000,
+            'id' => UuidFactory::uuid('row'),
+            'created' => $created,
+            'created_by' => $userId,
+            'modified' => $modified,
+            'modified_by' => $userId,
+        ]);
+
+        $this->assertSame(UuidFactory::uuid('row'), $dto->id);
+        $this->assertSame($created, $dto->created);
+        $this->assertSame($userId, $dto->created_by);
+        $this->assertSame($modified, $dto->modified);
+        $this->assertSame($userId, $dto->modified_by);
     }
 
     public static function invalidMaxSessionDurationValuesProvider(): array
@@ -89,5 +119,52 @@ class OfflineSettingsDtoTest extends TestCase
         $this->expectExceptionMessageMatches('/data_retention_period/');
 
         OfflineSettingsDto::createFromArray($data);
+    }
+
+    public function testOfflineSettingsDto_CreateFromEntity_Success(): void
+    {
+        $created = new DateTime('2026-04-23T09:00:00+00:00');
+        $modified = new DateTime('2026-04-24T09:00:00+00:00');
+        $userId = UuidFactory::uuid('user.admin');
+        $rowId = UuidFactory::uuid('row');
+
+        $entity = new OfflineModeSetting([
+            'id' => $rowId,
+            'value' => json_encode(['max_session_duration' => 3600, 'data_retention_period' => 7200]),
+            'created' => $created,
+            'created_by' => $userId,
+            'modified' => $modified,
+            'modified_by' => $userId,
+        ]);
+
+        $dto = OfflineSettingsDto::createFromEntity($entity);
+
+        $this->assertSame(3600, $dto->max_session_duration);
+        $this->assertSame(7200, $dto->data_retention_period);
+        $this->assertSame($rowId, $dto->id);
+        $this->assertSame($created, $dto->created);
+        $this->assertSame($userId, $dto->created_by);
+        $this->assertSame($modified, $dto->modified);
+        $this->assertSame($userId, $dto->modified_by);
+    }
+
+    public function testOfflineSettingsDto_CreateFromEntity_Error_ValueNotString(): void
+    {
+        $entity = new OfflineModeSetting(['value' => ['not' => 'a string']]);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessageMatches('/JSON string/');
+
+        OfflineSettingsDto::createFromEntity($entity);
+    }
+
+    public function testOfflineSettingsDto_CreateFromEntity_Error_ValueNotDecodable(): void
+    {
+        $entity = new OfflineModeSetting(['value' => '{this is not valid JSON']);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessageMatches('/decode to an array/');
+
+        OfflineSettingsDto::createFromEntity($entity);
     }
 }

@@ -17,7 +17,8 @@ declare(strict_types=1);
 namespace Passbolt\OfflineMode\Test\TestCase\Service\Settings;
 
 use App\Test\Lib\AppTestCase;
-use Cake\Http\Exception\InternalErrorException;
+use Cake\ORM\Locator\LocatorAwareTrait;
+use InvalidArgumentException;
 use Passbolt\OfflineMode\Model\Dto\OfflineSettingsDto;
 use Passbolt\OfflineMode\Service\Settings\OfflineSettingsGetService;
 use Passbolt\OfflineMode\Test\Factory\OfflineModeSettingFactory;
@@ -27,51 +28,112 @@ use Passbolt\OfflineMode\Test\Factory\OfflineModeSettingFactory;
  */
 class OfflineSettingsGetServiceTest extends AppTestCase
 {
+    use LocatorAwareTrait;
+
     private OfflineSettingsGetService $service;
 
+    /**
+     * @inheritDoc
+     */
     public function setUp(): void
     {
         parent::setUp();
         $this->service = new OfflineSettingsGetService();
     }
 
+    /**
+     * @inheritDoc
+     */
     public function tearDown(): void
     {
         unset($this->service);
         parent::tearDown();
     }
 
-    public function testOfflineSettingsGetService_Success_ReturnsDefaultValues(): void
+    public function testOfflineSettingsGetService_Get_Success_ReturnsDefaultValues(): void
     {
-        $dto = $this->service->get();
+        $result = $this->service->get();
 
-        $this->assertInstanceOf(OfflineSettingsDto::class, $dto);
-        $result = $dto->toArray();
-        $this->assertSame(OfflineSettingsDto::DEFAULT_MAX_SESSION_DURATION, $result['max_session_duration']);
-        $this->assertSame(OfflineSettingsDto::DEFAULT_DATA_RETENTION_PERIOD, $result['data_retention_period']);
+        $this->assertArrayEqualsCanonicalizing(
+            [
+                'id' => null,
+                'max_session_duration' => OfflineSettingsDto::DEFAULT_MAX_SESSION_DURATION,
+                'data_retention_period' => OfflineSettingsDto::DEFAULT_DATA_RETENTION_PERIOD,
+                'created' => null,
+                'created_by' => null,
+                'modified' => null,
+                'modified_by' => null,
+            ],
+            $result->toArray()
+        );
     }
 
-    public function testOfflineSettingsGetService_Success_ReturnsFromDB(): void
+    public function testOfflineSettingsGetService_Get_Success_ReturnsFromDB(): void
     {
-        OfflineModeSettingFactory::make()
+        $setting = OfflineModeSettingFactory::make()
             ->setField('value', json_encode(['max_session_duration' => 3600, 'data_retention_period' => 7200]))
             ->persist();
 
-        $dto = $this->service->get();
+        $result = $this->service->get();
 
-        $result = $dto->toArray();
-        $this->assertSame(3600, $result['max_session_duration']);
-        $this->assertSame(7200, $result['data_retention_period']);
+        $resultArray = $result->toArray();
+        $expectedResult = array_merge($resultArray, [
+            'created' => $resultArray['created']->toIso8601String(),
+            'modified' => $resultArray['modified']->toIso8601String(),
+        ]);
+        $this->assertArrayEqualsCanonicalizing(
+            [
+                'id' => $setting->get('id'),
+                'max_session_duration' => 3600,
+                'data_retention_period' => 7200,
+                'created' => $setting->get('created')->toIso8601String(),
+                'created_by' => $setting->get('created_by'),
+                'modified' => $setting->get('modified')->toIso8601String(),
+                'modified_by' => $setting->get('modified_by'),
+            ],
+            $expectedResult
+        );
     }
 
-    public function testOfflineSettingsGetService_Error_InvalidJsonInDB(): void
+    public function testOfflineSettingsGetService_Get_Error_InvalidJsonInDB(): void
     {
         OfflineModeSettingFactory::make()
             ->setField('value', '{this is not valid JSON')
             ->persist();
 
-        $this->expectException(InternalErrorException::class);
+        $this->expectException(InvalidArgumentException::class);
 
         $this->service->get();
+    }
+
+    public function testOfflineSettingsGetService_IsEnabled_True_WhenRowExists(): void
+    {
+        OfflineModeSettingFactory::make()
+            ->setField('value', json_encode(['max_session_duration' => 3600, 'data_retention_period' => 7200]))
+            ->persist();
+        $result = $this->service->isEnabled();
+        $this->assertTrue($result);
+    }
+
+    public function testOfflineSettingsGetService_IsEnabled_False_WhenNoRow(): void
+    {
+        $result = $this->service->isEnabled();
+        $this->assertFalse($result);
+    }
+
+    public function testOfflineSettingsGetService_Cache_SecondCallSkipsDb(): void
+    {
+        $setting = OfflineModeSettingFactory::make()
+            ->setField('value', json_encode(['max_session_duration' => 3600, 'data_retention_period' => 7200]))
+            ->persist();
+
+        $this->assertTrue($this->service->isEnabled());
+
+        $this->assertTrue($this->service->isEnabled(), 'Second isEnabled() call should hit the cache, not the DB.');
+        $this->assertSame(
+            $setting->get('id'),
+            $this->service->get()->id,
+            'Second get() call should also hit the cache.'
+        );
     }
 }

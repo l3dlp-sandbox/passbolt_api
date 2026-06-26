@@ -19,4 +19,8 @@ use Cake\Routing\RouteBuilder;
 
 $routes->plugin('Passbolt/OfflineMode', ['path' => '/offline'], function (RouteBuilder $routes): void {
     $routes->setExtensions(['json']);
+
+    $routes
+        ->connect('/settings', ['controller' => 'OfflineSettingsGet', 'action' => 'get'])
+        ->setMethods(['GET']);
 });
