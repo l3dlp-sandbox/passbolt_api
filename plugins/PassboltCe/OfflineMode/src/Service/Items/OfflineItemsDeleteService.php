@@ -43,7 +43,7 @@ class OfflineItemsDeleteService
     public function delete(UserAccessControl $uac, string $id): void
     {
         if (!Validation::uuid($id)) {
-            throw new BadRequestException(__('The offline item id is not valid.'));
+            throw new BadRequestException(__('The offline item identifier should be a valid UUID.'));
         }
 
         /** @var \Passbolt\OfflineMode\Model\Table\OfflineItemsTable $OfflineItems */

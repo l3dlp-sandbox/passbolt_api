@@ -32,4 +32,13 @@ $routes->plugin('Passbolt/OfflineMode', ['path' => '/offline'], function (RouteB
         'controller' => 'OfflineItemsAdd',
         'action' => 'add',
     ])->setPass(['foreignKey'])->setMethods(['POST']);
+
+    /**
+     * @uses \Passbolt\OfflineMode\Controller\Items\OfflineItemsDeleteController::delete()
+     */
+    $routes->connect('/{id}', [
+        'prefix' => 'Items',
+        'controller' => 'OfflineItemsDelete',
+        'action' => 'delete',
+    ])->setPass(['id'])->setMethods(['DELETE']);
 });
