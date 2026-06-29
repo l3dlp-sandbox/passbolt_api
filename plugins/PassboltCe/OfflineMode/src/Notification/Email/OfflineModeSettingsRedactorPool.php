@@ -29,6 +29,7 @@ class OfflineModeSettingsRedactorPool extends AbstractSubscribedEmailRedactorPoo
     {
         return [
             new OfflineSettingsSetEmailRedactor(),
+            new OfflineSettingsDeleteEmailRedactor(),
         ];
     }
 }

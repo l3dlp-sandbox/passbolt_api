@@ -16,7 +16,7 @@ declare(strict_types=1);
  */
 namespace Passbolt\OfflineMode\Service\Settings;
 
-use App\Utility\UserAccessControl;
+use App\Utility\ExtendedUserAccessControl;
 use Cake\Event\EventDispatcherTrait;
 use Cake\ORM\Locator\LocatorAwareTrait;
 
@@ -30,13 +30,13 @@ class OfflineSettingsDeleteService
     /**
      * Load the offline-settings row by id, delete it, and dispatch the `OfflineSettings.afterDelete.success` event.
      *
-     * @param \App\Utility\UserAccessControl $uac Acting user.
+     * @param \App\Utility\ExtendedUserAccessControl $uac Extended UAC Object.
      * @param string $orgSettingId `organization_settings.id` of the row to delete.
      * @return void
      * @throws \Cake\Http\Exception\ForbiddenException When the user is not an admin.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When the row does not exist or its property is not offlineMode.
      */
-    public function delete(UserAccessControl $uac, string $orgSettingId): void
+    public function delete(ExtendedUserAccessControl $uac, string $orgSettingId): void
     {
         $uac->assertIsAdmin();
 

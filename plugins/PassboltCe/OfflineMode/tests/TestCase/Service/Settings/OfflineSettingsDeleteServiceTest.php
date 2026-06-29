@@ -17,6 +17,7 @@ declare(strict_types=1);
 namespace Passbolt\OfflineMode\Test\TestCase\Service\Settings;
 
 use App\Test\Lib\AppTestCase;
+use App\Test\Lib\Utility\ExtendedUserAccessControlTestTrait;
 use App\Utility\UuidFactory;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Event\EventList;
@@ -31,6 +32,7 @@ use Passbolt\OfflineMode\Test\Factory\OfflineModeSettingFactory;
  */
 class OfflineSettingsDeleteServiceTest extends AppTestCase
 {
+    use ExtendedUserAccessControlTestTrait;
     use LocatorAwareTrait;
 
     private OfflineSettingsDeleteService $service;
@@ -53,7 +55,7 @@ class OfflineSettingsDeleteServiceTest extends AppTestCase
         $row = OfflineModeSettingFactory::make()
             ->setField('value', json_encode(['max_session_duration' => 3600, 'data_retention_period' => 7200]))
             ->persist();
-        $uac = $this->mockAdminAccessControl();
+        $uac = $this->mockExtendedAdminAccessControl();
 
         $this->service->delete($uac, $row->get('id'));
 
@@ -67,7 +69,7 @@ class OfflineSettingsDeleteServiceTest extends AppTestCase
         $row = OfflineModeSettingFactory::make()
             ->setField('value', json_encode(['max_session_duration' => 3600, 'data_retention_period' => 7200]))
             ->persist();
-        $uac = $this->mockUserAccessControl();
+        $uac = $this->mockExtendedUserAccessControl();
 
         $this->expectException(ForbiddenException::class);
 
@@ -76,7 +78,7 @@ class OfflineSettingsDeleteServiceTest extends AppTestCase
 
     public function testOfflineSettingsDeleteService_Error_RowDoesNotExist(): void
     {
-        $uac = $this->mockAdminAccessControl();
+        $uac = $this->mockExtendedAdminAccessControl();
 
         $this->expectException(RecordNotFoundException::class);
 
@@ -86,7 +88,7 @@ class OfflineSettingsDeleteServiceTest extends AppTestCase
     public function testOfflineSettingsDeleteService_Error_RowBelongsToDifferentProperty(): void
     {
         $foreignId = $this->createForeignPropertyRow();
-        $uac = $this->mockAdminAccessControl();
+        $uac = $this->mockExtendedAdminAccessControl();
 
         $this->expectException(RecordNotFoundException::class);
 
