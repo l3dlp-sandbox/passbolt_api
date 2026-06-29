@@ -19,6 +19,8 @@ namespace Passbolt\OfflineMode;
 use Cake\Core\BasePlugin;
 use Cake\Core\ContainerInterface;
 use Cake\Core\PluginApplicationInterface;
+use Cake\Event\EventManager;
+use Passbolt\OfflineMode\Notification\Email\OfflineModeSettingsRedactorPool;
 
 class OfflineModePlugin extends BasePlugin
 {
@@ -28,6 +30,18 @@ class OfflineModePlugin extends BasePlugin
     public function bootstrap(PluginApplicationInterface $app): void
     {
         parent::bootstrap($app);
+        $this->attachListeners(EventManager::instance());
+    }
+
+    /**
+     * Attach the OfflineMode event listeners (email redactor pool + future listeners).
+     *
+     * @param \Cake\Event\EventManager $eventManager EventManager.
+     * @return void
+     */
+    public function attachListeners(EventManager $eventManager): void
+    {
+        $eventManager->on(new OfflineModeSettingsRedactorPool());
     }
 
     /**

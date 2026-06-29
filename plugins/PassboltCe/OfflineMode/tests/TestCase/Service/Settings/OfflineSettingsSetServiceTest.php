@@ -18,6 +18,7 @@ namespace Passbolt\OfflineMode\Test\TestCase\Service\Settings;
 
 use App\Error\Exception\CustomValidationException;
 use App\Test\Lib\AppTestCase;
+use App\Test\Lib\Utility\ExtendedUserAccessControlTestTrait;
 use Cake\Event\EventList;
 use Cake\Event\EventManager;
 use Cake\Http\Exception\ForbiddenException;
@@ -30,6 +31,8 @@ use Passbolt\OfflineMode\Test\Factory\OfflineModeSettingFactory;
  */
 class OfflineSettingsSetServiceTest extends AppTestCase
 {
+    use ExtendedUserAccessControlTestTrait;
+
     private OfflineSettingsSetService $service;
 
     public function setUp(): void
@@ -47,7 +50,7 @@ class OfflineSettingsSetServiceTest extends AppTestCase
 
     public function testOfflineSettingsSetService_Success_CreatesRow(): void
     {
-        $uac = $this->mockAdminAccessControl();
+        $uac = $this->mockExtendedAdminAccessControl();
 
         $dto = $this->service->set($uac, [
             'max_session_duration' => 3600,
@@ -75,7 +78,7 @@ class OfflineSettingsSetServiceTest extends AppTestCase
                 'data_retention_period' => 2000,
             ]))
             ->persist();
-        $uac = $this->mockAdminAccessControl();
+        $uac = $this->mockExtendedAdminAccessControl();
 
         $dto = $this->service->set($uac, [
             'max_session_duration' => 3600,
@@ -90,7 +93,7 @@ class OfflineSettingsSetServiceTest extends AppTestCase
 
     public function testOfflineSettingsSetService_Error_NotAdmin(): void
     {
-        $uac = $this->mockUserAccessControl();
+        $uac = $this->mockExtendedUserAccessControl();
 
         $this->expectException(ForbiddenException::class);
 
@@ -102,7 +105,7 @@ class OfflineSettingsSetServiceTest extends AppTestCase
 
     public function testOfflineSettingsSetService_Error_InvalidPayload(): void
     {
-        $uac = $this->mockAdminAccessControl();
+        $uac = $this->mockExtendedAdminAccessControl();
 
         $this->expectException(CustomValidationException::class);
 

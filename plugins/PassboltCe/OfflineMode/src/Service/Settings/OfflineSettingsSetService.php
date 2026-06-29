@@ -17,7 +17,7 @@ declare(strict_types=1);
 namespace Passbolt\OfflineMode\Service\Settings;
 
 use App\Error\Exception\CustomValidationException;
-use App\Utility\UserAccessControl;
+use App\Utility\ExtendedUserAccessControl;
 use Cake\Event\EventDispatcherTrait;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Passbolt\OfflineMode\Form\OfflineSettingsForm;
@@ -35,13 +35,14 @@ class OfflineSettingsSetService
      * Validate the payload, upsert the `offlineMode` organization-settings row, and dispatch
      * the `OfflineSettings.afterSet.success` event.
      *
-     * @param \App\Utility\UserAccessControl $uac Acting user.
+     * @param \App\Utility\ExtendedUserAccessControl $uac Acting user (carries IP / user-agent for the
+     *   audit-trail block in the admin notification email — §8.3).
      * @param array $data Raw payload.
      * @return \Passbolt\OfflineMode\Model\Dto\OfflineSettingsDto
      * @throws \Cake\Http\Exception\ForbiddenException When the user is not an admin.
      * @throws \App\Error\Exception\CustomValidationException When the payload fails form validation.
      */
-    public function set(UserAccessControl $uac, array $data): OfflineSettingsDto
+    public function set(ExtendedUserAccessControl $uac, array $data): OfflineSettingsDto
     {
         $uac->assertIsAdmin();
 
