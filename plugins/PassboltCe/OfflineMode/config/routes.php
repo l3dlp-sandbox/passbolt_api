@@ -23,4 +23,13 @@ $routes->plugin('Passbolt/OfflineMode', ['path' => '/offline'], function (RouteB
     $routes
         ->connect('/settings', ['controller' => 'OfflineSettingsGet', 'action' => 'get'])
         ->setMethods(['GET']);
+
+    /**
+     * @uses \Passbolt\OfflineMode\Controller\Items\OfflineItemsAddController::add()
+     */
+    $routes->connect('/resource/{foreignKey}', [
+        'prefix' => 'Items',
+        'controller' => 'OfflineItemsAdd',
+        'action' => 'add',
+    ])->setPass(['foreignKey'])->setMethods(['POST']);
 });
