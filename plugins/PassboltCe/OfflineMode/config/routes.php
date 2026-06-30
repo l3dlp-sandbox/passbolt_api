@@ -36,7 +36,7 @@ $routes->plugin('Passbolt/OfflineMode', ['path' => '/offline'], function (RouteB
     /**
      * @uses \Passbolt\OfflineMode\Controller\Items\OfflineItemsDeleteController::delete()
      */
-    $routes->connect('/{id}', [
+    $routes->connect('/item/{id}', [
         'prefix' => 'Items',
         'controller' => 'OfflineItemsDelete',
         'action' => 'delete',

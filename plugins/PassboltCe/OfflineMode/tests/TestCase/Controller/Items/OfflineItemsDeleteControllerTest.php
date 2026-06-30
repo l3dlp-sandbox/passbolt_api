@@ -42,31 +42,31 @@ class OfflineItemsDeleteControllerTest extends AppIntegrationTestCase
         $this->logInAs($user);
 
         $id = $offlineItem->get('id');
-        $this->deleteJson("/offline/$id.json");
+        $this->deleteJson("/offline/item/$id.json");
         $this->assertSuccess();
 
         $this->assertSame(0, OfflineItemFactory::count());
     }
 
-    public function testOfflineItemsDeleteController_Error_BadRequest_InvalidUuid(): void
+    public function testOfflineItemsDeleteController_Error_InvalidUuid(): void
     {
         $user = UserFactory::make()->user()->active()->persist();
         $this->logInAs($user);
-        $this->deleteJson('/offline/invalid-id.json');
+        $this->deleteJson('/offline/item/invalid-id.json');
         $this->assertBadRequestError('The offline item identifier should be a valid UUID');
     }
 
-    public function testOfflineItemsDeleteController_Error_NotFound_IdDoesNotExist(): void
+    public function testOfflineItemsDeleteController_Error_IdDoesNotExist(): void
     {
         $user = UserFactory::make()->user()->active()->persist();
         $this->logInAs($user);
 
         $missingId = UuidFactory::uuid('not-here');
-        $this->deleteJson("/offline/$missingId.json");
+        $this->deleteJson("/offline/item/$missingId.json");
         $this->assertNotFoundError('The offline item does not exist.');
     }
 
-    public function testOfflineItemsDeleteController_Error_NotFound_RowBelongsToAnotherUser(): void
+    public function testOfflineItemsDeleteController_Error_RowBelongsToAnotherUser(): void
     {
         $owner = UserFactory::make()->user()->active()->persist();
         $intruder = UserFactory::make()->user()->active()->persist();
@@ -75,7 +75,7 @@ class OfflineItemsDeleteControllerTest extends AppIntegrationTestCase
         $this->logInAs($intruder);
 
         $id = $offlineItem->get('id');
-        $this->deleteJson("/offline/$id.json");
+        $this->deleteJson("/offline/item/$id.json");
 
         $this->assertNotFoundError('The offline item does not exist.');
         $this->assertSame(1, OfflineItemFactory::count());
@@ -88,7 +88,7 @@ class OfflineItemsDeleteControllerTest extends AppIntegrationTestCase
         $offlineItem = OfflineItemFactory::make()->setUser($user)->setResource($resource)->persist();
 
         $id = $offlineItem->get('id');
-        $this->deleteJson("/offline/$id.json");
+        $this->deleteJson("/offline/item/$id.json");
 
         $this->assertAuthenticationError();
     }
@@ -102,7 +102,7 @@ class OfflineItemsDeleteControllerTest extends AppIntegrationTestCase
         $this->logInAs($user);
 
         $id = $offlineItem->get('id');
-        $this->deleteJson("/offline/$id.json");
+        $this->deleteJson("/offline/item/$id.json");
         $this->assertForbiddenError('Missing or incorrect CSRF cookie type.');
     }
 
@@ -114,7 +114,7 @@ class OfflineItemsDeleteControllerTest extends AppIntegrationTestCase
         $this->logInAs($user);
 
         $id = $offlineItem->get('id');
-        $this->delete("/offline/$id");
+        $this->delete("/offline/item/$id");
 
         $this->assertResponseCode(404);
     }
