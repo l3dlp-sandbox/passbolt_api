@@ -130,7 +130,7 @@ class OfflineSettingsDtoTest extends TestCase
 
         $entity = new OfflineModeSetting([
             'id' => $rowId,
-            'value' => json_encode(['max_session_duration' => 3600, 'data_retention_period' => 7200]),
+            'value' => ['max_session_duration' => 3600, 'data_retention_period' => 7200],
             'created' => $created,
             'created_by' => $userId,
             'modified' => $modified,
@@ -148,22 +148,12 @@ class OfflineSettingsDtoTest extends TestCase
         $this->assertSame($userId, $dto->modified_by);
     }
 
-    public function testOfflineSettingsDto_CreateFromEntity_Error_ValueNotString(): void
+    public function testOfflineSettingsDto_CreateFromEntity_Error_ValueNotArray(): void
     {
-        $entity = new OfflineModeSetting(['value' => ['not' => 'a string']]);
+        $entity = new OfflineModeSetting(['value' => 'not-an-array']);
 
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessageMatches('/JSON string/');
-
-        OfflineSettingsDto::createFromEntity($entity);
-    }
-
-    public function testOfflineSettingsDto_CreateFromEntity_Error_ValueNotDecodable(): void
-    {
-        $entity = new OfflineModeSetting(['value' => '{this is not valid JSON']);
-
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessageMatches('/decode to an array/');
+        $this->expectExceptionMessageMatches('/must be an array/');
 
         OfflineSettingsDto::createFromEntity($entity);
     }

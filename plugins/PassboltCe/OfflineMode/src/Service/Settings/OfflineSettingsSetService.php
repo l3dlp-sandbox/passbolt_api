@@ -32,11 +32,7 @@ class OfflineSettingsSetService
     public const EVENT_SETTINGS_UPDATED = 'OfflineSettings.afterSet.success';
 
     /**
-     * Validate the payload, upsert the `offlineMode` organization-settings row, and dispatch
-     * the `OfflineSettings.afterSet.success` event.
-     *
-     * @param \App\Utility\ExtendedUserAccessControl $uac Acting user (carries IP / user-agent for the
-     *   audit-trail block in the admin notification email — §8.3).
+     * @param \App\Utility\ExtendedUserAccessControl $uac Acting user.
      * @param array $data Raw payload.
      * @return \Passbolt\OfflineMode\Model\Dto\OfflineSettingsDto
      * @throws \Cake\Http\Exception\ForbiddenException When the user is not an admin.
@@ -54,15 +50,21 @@ class OfflineSettingsSetService
             );
         }
 
-        $dto = OfflineSettingsDto::createFromArray($form->getData());
+        $validated = $form->getData();
 
         /** @var \Passbolt\OfflineMode\Model\Table\OfflineModeSettingsTable $offlineModeSettingsTable */
         $offlineModeSettingsTable = $this->fetchTable('Passbolt/OfflineMode.OfflineModeSettings');
-        $offlineModeSettingsTable->createOrUpdateSetting(
+        /** @var \Passbolt\OfflineMode\Model\Entity\OfflineModeSetting $entity */
+        $entity = $offlineModeSettingsTable->createOrUpdateSetting(
             OfflineModeSetting::PROPERTY_NAME,
-            $dto->toJson(),
+            [
+                'max_session_duration' => (int)$validated['max_session_duration'],
+                'data_retention_period' => (int)$validated['data_retention_period'],
+            ],
             $uac
         );
+
+        $dto = OfflineSettingsDto::createFromEntity($entity);
 
         $this->dispatchEvent(self::EVENT_SETTINGS_UPDATED, compact('dto', 'uac'));
 

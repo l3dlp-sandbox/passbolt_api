@@ -53,7 +53,7 @@ class OfflineSettingsDeleteServiceTest extends AppTestCase
     public function testOfflineSettingsDeleteService_Success_DeletesRowAndDispatchesEvent(): void
     {
         $row = OfflineModeSettingFactory::make()
-            ->setField('value', json_encode(['max_session_duration' => 3600, 'data_retention_period' => 7200]))
+            ->setField('value', ['max_session_duration' => 3600, 'data_retention_period' => 7200])
             ->persist();
         $uac = $this->mockExtendedAdminAccessControl();
 
@@ -67,7 +67,7 @@ class OfflineSettingsDeleteServiceTest extends AppTestCase
     public function testOfflineSettingsDeleteService_Error_NotAdmin(): void
     {
         $row = OfflineModeSettingFactory::make()
-            ->setField('value', json_encode(['max_session_duration' => 3600, 'data_retention_period' => 7200]))
+            ->setField('value', ['max_session_duration' => 3600, 'data_retention_period' => 7200])
             ->persist();
         $uac = $this->mockExtendedUserAccessControl();
 

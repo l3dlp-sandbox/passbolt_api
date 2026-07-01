@@ -22,7 +22,6 @@ use App\Test\Lib\Utility\ExtendedUserAccessControlTestTrait;
 use Cake\Event\EventList;
 use Cake\Event\EventManager;
 use Cake\Http\Exception\ForbiddenException;
-use Passbolt\OfflineMode\Model\Dto\OfflineSettingsDto;
 use Passbolt\OfflineMode\Service\Settings\OfflineSettingsSetService;
 use Passbolt\OfflineMode\Test\Factory\OfflineModeSettingFactory;
 
@@ -57,26 +56,40 @@ class OfflineSettingsSetServiceTest extends AppTestCase
             'data_retention_period' => 7200,
         ]);
 
-        $this->assertInstanceOf(OfflineSettingsDto::class, $dto);
-        $this->assertSame(3600, $dto->max_session_duration);
-        $this->assertSame(7200, $dto->data_retention_period);
-        // assert entry saved in the DB
         $row = OfflineModeSettingFactory::find()->firstOrFail();
-        $this->assertSame($dto->toJson(), $row->get('value'));
-        $this->assertSame($uac->getId(), $row->get('created_by'));
-        $this->assertSame($uac->getId(), $row->get('modified_by'));
-        // assert event fired
+        $resultArray = $dto->toArray();
+        $expectedResult = array_merge($resultArray, [
+            'created' => $resultArray['created']->toIso8601String(),
+            'modified' => $resultArray['modified']->toIso8601String(),
+        ]);
+        $this->assertArrayEqualsCanonicalizing(
+            [
+                'id' => $row->get('id'),
+                'max_session_duration' => 3600,
+                'data_retention_period' => 7200,
+                'created' => $row->get('created')->toIso8601String(),
+                'created_by' => $uac->getId(),
+                'modified' => $row->get('modified')->toIso8601String(),
+                'modified_by' => $uac->getId(),
+            ],
+            $expectedResult
+        );
+        $this->assertSame(
+            [
+                'max_session_duration' => 3600,
+                'data_retention_period' => 7200,
+            ],
+            $row->get('value')
+        );
+        // assert event payload
         $this->assertEventFiredWith(OfflineSettingsSetService::EVENT_SETTINGS_UPDATED, 'dto', $dto);
         $this->assertEventFiredWith(OfflineSettingsSetService::EVENT_SETTINGS_UPDATED, 'uac', $uac);
     }
 
     public function testOfflineSettingsSetService_Success_UpdatesExistingRow(): void
     {
-        OfflineModeSettingFactory::make()
-            ->setField('value', json_encode([
-                'max_session_duration' => 1000,
-                'data_retention_period' => 2000,
-            ]))
+        $original = OfflineModeSettingFactory::make()
+            ->setField('value', ['max_session_duration' => 1000, 'data_retention_period' => 2000])
             ->persist();
         $uac = $this->mockExtendedAdminAccessControl();
 
@@ -85,10 +98,11 @@ class OfflineSettingsSetServiceTest extends AppTestCase
             'data_retention_period' => 7200,
         ]);
 
+        $this->assertSame($original->get('id'), $dto->id, 'Update preserves the row id.');
         $this->assertSame(3600, $dto->max_session_duration);
         $this->assertSame(7200, $dto->data_retention_period);
+        $this->assertSame($uac->getId(), $dto->modified_by);
         $this->assertSame(1, OfflineModeSettingFactory::find()->count());
-        $this->assertSame($dto->toJson(), OfflineModeSettingFactory::find()->firstOrFail()->get('value'));
     }
 
     public function testOfflineSettingsSetService_Error_NotAdmin(): void

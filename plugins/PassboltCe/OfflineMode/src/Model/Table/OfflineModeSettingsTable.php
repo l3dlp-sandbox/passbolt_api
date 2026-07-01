@@ -22,6 +22,7 @@ use App\Utility\UuidFactory;
 use ArrayObject;
 use Cake\Event\Event;
 use Cake\ORM\Query;
+use Cake\Validation\Validator;
 use Passbolt\OfflineMode\Model\Entity\OfflineModeSetting;
 
 /**
@@ -52,6 +53,24 @@ class OfflineModeSettingsTable extends OrganizationSettingsTable
     {
         parent::initialize($config);
         $this->setEntityClass(OfflineModeSetting::class);
+        $this->getSchema()->setColumnType('value', 'json');
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * Parent validator types `value` as a UTF-8 string. With the JSON column cast in
+     * `initialize()`, `value` reaches the validator as an array — re-type the rule.
+     */
+    public function validationDefault(Validator $validator): Validator
+    {
+        $validator = parent::validationDefault($validator);
+
+        $validator->remove('value');
+        $validator->requirePresence('value', true, __('A value is required.'));
+        $validator->array('value', __('The value should be an array.'));
+
+        return $validator;
     }
 
     /**

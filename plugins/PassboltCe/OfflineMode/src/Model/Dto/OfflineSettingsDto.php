@@ -82,31 +82,27 @@ class OfflineSettingsDto
     }
 
     /**
-     * Build a DTO from a persisted entity. Decodes the JSON-encoded `value` column and merges
-     * audit columns into the flat DTO shape.
+     * Build a DTO from a persisted entity. The table's JSON column cast already decoded
+     * the `value` column to an array; this method merges audit columns onto it.
      *
      * @param \Passbolt\OfflineMode\Model\Entity\OfflineModeSetting $entity Persisted settings row.
      * @return self
-     * @throws \InvalidArgumentException When the stored `value` is not a decodable JSON object.
+     * @throws \InvalidArgumentException When the stored `value` is not an array.
      */
     public static function createFromEntity(OfflineModeSetting $entity): self
     {
-        $raw = $entity->get('value');
-        if (!is_string($raw)) {
-            throw new InvalidArgumentException('OfflineSettingsDto: entity `value` must be a JSON string.');
-        }
-        $decoded = json_decode($raw, true);
-        if (!is_array($decoded)) {
-            throw new InvalidArgumentException('OfflineSettingsDto: entity `value` must decode to an array.');
+        $value = $entity->get('value');
+        if (!is_array($value)) {
+            throw new InvalidArgumentException('OfflineSettingsDto: entity `value` must be an array.');
         }
 
-        $decoded['id'] = $entity->get('id');
-        $decoded['created'] = $entity->get('created');
-        $decoded['created_by'] = $entity->get('created_by');
-        $decoded['modified'] = $entity->get('modified');
-        $decoded['modified_by'] = $entity->get('modified_by');
+        $value['id'] = $entity->get('id');
+        $value['created'] = $entity->get('created');
+        $value['created_by'] = $entity->get('created_by');
+        $value['modified'] = $entity->get('modified');
+        $value['modified_by'] = $entity->get('modified_by');
 
-        return self::createFromArray($decoded);
+        return self::createFromArray($value);
     }
 
     /**
@@ -125,15 +121,6 @@ class OfflineSettingsDto
             'modified' => $this->modified,
             'modified_by' => $this->modified_by,
         ];
-    }
-
-    /**
-     * @return string
-     * @throws \JsonException When the payload cannot be encoded.
-     */
-    public function toJson(): string
-    {
-        return json_encode($this->toArray(), JSON_THROW_ON_ERROR);
     }
 
     /**

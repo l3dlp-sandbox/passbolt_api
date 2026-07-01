@@ -18,7 +18,6 @@ namespace Passbolt\OfflineMode\Test\TestCase\Service\Settings;
 
 use App\Test\Lib\AppTestCase;
 use Cake\ORM\Locator\LocatorAwareTrait;
-use InvalidArgumentException;
 use Passbolt\OfflineMode\Service\Settings\OfflineSettingsGetService;
 use Passbolt\OfflineMode\Test\Factory\OfflineModeSettingFactory;
 
@@ -59,7 +58,7 @@ class OfflineSettingsGetServiceTest extends AppTestCase
     public function testOfflineSettingsGetService_Get_Success_ReturnsFromDB(): void
     {
         $setting = OfflineModeSettingFactory::make()
-            ->setField('value', json_encode(['max_session_duration' => 3600, 'data_retention_period' => 7200]))
+            ->setField('value', ['max_session_duration' => 3600, 'data_retention_period' => 7200])
             ->persist();
 
         $result = $this->service->get();
@@ -83,21 +82,10 @@ class OfflineSettingsGetServiceTest extends AppTestCase
         );
     }
 
-    public function testOfflineSettingsGetService_Get_Error_InvalidJsonInDB(): void
-    {
-        OfflineModeSettingFactory::make()
-            ->setField('value', '{this is not valid JSON')
-            ->persist();
-
-        $this->expectException(InvalidArgumentException::class);
-
-        $this->service->get();
-    }
-
     public function testOfflineSettingsGetService_IsEnabled_True_WhenRowExists(): void
     {
         OfflineModeSettingFactory::make()
-            ->setField('value', json_encode(['max_session_duration' => 3600, 'data_retention_period' => 7200]))
+            ->setField('value', ['max_session_duration' => 3600, 'data_retention_period' => 7200])
             ->persist();
         $result = $this->service->isEnabled();
         $this->assertTrue($result);
@@ -112,7 +100,7 @@ class OfflineSettingsGetServiceTest extends AppTestCase
     public function testOfflineSettingsGetService_Cache_SecondCallSkipsDb(): void
     {
         $setting = OfflineModeSettingFactory::make()
-            ->setField('value', json_encode(['max_session_duration' => 3600, 'data_retention_period' => 7200]))
+            ->setField('value', ['max_session_duration' => 3600, 'data_retention_period' => 7200])
             ->persist();
 
         $this->assertTrue($this->service->isEnabled());

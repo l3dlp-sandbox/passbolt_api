@@ -43,7 +43,7 @@ class OfflineSettingsGetControllerTest extends AppIntegrationTestCase
     public function testOfflineSettingsGetController_Success_StoredValuesWithAuditFields(): void
     {
         $setting = OfflineModeSettingFactory::make()
-            ->setField('value', json_encode(['max_session_duration' => 3600, 'data_retention_period' => 7200]))
+            ->setField('value', ['max_session_duration' => 3600, 'data_retention_period' => 7200])
             ->persist();
 
         $this->logInAsUser();
@@ -63,7 +63,7 @@ class OfflineSettingsGetControllerTest extends AppIntegrationTestCase
     public function testOfflineSettingsGetController_Success_AdminSeesSameShape(): void
     {
         OfflineModeSettingFactory::make()
-            ->setField('value', json_encode(['max_session_duration' => 3600, 'data_retention_period' => 7200]))
+            ->setField('value', ['max_session_duration' => 3600, 'data_retention_period' => 7200])
             ->persist();
 
         $this->logInAsAdmin();
@@ -77,17 +77,5 @@ class OfflineSettingsGetControllerTest extends AppIntegrationTestCase
     {
         $this->getJson('/offline/settings.json');
         $this->assertAuthenticationError();
-    }
-
-    public function testOfflineSettingsGetController_Error_CorruptStoredValue(): void
-    {
-        OfflineModeSettingFactory::make()
-            ->setField('value', 'not-json')
-            ->persist();
-
-        $this->logInAsUser();
-        $this->getJson('/offline/settings.json');
-
-        $this->assertResponseCode(500);
     }
 }
