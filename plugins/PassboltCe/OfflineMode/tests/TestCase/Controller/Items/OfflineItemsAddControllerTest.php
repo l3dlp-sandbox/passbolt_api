@@ -24,6 +24,7 @@ use Passbolt\Log\Test\Factory\ActionFactory;
 use Passbolt\OfflineMode\Model\Table\OfflineItemsTable;
 use Passbolt\OfflineMode\OfflineModePlugin;
 use Passbolt\OfflineMode\Test\Factory\OfflineItemFactory;
+use Passbolt\OfflineMode\Test\Factory\OfflineModeSettingFactory;
 use Passbolt\Rbacs\RbacsPlugin;
 use Passbolt\Rbacs\Service\Actions\RbacsControlledActionsInsertService;
 use Passbolt\Rbacs\Test\Factory\RbacFactory;
@@ -38,6 +39,7 @@ class OfflineItemsAddControllerTest extends AppIntegrationTestCase
         parent::setUp();
         $this->enableFeaturePlugin(OfflineModePlugin::class);
         $this->enableFeaturePlugin(RbacsPlugin::class);
+        OfflineModeSettingFactory::make()->persist();
     }
 
     public function testOfflineItemsAddController_Success(): void
@@ -160,6 +162,21 @@ class OfflineItemsAddControllerTest extends AppIntegrationTestCase
         $resourceId = $resource->get('id');
         $this->post("/offline/resource/$resourceId");
         $this->assertResponseCode(404);
+    }
+
+    public function testOfflineItemsAddController_Error_OfflineModeDisabled(): void
+    {
+        /** @var \Passbolt\OfflineMode\Model\Table\OfflineModeSettingsTable $offlineModeSettingsTable */
+        $offlineModeSettingsTable = OfflineModeSettingFactory::make()->getTable();
+        $offlineModeSettingsTable->deleteAll(['property' => $offlineModeSettingsTable->getProperty()]);
+        $user = UserFactory::make()->user()->active()->persist();
+        $resource = ResourceFactory::make()->withCreatorAndPermission($user)->persist();
+
+        $resourceId = $resource->get('id');
+        $this->logInAs($user);
+        $this->postJson("/offline/resource/$resourceId.json");
+
+        $this->assertForbiddenError('Offline Mode is not enabled at the org level.');
     }
 
     public function testOfflineItemsAddController_Error_RbacDenied(): void

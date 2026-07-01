@@ -22,6 +22,7 @@ use App\Test\Lib\AppIntegrationTestCase;
 use App\Utility\UuidFactory;
 use Passbolt\OfflineMode\OfflineModePlugin;
 use Passbolt\OfflineMode\Test\Factory\OfflineItemFactory;
+use Passbolt\OfflineMode\Test\Factory\OfflineModeSettingFactory;
 
 /**
  * @covers \Passbolt\OfflineMode\Controller\Items\OfflineItemsDeleteController
@@ -32,6 +33,7 @@ class OfflineItemsDeleteControllerTest extends AppIntegrationTestCase
     {
         parent::setUp();
         $this->enableFeaturePlugin(OfflineModePlugin::class);
+        OfflineModeSettingFactory::make()->persist();
     }
 
     public function testOfflineItemsDeleteController_Success(): void
@@ -117,5 +119,21 @@ class OfflineItemsDeleteControllerTest extends AppIntegrationTestCase
         $this->delete("/offline/item/$id");
 
         $this->assertResponseCode(404);
+    }
+
+    public function testOfflineItemsDeleteController_Error_OfflineModeDisabled(): void
+    {
+        /** @var \Passbolt\OfflineMode\Model\Table\OfflineModeSettingsTable $offlineModeSettingsTable */
+        $offlineModeSettingsTable = OfflineModeSettingFactory::make()->getTable();
+        $offlineModeSettingsTable->deleteAll(['property' => $offlineModeSettingsTable->getProperty()]);
+        $user = UserFactory::make()->user()->active()->persist();
+        $resource = ResourceFactory::make()->withCreatorAndPermission($user)->persist();
+        $offlineItem = OfflineItemFactory::make()->setUser($user)->setResource($resource)->persist();
+
+        $id = $offlineItem->get('id');
+        $this->logInAs($user);
+        $this->deleteJson("/offline/item/$id.json");
+
+        $this->assertForbiddenError('Offline Mode is not enabled at the org level.');
     }
 }

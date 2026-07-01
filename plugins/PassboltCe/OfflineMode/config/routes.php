@@ -14,11 +14,16 @@
  * @since         5.14.0
  */
 use Cake\Routing\RouteBuilder;
+use Passbolt\OfflineMode\Middleware\OfflineModeItemsGuardMiddleware;
 
 /** @var \Cake\Routing\RouteBuilder $routes */
 
 $routes->plugin('Passbolt/OfflineMode', ['path' => '/offline'], function (RouteBuilder $routes): void {
     $routes->setExtensions(['json']);
+    $routes->registerMiddleware(
+        OfflineModeItemsGuardMiddleware::class,
+        new OfflineModeItemsGuardMiddleware()
+    );
 
     $routes
         ->connect('/settings', ['controller' => 'OfflineSettingsGet', 'action' => 'get'])
@@ -36,18 +41,26 @@ $routes->plugin('Passbolt/OfflineMode', ['path' => '/offline'], function (RouteB
     /**
      * @uses \Passbolt\OfflineMode\Controller\Items\OfflineItemsAddController::add()
      */
-    $routes->connect('/resource/{foreignKey}', [
-        'prefix' => 'Items',
-        'controller' => 'OfflineItemsAdd',
-        'action' => 'add',
-    ])->setPass(['foreignKey'])->setMethods(['POST']);
+    $routes
+        ->connect('/resource/{foreignKey}', [
+            'prefix' => 'Items',
+            'controller' => 'OfflineItemsAdd',
+            'action' => 'add',
+        ])
+        ->setPass(['foreignKey'])
+        ->setMethods(['POST'])
+        ->setMiddleware([OfflineModeItemsGuardMiddleware::class]);
 
     /**
      * @uses \Passbolt\OfflineMode\Controller\Items\OfflineItemsDeleteController::delete()
      */
-    $routes->connect('/item/{id}', [
-        'prefix' => 'Items',
-        'controller' => 'OfflineItemsDelete',
-        'action' => 'delete',
-    ])->setPass(['id'])->setMethods(['DELETE']);
+    $routes
+        ->connect('/item/{id}', [
+            'prefix' => 'Items',
+            'controller' => 'OfflineItemsDelete',
+            'action' => 'delete',
+        ])
+        ->setPass(['id'])
+        ->setMethods(['DELETE'])
+        ->setMiddleware([OfflineModeItemsGuardMiddleware::class]);
 });
