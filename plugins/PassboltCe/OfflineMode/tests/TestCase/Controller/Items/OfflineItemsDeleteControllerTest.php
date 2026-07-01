@@ -20,9 +20,13 @@ use App\Test\Factory\ResourceFactory;
 use App\Test\Factory\UserFactory;
 use App\Test\Lib\AppIntegrationTestCase;
 use App\Utility\UuidFactory;
+use Passbolt\Log\Test\Factory\ActionFactory;
 use Passbolt\OfflineMode\OfflineModePlugin;
 use Passbolt\OfflineMode\Test\Factory\OfflineItemFactory;
 use Passbolt\OfflineMode\Test\Factory\OfflineModeSettingFactory;
+use Passbolt\Rbacs\RbacsPlugin;
+use Passbolt\Rbacs\Service\Actions\RbacsControlledActionsInsertService;
+use Passbolt\Rbacs\Test\Factory\RbacFactory;
 
 /**
  * @covers \Passbolt\OfflineMode\Controller\Items\OfflineItemsDeleteController
@@ -33,12 +37,14 @@ class OfflineItemsDeleteControllerTest extends AppIntegrationTestCase
     {
         parent::setUp();
         $this->enableFeaturePlugin(OfflineModePlugin::class);
+        $this->enableFeaturePlugin(RbacsPlugin::class);
         OfflineModeSettingFactory::make()->persist();
     }
 
     public function testOfflineItemsDeleteController_Success(): void
     {
         $user = UserFactory::make()->user()->active()->persist();
+        $this->seedRbacAllow($user->get('role_id'));
         $resource = ResourceFactory::make()->withCreatorAndPermission($user)->persist();
         $offlineItem = OfflineItemFactory::make()->setUser($user)->setResource($resource)->persist();
         $this->logInAs($user);
@@ -53,6 +59,7 @@ class OfflineItemsDeleteControllerTest extends AppIntegrationTestCase
     public function testOfflineItemsDeleteController_Error_InvalidUuid(): void
     {
         $user = UserFactory::make()->user()->active()->persist();
+        $this->seedRbacAllow($user->get('role_id'));
         $this->logInAs($user);
         $this->deleteJson('/offline/item/invalid-id.json');
         $this->assertBadRequestError('The offline item identifier should be a valid UUID');
@@ -61,6 +68,7 @@ class OfflineItemsDeleteControllerTest extends AppIntegrationTestCase
     public function testOfflineItemsDeleteController_Error_IdDoesNotExist(): void
     {
         $user = UserFactory::make()->user()->active()->persist();
+        $this->seedRbacAllow($user->get('role_id'));
         $this->logInAs($user);
 
         $missingId = UuidFactory::uuid('not-here');
@@ -72,6 +80,7 @@ class OfflineItemsDeleteControllerTest extends AppIntegrationTestCase
     {
         $owner = UserFactory::make()->user()->active()->persist();
         $intruder = UserFactory::make()->user()->active()->persist();
+        $this->seedRbacAllow($intruder->get('role_id'));
         $resource = ResourceFactory::make()->withCreatorAndPermission($owner)->persist();
         $offlineItem = OfflineItemFactory::make()->setUser($owner)->setResource($resource)->persist();
         $this->logInAs($intruder);
@@ -135,5 +144,34 @@ class OfflineItemsDeleteControllerTest extends AppIntegrationTestCase
         $this->deleteJson("/offline/item/$id.json");
 
         $this->assertForbiddenError('Offline Mode is not enabled at the org level.');
+    }
+
+    public function testOfflineItemsDeleteController_Error_RbacDenied(): void
+    {
+        $user = UserFactory::make()->user()->active()->persist();
+        $resource = ResourceFactory::make()->withCreatorAndPermission($user)->persist();
+        $offlineItem = OfflineItemFactory::make()->setUser($user)->setResource($resource)->persist();
+        $this->logInAs($user);
+
+        $id = $offlineItem->get('id');
+        $this->deleteJson("/offline/item/$id.json");
+        $this->assertForbiddenError('You are not authorized to access that location.');
+    }
+
+    // ---------------------------
+    // Helper methods
+    // ---------------------------
+
+    private function seedRbacAllow(string $roleId): void
+    {
+        $action = ActionFactory::make()
+            ->name(RbacsControlledActionsInsertService::NAME_OFFLINE_ITEMS_DELETE)
+            ->persist();
+
+        RbacFactory::make()
+            ->setAction($action)
+            ->setField('role_id', $roleId)
+            ->allow()
+            ->persist();
     }
 }

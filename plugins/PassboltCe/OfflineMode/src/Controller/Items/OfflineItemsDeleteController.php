@@ -17,21 +17,31 @@ declare(strict_types=1);
 namespace Passbolt\OfflineMode\Controller\Items;
 
 use App\Controller\AppController;
+use App\Utility\UuidFactory;
 use Passbolt\OfflineMode\Service\Items\OfflineItemsDeleteService;
+use Passbolt\Rbacs\Service\ActionAccessControl\RoleActionAccessControlServiceInterface;
+use Passbolt\Rbacs\Service\Actions\RbacsControlledActionsInsertService;
 
 class OfflineItemsDeleteController extends AppController
 {
     /**
      * Unmark the caller's offline item.
      *
+     * @param \Passbolt\Rbacs\Service\ActionAccessControl\RoleActionAccessControlServiceInterface $accessControlService RBAC service resolved via DI.
      * @param string $id The offline_items row id.
      * @return void
+     * @throws \Cake\Http\Exception\ForbiddenException RBAC deny for the user's role.
      * @throws \Cake\Http\Exception\BadRequestException Invalid uuid (raised by the service).
      * @throws \Cake\Http\Exception\NotFoundException Id missing, or row belongs to another user.
      */
-    public function delete(string $id): void
+    public function delete(RoleActionAccessControlServiceInterface $accessControlService, string $id): void
     {
         $this->assertJson();
+
+        $accessControlService->controlUserRoleActionAccess(
+            $this->User->getRoleEntity(),
+            UuidFactory::uuid(RbacsControlledActionsInsertService::NAME_OFFLINE_ITEMS_DELETE),
+        );
 
         (new OfflineItemsDeleteService())->delete($this->User->getAccessControl(), $id);
 
