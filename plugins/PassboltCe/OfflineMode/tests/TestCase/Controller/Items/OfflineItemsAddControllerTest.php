@@ -19,9 +19,14 @@ namespace Passbolt\OfflineMode\Test\TestCase\Controller\Items;
 use App\Test\Factory\ResourceFactory;
 use App\Test\Factory\UserFactory;
 use App\Test\Lib\AppIntegrationTestCase;
+use Cake\ORM\TableRegistry;
+use Passbolt\Log\Test\Factory\ActionFactory;
 use Passbolt\OfflineMode\Model\Table\OfflineItemsTable;
 use Passbolt\OfflineMode\OfflineModePlugin;
 use Passbolt\OfflineMode\Test\Factory\OfflineItemFactory;
+use Passbolt\Rbacs\RbacsPlugin;
+use Passbolt\Rbacs\Service\Actions\RbacsControlledActionsInsertService;
+use Passbolt\Rbacs\Test\Factory\RbacFactory;
 
 /**
  * @covers \Passbolt\OfflineMode\Controller\Items\OfflineItemsAddController
@@ -32,11 +37,13 @@ class OfflineItemsAddControllerTest extends AppIntegrationTestCase
     {
         parent::setUp();
         $this->enableFeaturePlugin(OfflineModePlugin::class);
+        $this->enableFeaturePlugin(RbacsPlugin::class);
     }
 
     public function testOfflineItemsAddController_Success(): void
     {
         $user = UserFactory::make()->user()->active()->persist();
+        $this->seedRbacAllow($user->get('role_id'));
         $resource = ResourceFactory::make()->withCreatorAndPermission($user)->persist();
         $this->logInAs($user);
 
@@ -58,6 +65,7 @@ class OfflineItemsAddControllerTest extends AppIntegrationTestCase
     public function testOfflineItemsAddController_Success_Idempotent(): void
     {
         $user = UserFactory::make()->user()->active()->persist();
+        $this->seedRbacAllow($user->get('role_id'));
         $resource = ResourceFactory::make()->withCreatorAndPermission($user)->persist();
         $this->logInAs($user);
 
@@ -65,6 +73,9 @@ class OfflineItemsAddControllerTest extends AppIntegrationTestCase
         $this->postJson("/offline/resource/$resourceId.json");
         $this->assertSuccess();
         $firstId = $this->getResponseBodyAsArray()['id'];
+
+        // Reset the table locator between HTTP calls to prevent "Association alias `<Model>` is already set." errors.
+        TableRegistry::getTableLocator()->clear();
 
         $this->postJson("/offline/resource/$resourceId.json");
         $this->assertSuccess();
@@ -77,6 +88,7 @@ class OfflineItemsAddControllerTest extends AppIntegrationTestCase
     public function testOfflineItemsAddController_Error_BadRequest_InvalidUuid(): void
     {
         $user = UserFactory::make()->user()->active()->persist();
+        $this->seedRbacAllow($user->get('role_id'));
         $this->logInAs($user);
 
         $this->postJson('/offline/resource/invalid-id.json');
@@ -86,6 +98,7 @@ class OfflineItemsAddControllerTest extends AppIntegrationTestCase
     public function testOfflineItemsAddController_Error_NotFound_ResourceMissing(): void
     {
         $user = UserFactory::make()->user()->active()->persist();
+        $this->seedRbacAllow($user->get('role_id'));
         $this->logInAs($user);
 
         $missingId = '00000000-0000-0000-0000-000000000000';
@@ -96,6 +109,7 @@ class OfflineItemsAddControllerTest extends AppIntegrationTestCase
     public function testOfflineItemsAddController_Error_NotFound_ResourceSoftDeleted(): void
     {
         $user = UserFactory::make()->user()->active()->persist();
+        $this->seedRbacAllow($user->get('role_id'));
         $resource = ResourceFactory::make()->withCreatorAndPermission($user)->setDeleted()->persist();
         $this->logInAs($user);
 
@@ -107,6 +121,7 @@ class OfflineItemsAddControllerTest extends AppIntegrationTestCase
     public function testOfflineItemsAddController_Error_NotFound_NoAccess(): void
     {
         $user = UserFactory::make()->user()->active()->persist();
+        $this->seedRbacAllow($user->get('role_id'));
         $resource = ResourceFactory::make()->persist(); // no permission for $user
         $this->logInAs($user);
 
@@ -145,5 +160,33 @@ class OfflineItemsAddControllerTest extends AppIntegrationTestCase
         $resourceId = $resource->get('id');
         $this->post("/offline/resource/$resourceId");
         $this->assertResponseCode(404);
+    }
+
+    public function testOfflineItemsAddController_Error_RbacDenied(): void
+    {
+        $user = UserFactory::make()->user()->active()->persist();
+        $resource = ResourceFactory::make()->withCreatorAndPermission($user)->persist();
+        $this->logInAs($user);
+
+        $resourceId = $resource->get('id');
+        $this->postJson("/offline/resource/$resourceId.json");
+        $this->assertForbiddenError('You are not authorized to access that location.');
+    }
+
+    // ---------------------------
+    // Helper methods
+    // ---------------------------
+
+    private function seedRbacAllow(string $roleId): void
+    {
+        $action = ActionFactory::make()
+            ->name(RbacsControlledActionsInsertService::NAME_OFFLINE_ITEMS_ADD)
+            ->persist();
+
+        RbacFactory::make()
+            ->setAction($action)
+            ->setField('role_id', $roleId)
+            ->allow()
+            ->persist();
     }
 }
