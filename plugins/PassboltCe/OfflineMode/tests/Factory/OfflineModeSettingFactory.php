@@ -53,10 +53,10 @@ class OfflineModeSettingFactory extends OrganizationSettingFactory
         $this->patchData([
             'property' => $registry->getProperty(),
             'property_id' => $registry->getPropertyId(),
-            'value' => (string)json_encode([
+            'value' => [
                 'max_session_duration' => 3600,
                 'data_retention_period' => 7200,
-            ]),
+            ],
         ]);
     }
 
