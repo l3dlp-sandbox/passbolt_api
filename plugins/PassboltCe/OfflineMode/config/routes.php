@@ -28,6 +28,11 @@ $routes->plugin('Passbolt/OfflineMode', ['path' => '/offline'], function (RouteB
         ->connect('/settings', ['controller' => 'OfflineSettingsPost', 'action' => 'post'])
         ->setMethods(['POST', 'PUT']);
 
+    $routes
+        ->connect('/settings/{id}', ['controller' => 'OfflineSettingsDelete', 'action' => 'delete'])
+        ->setPass(['id'])
+        ->setMethods(['DELETE']);
+
     /**
      * @uses \Passbolt\OfflineMode\Controller\Items\OfflineItemsAddController::add()
      */
