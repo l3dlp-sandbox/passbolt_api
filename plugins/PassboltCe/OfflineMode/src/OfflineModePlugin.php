@@ -20,6 +20,7 @@ use Cake\Core\BasePlugin;
 use Cake\Core\ContainerInterface;
 use Cake\Core\PluginApplicationInterface;
 use Cake\Event\EventManager;
+use Passbolt\OfflineMode\Event\OfflineItemsSettingsDeleteListener;
 use Passbolt\OfflineMode\Notification\Email\OfflineModeSettingsRedactorPool;
 
 class OfflineModePlugin extends BasePlugin
@@ -41,7 +42,9 @@ class OfflineModePlugin extends BasePlugin
      */
     public function attachListeners(EventManager $eventManager): void
     {
-        $eventManager->on(new OfflineModeSettingsRedactorPool());
+        $eventManager
+            ->on(new OfflineModeSettingsRedactorPool())
+            ->on(new OfflineItemsSettingsDeleteListener());
     }
 
     /**
