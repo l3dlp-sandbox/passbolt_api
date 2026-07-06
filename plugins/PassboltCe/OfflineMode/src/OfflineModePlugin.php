@@ -21,6 +21,7 @@ use Cake\Core\ContainerInterface;
 use Cake\Core\PluginApplicationInterface;
 use Cake\Event\EventManager;
 use Passbolt\OfflineMode\Event\OfflineItemsSettingsDeleteListener;
+use Passbolt\OfflineMode\Event\OfflineResourceIndexListener;
 use Passbolt\OfflineMode\Notification\Email\OfflineModeSettingsRedactorPool;
 
 class OfflineModePlugin extends BasePlugin
@@ -44,6 +45,7 @@ class OfflineModePlugin extends BasePlugin
     {
         $eventManager
             ->on(new OfflineModeSettingsRedactorPool())
+            ->on(new OfflineResourceIndexListener())
             ->on(new OfflineItemsSettingsDeleteListener());
     }
 

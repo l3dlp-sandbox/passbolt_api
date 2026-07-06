@@ -47,6 +47,7 @@ use Passbolt\Metadata\Model\Rule\IsV4ToV5UpgradeAllowedRule;
 use Passbolt\Metadata\Model\Rule\IsValidEncryptedMetadataRule;
 use Passbolt\Metadata\Model\Rule\MetadataKeyIdExistsInRule;
 use Passbolt\Metadata\Model\Rule\MetadataKeyIdNotExpiredRule;
+use Passbolt\OfflineMode\Model\Table\OfflineItemsTable;
 use Passbolt\ResourceTypes\Model\Entity\ResourceType;
 use Passbolt\ResourceTypes\Model\Table\ResourceTypesTable;
 use Throwable;
@@ -112,6 +113,11 @@ class ResourcesTable extends Table implements TableCleanupProviderInterface
         ]);
         $this->hasOne('Favorites', [
             'foreignKey' => 'foreign_key',
+        ]);
+        $this->hasOne('Offline', [
+            'className' => 'Passbolt/OfflineMode.OfflineItems',
+            'foreignKey' => 'foreign_key',
+            'conditions' => ['Offline.foreign_model' => OfflineItemsTable::FOREIGN_MODEL_RESOURCE],
         ]);
         $this->hasOne('Modifier', [
             'className' => 'Users',
