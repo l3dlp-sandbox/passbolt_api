@@ -18,6 +18,8 @@ namespace Passbolt\OfflineMode\Event;
 
 use App\Model\Dto\EntitiesChangesDto;
 use App\Model\Entity\Secret;
+use App\Model\Table\GroupsTable;
+use App\Service\GroupsUsers\GroupsUsersDeleteService;
 use App\Service\Resources\ResourcesShareService;
 use Cake\Event\Event;
 use Cake\Event\EventListenerInterface;
@@ -35,6 +37,8 @@ class OfflineItemsSecretDeleteListener implements EventListenerInterface
     {
         return [
             ResourcesShareService::SHARE_SUCCESS_EVENT_NAME => 'handleSecretsBatchDeleted',
+            GroupsUsersDeleteService::AFTER_GROUP_USER_DELETED_EVENT_NAME => 'handleSecretsBatchDeleted',
+            GroupsTable::EVENT_MODEL_GROUP_AFTER_SOFT_DELETE => 'handleSecretsBatchDeleted',
         ];
     }
 

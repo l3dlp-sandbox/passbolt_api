@@ -66,6 +66,7 @@ class GroupsTable extends Table implements TableCleanupProviderInterface
     use TableCleanupTrait;
 
     public const GROUP_CREATE_SUCCESS_EVENT_NAME = 'Model.Groups.create.success';
+    public const EVENT_MODEL_GROUP_AFTER_SOFT_DELETE = 'Model.Group.afterSoftDelete';
 
     /**
      * Initialize method
@@ -377,6 +378,11 @@ class GroupsTable extends Table implements TableCleanupProviderInterface
             $msg = __('Could not delete the group {0}, please try again later.', $group->name);
             throw new InternalErrorException($msg);
         }
+
+        $event = new Event(self::EVENT_MODEL_GROUP_AFTER_SOFT_DELETE, $group, [
+            'entitiesChanges' => $entitiesChanges,
+        ]);
+        $this->getEventManager()->dispatch($event);
 
         return $entitiesChanges;
     }

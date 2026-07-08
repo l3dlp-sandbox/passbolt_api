@@ -17,12 +17,17 @@ declare(strict_types=1);
 namespace Passbolt\OfflineMode\Test\TestCase\Event;
 
 use App\Model\Dto\EntitiesChangesDto;
+use App\Model\Entity\Role;
 use App\Model\Entity\Secret;
+use App\Model\Table\GroupsTable;
+use App\Service\GroupsUsers\GroupsUsersDeleteService;
 use App\Service\Resources\ResourcesShareService;
+use App\Test\Factory\GroupFactory;
 use App\Test\Factory\ResourceFactory;
 use App\Test\Factory\SecretFactory;
 use App\Test\Factory\UserFactory;
 use App\Test\Lib\AppTestCase;
+use App\Utility\UserAccessControl;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Passbolt\OfflineMode\Event\OfflineItemsSecretDeleteListener;
@@ -47,10 +52,14 @@ class OfflineItemsSecretDeleteListenerTest extends AppTestCase
         parent::tearDown();
     }
 
-    public function testOfflineItemsSecretDeleteListener_ImplementedEvents_RegistersShareSuccessEvent(): void
+    public function testOfflineItemsSecretDeleteListener_ImplementedEvents_RegistersAccessLossEvents(): void
     {
         $this->assertSame(
-            [ResourcesShareService::SHARE_SUCCESS_EVENT_NAME => 'handleSecretsBatchDeleted'],
+            [
+                ResourcesShareService::SHARE_SUCCESS_EVENT_NAME => 'handleSecretsBatchDeleted',
+                GroupsUsersDeleteService::AFTER_GROUP_USER_DELETED_EVENT_NAME => 'handleSecretsBatchDeleted',
+                GroupsTable::EVENT_MODEL_GROUP_AFTER_SOFT_DELETE => 'handleSecretsBatchDeleted',
+            ],
             $this->listener->implementedEvents()
         );
     }
@@ -169,5 +178,58 @@ class OfflineItemsSecretDeleteListenerTest extends AppTestCase
         $this->assertNull(
             OfflineItemFactory::find()->where(['id' => $viewerOfflineItem->get('id')])->first()
         );
+    }
+
+    public function testOfflineItemsSecretDeleteListener_Integration_GroupMembershipRemoval_DeletesOfflineItemForRemovedUser(): void // phpcs:ignore
+    {
+        /** @var \App\Model\Entity\User $manager */
+        $manager = UserFactory::make()->user()->active()->persist();
+        /** @var \App\Model\Entity\User $member */
+        $member = UserFactory::make()->user()->active()->persist();
+        /** @var \App\Model\Entity\Group $group */
+        $group = GroupFactory::make()
+            ->withGroupsManagersFor([$manager])
+            ->withGroupsUsersFor([$member])
+            ->persist();
+        /** @var \App\Model\Entity\Resource $resource */
+        $resource = ResourceFactory::make()
+            ->withPermissionsFor([$group])
+            ->withSecretsFor([$manager, $member])
+            ->persist();
+        OfflineItemFactory::make()->setUser($manager)->setResource($resource)->persist();
+        $memberOfflineItem = OfflineItemFactory::make()->setUser($member)->setResource($resource)->persist();
+        EventManager::instance()->on($this->listener);
+
+        $uac = new UserAccessControl(Role::USER, $manager->get('id'));
+        (new GroupsUsersDeleteService())->delete($uac, $group->groups_users[1]->get('id'));
+
+        $this->assertSame(1, OfflineItemFactory::count());
+        $this->assertNull(
+            OfflineItemFactory::find()->where(['id' => $memberOfflineItem->get('id')])->first()
+        );
+    }
+
+    public function testOfflineItemsSecretDeleteListener_Integration_GroupSoftDelete_DeletesOfflineItemsForAllMembers(): void // phpcs:ignore
+    {
+        /** @var \App\Model\Entity\User $userA */
+        $userA = UserFactory::make()->user()->active()->persist();
+        /** @var \App\Model\Entity\User $userB */
+        $userB = UserFactory::make()->user()->active()->persist();
+        /** @var \App\Model\Entity\Group $group */
+        $group = GroupFactory::make()->withGroupsManagersFor([$userA, $userB])->persist();
+        /** @var \App\Model\Entity\Resource $resource */
+        $resource = ResourceFactory::make()
+            ->withPermissionsFor([$group])
+            ->withSecretsFor([$userA, $userB])
+            ->persist();
+        OfflineItemFactory::make()->setUser($userA)->setResource($resource)->persist();
+        OfflineItemFactory::make()->setUser($userB)->setResource($resource)->persist();
+        EventManager::instance()->on($this->listener);
+        /** @var \App\Model\Table\GroupsTable $Groups */
+        $Groups = $this->fetchTable('Groups');
+
+        $Groups->softDelete($group, ['checkRules' => false]);
+
+        $this->assertSame(0, OfflineItemFactory::count());
     }
 }
