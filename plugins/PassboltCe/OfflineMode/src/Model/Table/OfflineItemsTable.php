@@ -45,11 +45,11 @@ use Cake\Validation\Validator;
  */
 class OfflineItemsTable extends Table
 {
-    public const FOREIGN_MODEL_RESOURCE = 'resource';
+    public const FOREIGN_MODEL_RESOURCE = 'Resource';
 
     /**
      * Allowed `foreign_model` values. Phase 1 only ships
-     * `FOREIGN_MODEL_RESOURCE`; `folder` lands in a later phase.
+     * `FOREIGN_MODEL_RESOURCE`; `Folder` lands in a later phase.
      */
     public const ALLOWED_FOREIGN_MODELS = [
         self::FOREIGN_MODEL_RESOURCE,

@@ -31,7 +31,7 @@ class OfflineItemsAddService
 
     /**
      * @param \App\Utility\UserAccessControl $uac The caller.
-     * @param string $foreignModel Object type (`resource` for phase 1).
+     * @param string $foreignModel Object type (`Resource` for phase 1).
      * @param string $foreignKey The target object id.
      * @return \Passbolt\OfflineMode\Model\Entity\OfflineItem
      * @throws \Cake\Http\Exception\BadRequestException Invalid uuid or unknown foreign model.

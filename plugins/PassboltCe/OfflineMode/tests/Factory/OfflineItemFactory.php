@@ -71,7 +71,7 @@ class OfflineItemFactory extends CakephpBaseFactory
     }
 
     /**
-     * Pin the row to a specific resource. Always uses `foreign_model = 'resource'`.
+     * Pin the row to a specific resource. Always uses `foreign_model = 'Resource'`.
      *
      * @param \App\Model\Entity\Resource $resource The target resource.
      * @return $this

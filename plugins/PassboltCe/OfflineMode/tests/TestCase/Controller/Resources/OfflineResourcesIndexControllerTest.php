@@ -20,6 +20,7 @@ use App\Test\Factory\ResourceFactory;
 use App\Test\Factory\UserFactory;
 use App\Test\Lib\AppIntegrationTestCase;
 use Passbolt\Log\Test\Factory\ActionFactory;
+use Passbolt\OfflineMode\Model\Table\OfflineItemsTable;
 use Passbolt\OfflineMode\OfflineModePlugin;
 use Passbolt\OfflineMode\Test\Factory\OfflineItemFactory;
 use Passbolt\OfflineMode\Test\Factory\OfflineModeSettingFactory;
@@ -69,6 +70,7 @@ class OfflineResourcesIndexControllerTest extends AppIntegrationTestCase
         $this->assertNotEmpty($body[0]['offline']);
         $this->assertSame($user->get('id'), $body[0]['offline']['user_id']);
         $this->assertSame($resource->get('id'), $body[0]['offline']['foreign_key']);
+        $this->assertSame(OfflineItemsTable::FOREIGN_MODEL_RESOURCE, $body[0]['offline']['foreign_model']);
     }
 
     public function testOfflineResourcesIndexController_Allow_NoUserRow_NullOfflineKey(): void
