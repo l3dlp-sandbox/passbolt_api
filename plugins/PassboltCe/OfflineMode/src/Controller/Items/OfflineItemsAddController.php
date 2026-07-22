@@ -18,28 +18,31 @@ namespace Passbolt\OfflineMode\Controller\Items;
 
 use App\Controller\AppController;
 use App\Utility\UuidFactory;
-use Passbolt\OfflineMode\Model\Table\OfflineItemsTable;
 use Passbolt\OfflineMode\Service\Items\OfflineItemsAddService;
 use Passbolt\Rbacs\Service\ActionAccessControl\RoleActionAccessControlServiceInterface;
 use Passbolt\Rbacs\Service\Actions\RbacsControlledActionsInsertService;
 
 /**
- * HTTP entry point for `POST /offline/resource/<uuid>.json`.
+ * HTTP entry point for `POST|PUT /offline/<foreign_model>/<uuid>.json`.
  */
 class OfflineItemsAddController extends AppController
 {
     /**
-     * Mark a resource as available offline for the authenticated user.
+     * Mark an item as available offline for the authenticated user.
      *
      * @param \Passbolt\Rbacs\Service\ActionAccessControl\RoleActionAccessControlServiceInterface $accessControlService RBAC service resolved via DI.
-     * @param string $foreignKey The target resource id.
+     * @param string $foreignModel Foreign model (i.e. `resource`, `folder`).
+     * @param string $foreignKey The target object id.
      * @return void
      * @throws \Cake\Http\Exception\ForbiddenException RBAC deny for the user's role.
-     * @throws \Cake\Http\Exception\BadRequestException Invalid uuid (raised by the service).
-     * @throws \Cake\Http\Exception\NotFoundException Resource missing / soft-deleted / no access.
+     * @throws \Cake\Http\Exception\BadRequestException Invalid uuid or unknown foreign model.
+     * @throws \Cake\Http\Exception\NotFoundException Object missing / soft-deleted / no access.
      */
-    public function add(RoleActionAccessControlServiceInterface $accessControlService, string $foreignKey): void
-    {
+    public function add(
+        RoleActionAccessControlServiceInterface $accessControlService,
+        string $foreignModel,
+        string $foreignKey
+    ): void {
         $this->assertJson();
 
         $accessControlService->controlUserRoleActionAccess(
@@ -49,7 +52,7 @@ class OfflineItemsAddController extends AppController
 
         $result = (new OfflineItemsAddService())->add(
             $this->User->getAccessControl(),
-            OfflineItemsTable::FOREIGN_MODEL_RESOURCE,
+            $foreignModel,
             $foreignKey
         );
 

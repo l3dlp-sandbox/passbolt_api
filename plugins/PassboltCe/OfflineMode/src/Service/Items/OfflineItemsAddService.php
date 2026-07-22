@@ -39,6 +39,7 @@ class OfflineItemsAddService
      */
     public function add(UserAccessControl $uac, string $foreignModel, string $foreignKey): OfflineItem
     {
+        $foreignModel = ucfirst(strtolower($foreignModel));
         if (!in_array($foreignModel, OfflineItemsTable::ALLOWED_FOREIGN_MODELS, true)) {
             throw new BadRequestException(__(
                 'The offline item object type should be one of the following: {0}.',

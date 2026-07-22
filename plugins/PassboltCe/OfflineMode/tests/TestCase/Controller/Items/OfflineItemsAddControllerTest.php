@@ -87,6 +87,22 @@ class OfflineItemsAddControllerTest extends AppIntegrationTestCase
         $this->assertSame(1, OfflineItemFactory::count());
     }
 
+    public function testOfflineItemsAddController_Success_AcceptsPutMethod(): void
+    {
+        $user = UserFactory::make()->user()->active()->persist();
+        $this->seedRbacAllow($user->get('role_id'));
+        $resource = ResourceFactory::make()->withCreatorAndPermission($user)->persist();
+        $this->logInAs($user);
+
+        $resourceId = $resource->get('id');
+        $this->putJson("/offline/resource/$resourceId.json");
+        $this->assertSuccess();
+
+        $body = $this->getResponseBodyAsArray();
+        $this->assertSame($resourceId, $body['foreign_key']);
+        $this->assertSame(1, OfflineItemFactory::count());
+    }
+
     public function testOfflineItemsAddController_Error_BadRequest_InvalidUuid(): void
     {
         $user = UserFactory::make()->user()->active()->persist();
@@ -188,6 +204,21 @@ class OfflineItemsAddControllerTest extends AppIntegrationTestCase
         $resourceId = $resource->get('id');
         $this->postJson("/offline/resource/$resourceId.json");
         $this->assertForbiddenError('You are not authorized to access that location.');
+    }
+
+    public function testOfflineItemsAddController_Error_InvalidForeignModel(): void
+    {
+        $user = UserFactory::make()->user()->active()->persist();
+        $this->seedRbacAllow($user->get('role_id'));
+        $resource = ResourceFactory::make()->withCreatorAndPermission($user)->persist();
+        $this->logInAs($user);
+
+        $resourceId = $resource->get('id');
+        $this->postJson("/offline/widget/$resourceId.json");
+
+        $this->assertBadRequestError(
+            'The offline item object type should be one of the following: Resource.'
+        );
     }
 
     // ---------------------------

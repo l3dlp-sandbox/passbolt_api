@@ -42,13 +42,13 @@ $routes->plugin('Passbolt/OfflineMode', ['path' => '/offline'], function (RouteB
      * @uses \Passbolt\OfflineMode\Controller\Items\OfflineItemsAddController::add()
      */
     $routes
-        ->connect('/resource/{foreignKey}', [
+        ->connect('/{foreignModel}/{foreignKey}', [
             'prefix' => 'Items',
             'controller' => 'OfflineItemsAdd',
             'action' => 'add',
         ])
-        ->setPass(['foreignKey'])
-        ->setMethods(['POST'])
+        ->setPass(['foreignModel', 'foreignKey'])
+        ->setMethods(['POST', 'PUT'])
         ->setMiddleware([OfflineModeItemsGuardMiddleware::class]);
 
     /**
