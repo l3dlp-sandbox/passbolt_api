@@ -19,9 +19,13 @@ namespace Passbolt\OfflineMode\Model\Table;
 use App\Model\Rule\HasResourceAccessRule;
 use App\Model\Rule\IsNotSoftDeletedRule;
 use App\Model\Rule\User\IsActiveUserRule;
+use App\Model\Table\TableCleanupProviderInterface;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
+use Cake\Utility\Hash;
 use Cake\Validation\Validator;
+use Passbolt\Rbacs\Model\Entity\Rbac;
+use Passbolt\Rbacs\Service\Actions\RbacsControlledActionsInsertService;
 
 /**
  * OfflineItems Model
@@ -43,7 +47,7 @@ use Cake\Validation\Validator;
  * @method iterable<\Passbolt\OfflineMode\Model\Entity\OfflineItem>|false deleteMany(iterable $entities, array $options = [])
  * @method iterable<\Passbolt\OfflineMode\Model\Entity\OfflineItem> deleteManyOrFail(iterable $entities, array $options = [])
  */
-class OfflineItemsTable extends Table
+class OfflineItemsTable extends Table implements TableCleanupProviderInterface
 {
     public const FOREIGN_MODEL_RESOURCE = 'Resource';
 
@@ -174,5 +178,67 @@ class OfflineItemsTable extends Table
         );
 
         return $rules;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getCleanupMethods(): array
+    {
+        return [
+            $this->cleanupOfflineItemsForRbacDeniedRoles(...),
+        ];
+    }
+
+    /**
+     * Deletes offline_items rows whose owning user's role has `OfflineItemsView.view` = Deny in rbacs.
+     *
+     * @param bool|null $dryRun If dry run mode or not.
+     * @return int No of affected rows or in dry-run mode number of selected rows.
+     */
+    public function cleanupOfflineItemsForRbacDeniedRoles(?bool $dryRun = false): int
+    {
+        $query = $this->selectQuery();
+        $query
+            ->select(['OfflineItems.id'])
+            ->innerJoin(
+                ['Users' => 'users'],
+                [
+                    $query->expr()->equalFields('Users.id', 'OfflineItems.user_id'),
+                    'Users.deleted' => false,
+                ],
+                ['Users.deleted' => 'boolean']
+            )
+            ->innerJoin(
+                ['Rbacs' => 'rbacs'],
+                [
+                    $query->expr()->equalFields('Rbacs.role_id', 'Users.role_id'),
+                    'Rbacs.foreign_model' => Rbac::FOREIGN_MODEL_ACTION,
+                    'Rbacs.control_function' => Rbac::CONTROL_FUNCTION_DENY,
+                ]
+            )
+            ->innerJoin(
+                ['Actions' => 'actions'],
+                [
+                    $query->expr()->equalFields('Actions.id', 'Rbacs.foreign_id'),
+                    'Actions.name' => RbacsControlledActionsInsertService::NAME_OFFLINE_ITEMS_VIEW,
+                ]
+            );
+
+        $rows = $query->disableHydration()->toArray();
+        if (empty($rows)) {
+            return 0;
+        }
+
+        $ids = Hash::extract($rows, '{n}.id');
+        if ($dryRun) {
+            return count($ids);
+        }
+
+        if (!is_array($ids) || empty($ids)) {
+            return 0;
+        }
+
+        return $this->deleteAll(['id IN' => $ids]);
     }
 }

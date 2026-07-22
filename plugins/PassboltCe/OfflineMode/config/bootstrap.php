@@ -13,6 +13,11 @@
  * @link          https://www.passbolt.com Passbolt(tm)
  * @since         5.14.0
  */
+use App\Command\CleanupCommand;
 use Cake\Core\Configure;
 
 Configure::load('Passbolt/OfflineMode.config', 'default', true);
+
+if (PHP_SAPI === 'cli') {
+    CleanupCommand::registerCleanableTable('Passbolt/OfflineMode.OfflineItems');
+}
