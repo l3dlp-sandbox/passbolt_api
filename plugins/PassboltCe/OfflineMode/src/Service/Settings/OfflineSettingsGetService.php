@@ -16,6 +16,7 @@ declare(strict_types=1);
  */
 namespace Passbolt\OfflineMode\Service\Settings;
 
+use Cake\Http\Exception\ForbiddenException;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Passbolt\OfflineMode\Model\Dto\OfflineSettingsDto;
 use Passbolt\OfflineMode\Model\Entity\OfflineModeSetting;
@@ -54,6 +55,17 @@ class OfflineSettingsGetService
     public function isEnabled(): bool
     {
         return $this->get() !== null;
+    }
+
+    /**
+     * @return void
+     * @throws \Cake\Http\Exception\ForbiddenException When Offline Mode is not enabled.
+     */
+    public function throwExceptionIfDisabled(): void
+    {
+        if (!$this->isEnabled()) {
+            throw new ForbiddenException(__('Offline Mode is not enabled at the org level.'));
+        }
     }
 
     /**

@@ -19,6 +19,7 @@ namespace Passbolt\OfflineMode\Controller\Items;
 use App\Controller\AppController;
 use App\Utility\UuidFactory;
 use Passbolt\OfflineMode\Service\Items\OfflineItemsAddService;
+use Passbolt\OfflineMode\Service\Settings\OfflineSettingsGetService;
 use Passbolt\Rbacs\Service\ActionAccessControl\RoleActionAccessControlServiceInterface;
 use Passbolt\Rbacs\Service\Actions\RbacsControlledActionsInsertService;
 
@@ -34,7 +35,7 @@ class OfflineItemsAddController extends AppController
      * @param string $foreignModel Foreign model (i.e. `resource`, `folder`).
      * @param string $foreignKey The target object id.
      * @return void
-     * @throws \Cake\Http\Exception\ForbiddenException RBAC deny for the user's role.
+     * @throws \Cake\Http\Exception\ForbiddenException RBAC deny for the user's role, or Offline Mode disabled.
      * @throws \Cake\Http\Exception\BadRequestException Invalid uuid or unknown foreign model.
      * @throws \Cake\Http\Exception\NotFoundException Object missing / soft-deleted / no access.
      */
@@ -44,6 +45,8 @@ class OfflineItemsAddController extends AppController
         string $foreignKey
     ): void {
         $this->assertJson();
+
+        (new OfflineSettingsGetService())->throwExceptionIfDisabled();
 
         $accessControlService->controlUserRoleActionAccess(
             $this->User->getRoleEntity(),

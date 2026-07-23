@@ -17,6 +17,7 @@ declare(strict_types=1);
 namespace Passbolt\OfflineMode\Test\TestCase\Service\Settings;
 
 use App\Test\Lib\AppTestCase;
+use Cake\Http\Exception\ForbiddenException;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Passbolt\OfflineMode\Service\Settings\OfflineSettingsGetService;
 use Passbolt\OfflineMode\Test\Factory\OfflineModeSettingFactory;
@@ -95,6 +96,23 @@ class OfflineSettingsGetServiceTest extends AppTestCase
     {
         $result = $this->service->isEnabled();
         $this->assertFalse($result);
+    }
+
+    public function testOfflineSettingsGetService_ThrowExceptionIfDisabled_NoOp_WhenEnabled(): void
+    {
+        OfflineModeSettingFactory::make()->persist();
+
+        $this->service->throwExceptionIfDisabled();
+
+        $this->assertTrue(true);
+    }
+
+    public function testOfflineSettingsGetService_ThrowExceptionIfDisabled_Throws_WhenDisabled(): void
+    {
+        $this->expectException(ForbiddenException::class);
+        $this->expectExceptionMessage('Offline Mode is not enabled at the org level.');
+
+        $this->service->throwExceptionIfDisabled();
     }
 
     public function testOfflineSettingsGetService_Cache_SecondCallSkipsDb(): void

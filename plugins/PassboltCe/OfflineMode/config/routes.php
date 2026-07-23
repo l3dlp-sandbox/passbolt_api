@@ -14,16 +14,11 @@
  * @since         5.14.0
  */
 use Cake\Routing\RouteBuilder;
-use Passbolt\OfflineMode\Middleware\OfflineModeItemsGuardMiddleware;
 
 /** @var \Cake\Routing\RouteBuilder $routes */
 
 $routes->plugin('Passbolt/OfflineMode', ['path' => '/offline'], function (RouteBuilder $routes): void {
     $routes->setExtensions(['json']);
-    $routes->registerMiddleware(
-        OfflineModeItemsGuardMiddleware::class,
-        new OfflineModeItemsGuardMiddleware()
-    );
 
     $routes
         ->connect('/settings', ['controller' => 'OfflineSettingsGet', 'action' => 'get'])
@@ -48,8 +43,7 @@ $routes->plugin('Passbolt/OfflineMode', ['path' => '/offline'], function (RouteB
             'action' => 'add',
         ])
         ->setPass(['foreignModel', 'foreignKey'])
-        ->setMethods(['POST', 'PUT'])
-        ->setMiddleware([OfflineModeItemsGuardMiddleware::class]);
+        ->setMethods(['POST', 'PUT']);
 
     /**
      * @uses \Passbolt\OfflineMode\Controller\Items\OfflineItemsDeleteController::delete()
@@ -61,6 +55,5 @@ $routes->plugin('Passbolt/OfflineMode', ['path' => '/offline'], function (RouteB
             'action' => 'delete',
         ])
         ->setPass(['id'])
-        ->setMethods(['DELETE'])
-        ->setMiddleware([OfflineModeItemsGuardMiddleware::class]);
+        ->setMethods(['DELETE']);
 });

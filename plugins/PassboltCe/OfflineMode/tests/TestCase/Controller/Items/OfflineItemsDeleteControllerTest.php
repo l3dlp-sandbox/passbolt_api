@@ -132,9 +132,7 @@ class OfflineItemsDeleteControllerTest extends AppIntegrationTestCase
 
     public function testOfflineItemsDeleteController_Error_OfflineModeDisabled(): void
     {
-        /** @var \Passbolt\OfflineMode\Model\Table\OfflineModeSettingsTable $offlineModeSettingsTable */
-        $offlineModeSettingsTable = OfflineModeSettingFactory::make()->getTable();
-        $offlineModeSettingsTable->deleteAll(['property' => $offlineModeSettingsTable->getProperty()]);
+        $this->disableOfflineMode();
         $user = UserFactory::make()->user()->active()->persist();
         $resource = ResourceFactory::make()->withCreatorAndPermission($user)->persist();
         $offlineItem = OfflineItemFactory::make()->setUser($user)->setResource($resource)->persist();
@@ -144,6 +142,19 @@ class OfflineItemsDeleteControllerTest extends AppIntegrationTestCase
         $this->deleteJson("/offline/item/$id.json");
 
         $this->assertForbiddenError('Offline Mode is not enabled at the org level.');
+    }
+
+    public function testOfflineItemsDeleteController_Error_NotAuthenticated_WhenOfflineModeDisabled(): void
+    {
+        $this->disableOfflineMode();
+        $user = UserFactory::make()->user()->active()->persist();
+        $resource = ResourceFactory::make()->withCreatorAndPermission($user)->persist();
+        $offlineItem = OfflineItemFactory::make()->setUser($user)->setResource($resource)->persist();
+
+        $id = $offlineItem->get('id');
+        $this->deleteJson("/offline/item/$id.json");
+
+        $this->assertAuthenticationError();
     }
 
     public function testOfflineItemsDeleteController_Error_RbacDenied(): void
@@ -158,10 +169,6 @@ class OfflineItemsDeleteControllerTest extends AppIntegrationTestCase
         $this->assertForbiddenError('You are not authorized to access that location.');
     }
 
-    // ---------------------------
-    // Helper methods
-    // ---------------------------
-
     private function seedRbacAllow(string $roleId): void
     {
         $action = ActionFactory::make()
@@ -173,5 +180,11 @@ class OfflineItemsDeleteControllerTest extends AppIntegrationTestCase
             ->setField('role_id', $roleId)
             ->allow()
             ->persist();
+    }
+
+    private function disableOfflineMode(): void
+    {
+        $table = OfflineModeSettingFactory::make()->getTable();
+        $table->deleteAll([]);
     }
 }

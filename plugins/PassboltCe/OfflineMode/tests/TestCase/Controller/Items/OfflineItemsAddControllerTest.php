@@ -182,9 +182,7 @@ class OfflineItemsAddControllerTest extends AppIntegrationTestCase
 
     public function testOfflineItemsAddController_Error_OfflineModeDisabled(): void
     {
-        /** @var \Passbolt\OfflineMode\Model\Table\OfflineModeSettingsTable $offlineModeSettingsTable */
-        $offlineModeSettingsTable = OfflineModeSettingFactory::make()->getTable();
-        $offlineModeSettingsTable->deleteAll(['property' => $offlineModeSettingsTable->getProperty()]);
+        $this->disableOfflineMode();
         $user = UserFactory::make()->user()->active()->persist();
         $resource = ResourceFactory::make()->withCreatorAndPermission($user)->persist();
 
@@ -193,6 +191,17 @@ class OfflineItemsAddControllerTest extends AppIntegrationTestCase
         $this->postJson("/offline/resource/$resourceId.json");
 
         $this->assertForbiddenError('Offline Mode is not enabled at the org level.');
+    }
+
+    public function testOfflineItemsAddController_Error_NotAuthenticated_WhenOfflineModeDisabled(): void
+    {
+        $this->disableOfflineMode();
+        $resource = ResourceFactory::make()->persist();
+
+        $resourceId = $resource->get('id');
+        $this->postJson("/offline/resource/$resourceId.json");
+
+        $this->assertAuthenticationError();
     }
 
     public function testOfflineItemsAddController_Error_RbacDenied(): void
@@ -221,10 +230,6 @@ class OfflineItemsAddControllerTest extends AppIntegrationTestCase
         );
     }
 
-    // ---------------------------
-    // Helper methods
-    // ---------------------------
-
     private function seedRbacAllow(string $roleId): void
     {
         $action = ActionFactory::make()
@@ -236,5 +241,11 @@ class OfflineItemsAddControllerTest extends AppIntegrationTestCase
             ->setField('role_id', $roleId)
             ->allow()
             ->persist();
+    }
+
+    private function disableOfflineMode(): void
+    {
+        $table = OfflineModeSettingFactory::make()->getTable();
+        $table->deleteAll([]);
     }
 }
