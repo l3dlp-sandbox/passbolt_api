@@ -18,6 +18,7 @@ use Cake\Log\Log;
 use Migrations\AbstractMigration;
 use Passbolt\Rbacs\Service\Actions\RbacsControlledActionsInsertService;
 use Passbolt\Rbacs\Service\Rbacs\InsertRbacsForActionsService;
+use Passbolt\Rbacs\Model\Entity\Rbac;
 
 class V5140InsertOfflineModeRbacs extends AbstractMigration
 {
@@ -34,7 +35,7 @@ class V5140InsertOfflineModeRbacs extends AbstractMigration
                     RbacsControlledActionsInsertService::NAME_OFFLINE_ITEMS_ADD,
                     RbacsControlledActionsInsertService::NAME_OFFLINE_ITEMS_DELETE,
                     RbacsControlledActionsInsertService::NAME_OFFLINE_ITEMS_VIEW,
-                ]);
+                ], Rbac::CONTROL_FUNCTION_ALLOW);
             });
         } catch (Throwable $e) {
             $msg = 'There was an error in V5140InsertOfflineModeRbacs.';
