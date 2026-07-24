@@ -83,7 +83,7 @@ class OfflineResourceIndexListener implements EventListenerInterface
         /** @var \App\Model\Table\RolesTable $rolesTable */
         $rolesTable = TableRegistry::getTableLocator()->get('Roles');
         /** @var \App\Model\Entity\Role $role */
-        $role = $rolesTable->find()->select(['id'])->where(['name' => $uac->roleName()])->firstOrFail();
+        $role = $rolesTable->find()->select(['id', 'name'])->where(['name' => $uac->roleName()])->firstOrFail();
 
         /** @var \Passbolt\Rbacs\Model\Table\RbacsTable $rbacsTable */
         $rbacsTable = TableRegistry::getTableLocator()->get('Passbolt/Rbacs.Rbacs');

@@ -55,6 +55,23 @@ class OfflineResourcesIndexControllerTest extends AppIntegrationTestCase
         $this->assertArrayNotHasKey('offline', $body[0]);
     }
 
+    public function testOfflineResourcesIndexController_Allow_AdminHasRow_PopulatedObject(): void
+    {
+        $user = UserFactory::make()->admin()->active()->persist();
+        $resource = ResourceFactory::make()->withCreatorAndPermission($user)->persist();
+        OfflineItemFactory::make()->setUser($user)->setResource($resource)->persist();
+        $this->logInAs($user);
+
+        $this->getJson('/resources.json?contain[offline]=1');
+
+        $this->assertSuccess();
+        $body = $this->getResponseBodyAsArray();
+        $this->assertNotEmpty($body[0]['offline']);
+        $this->assertSame($user->get('id'), $body[0]['offline']['user_id']);
+        $this->assertSame($resource->get('id'), $body[0]['offline']['foreign_key']);
+        $this->assertSame(OfflineItemsTable::FOREIGN_MODEL_RESOURCE, $body[0]['offline']['foreign_model']);
+    }
+
     public function testOfflineResourcesIndexController_Allow_UserHasRow_PopulatedObject(): void
     {
         $user = UserFactory::make()->user()->active()->persist();
