@@ -48,7 +48,7 @@ class InsertRbacsForActionsService
     public function add(array $actionNames, string $controlFunction = Rbac::CONTROL_FUNCTION_DENY): int
     {
         if (!in_array($controlFunction, Rbac::ALLOWED_CONTROL_FUNCTIONS)) {
-            throw new BadRequestException('Invalid RBAC control function');
+            throw new BadRequestException(__('Invalid RBAC control function.'));
         }
 
         // Find all roles apart from admin & guest (excluding soft deleted roles)
