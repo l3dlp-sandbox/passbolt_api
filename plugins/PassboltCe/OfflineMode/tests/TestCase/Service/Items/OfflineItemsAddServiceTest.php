@@ -22,6 +22,7 @@ use App\Test\Lib\AppTestCase;
 use App\Test\Lib\Utility\UserAccessControlTrait;
 use App\Utility\UuidFactory;
 use Cake\Http\Exception\BadRequestException;
+use Cake\Http\Exception\ForbiddenException;
 use Cake\Http\Exception\NotFoundException;
 use Passbolt\OfflineMode\Model\Entity\OfflineItem;
 use Passbolt\OfflineMode\Model\Table\OfflineItemsTable;
@@ -52,7 +53,7 @@ class OfflineItemsAddServiceTest extends AppTestCase
     public function testOfflineItemsAddService_Success_PersistsRowAndReturnsEntity(): void
     {
         $user = UserFactory::make()->user()->active()->persist();
-        $resource = ResourceFactory::make()->withCreatorAndPermission($user)->persist();
+        $resource = ResourceFactory::make()->v5Fields()->withCreatorAndPermission($user)->persist();
         $uac = $this->makeUac($user);
 
         $result = $this->service->add($uac, OfflineItemsTable::FOREIGN_MODEL_RESOURCE, $resource->get('id'));
@@ -69,7 +70,7 @@ class OfflineItemsAddServiceTest extends AppTestCase
     public function testOfflineItemsAddService_Success_IsIdempotent(): void
     {
         $user = UserFactory::make()->user()->active()->persist();
-        $resource = ResourceFactory::make()->withCreatorAndPermission($user)->persist();
+        $resource = ResourceFactory::make()->v5Fields()->withCreatorAndPermission($user)->persist();
         $uac = $this->makeUac($user);
 
         $first = $this->service->add($uac, OfflineItemsTable::FOREIGN_MODEL_RESOURCE, $resource->get('id'));
@@ -119,10 +120,21 @@ class OfflineItemsAddServiceTest extends AppTestCase
     public function testOfflineItemsAddService_Error_NotFound_UserHasNoReadAccess(): void
     {
         $user = UserFactory::make()->user()->active()->persist();
-        $resource = ResourceFactory::make()->persist(); // no permission for $user
+        $resource = ResourceFactory::make()->persist(); // no permission for $user and item is v4
         $uac = $this->makeUac($user);
 
         $this->expectException(NotFoundException::class);
+        $this->service->add($uac, OfflineItemsTable::FOREIGN_MODEL_RESOURCE, $resource->get('id'));
+    }
+
+    public function testOfflineItemsAddService_Error_Forbidden_ResourceIsV4(): void
+    {
+        $user = UserFactory::make()->user()->active()->persist();
+        $resource = ResourceFactory::make()->withCreatorAndPermission($user)->persist();
+        $uac = $this->makeUac($user);
+
+        $this->expectException(ForbiddenException::class);
+        $this->expectExceptionMessage('Offline mode is only available for v5 items.');
         $this->service->add($uac, OfflineItemsTable::FOREIGN_MODEL_RESOURCE, $resource->get('id'));
     }
 }

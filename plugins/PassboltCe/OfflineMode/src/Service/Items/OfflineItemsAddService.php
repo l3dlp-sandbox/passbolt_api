@@ -19,6 +19,7 @@ namespace Passbolt\OfflineMode\Service\Items;
 use App\Error\Exception\ValidationException;
 use App\Utility\UserAccessControl;
 use Cake\Http\Exception\BadRequestException;
+use Cake\Http\Exception\ForbiddenException;
 use Cake\Http\Exception\NotFoundException;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\Validation\Validation;
@@ -36,6 +37,7 @@ class OfflineItemsAddService
      * @return \Passbolt\OfflineMode\Model\Entity\OfflineItem
      * @throws \Cake\Http\Exception\BadRequestException Invalid uuid or unknown foreign model.
      * @throws \Cake\Http\Exception\NotFoundException Resource missing, soft-deleted, or no read access.
+     * @throws \Cake\Http\Exception\ForbiddenException Target item is not a v5 object.
      */
     public function add(UserAccessControl $uac, string $foreignModel, string $foreignKey): OfflineItem
     {
@@ -53,11 +55,6 @@ class OfflineItemsAddService
         /** @var \Passbolt\OfflineMode\Model\Table\OfflineItemsTable $OfflineItems */
         $OfflineItems = $this->fetchTable('Passbolt/OfflineMode.OfflineItems');
 
-        // The entity defaults to `$_accessible = ['*' => false]`. Open the
-        // four service-pinned fields per call via `accessibleFields` rather
-        // than relaxing the entity-level whitelist — keeps mass-assignment
-        // out of any future caller that builds entities from raw input.
-        // `created` is stamped by TimestampBehavior on save.
         $entity = $OfflineItems->newEntity(
             [
                 'user_id' => $uac->getId(),
@@ -106,6 +103,7 @@ class OfflineItemsAddService
      * @param \Passbolt\OfflineMode\Model\Table\OfflineItemsTable $table The owning table.
      * @return void
      * @throws \Cake\Http\Exception\NotFoundException Resource missing, soft-deleted, or no access.
+     * @throws \Cake\Http\Exception\ForbiddenException Target item is not a v5 object.
      * @throws \App\Error\Exception\ValidationException Any other unhandled validation error.
      */
     private function handleValidationErrors(OfflineItem $entity, OfflineItemsTable $table): void
@@ -122,6 +120,11 @@ class OfflineItemsAddService
         ) {
             throw new NotFoundException(__('The resource does not exist.'));
         }
+
+        if (isset($errors['foreign_key']['offline_item_is_v5'])) {
+            throw new ForbiddenException(__('Offline mode is only available for v5 items.'));
+        }
+
         throw new ValidationException(__('Could not validate offline item data.'), $entity, $table);
     }
 }

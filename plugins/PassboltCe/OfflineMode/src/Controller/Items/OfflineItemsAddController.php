@@ -35,7 +35,7 @@ class OfflineItemsAddController extends AppController
      * @param string $foreignModel Foreign model (i.e. `resource`, `folder`).
      * @param string $foreignKey The target object id.
      * @return void
-     * @throws \Cake\Http\Exception\ForbiddenException RBAC deny for the user's role, or Offline Mode disabled.
+     * @throws \Cake\Http\Exception\ForbiddenException RBAC deny for the user's role, Offline Mode disabled, or target item is not v5.
      * @throws \Cake\Http\Exception\BadRequestException Invalid uuid or unknown foreign model.
      * @throws \Cake\Http\Exception\NotFoundException Object missing / soft-deleted / no access.
      */

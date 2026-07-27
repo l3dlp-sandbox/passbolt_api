@@ -24,6 +24,7 @@ use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Utility\Hash;
 use Cake\Validation\Validator;
+use Passbolt\OfflineMode\Model\Rule\IsForeignItemV5Rule;
 use Passbolt\Rbacs\Model\Entity\Rbac;
 use Passbolt\Rbacs\Service\Actions\RbacsControlledActionsInsertService;
 
@@ -168,6 +169,10 @@ class OfflineItemsTable extends Table implements TableCleanupProviderInterface
             'message' => __('Access denied.'),
             'userField' => 'user_id',
             'resourceField' => 'foreign_key',
+        ]);
+        $rules->addCreate(new IsForeignItemV5Rule(), 'offline_item_is_v5', [
+            'errorField' => 'foreign_key',
+            'message' => __('Offline mode is only available for v5 items.'),
         ]);
         $rules->addCreate(
             $rules->isUnique(

@@ -46,7 +46,7 @@ class OfflineItemsAddControllerTest extends AppIntegrationTestCase
     {
         $user = UserFactory::make()->user()->active()->persist();
         $this->seedRbacAllow($user->get('role_id'));
-        $resource = ResourceFactory::make()->withCreatorAndPermission($user)->persist();
+        $resource = ResourceFactory::make()->v5Fields()->withCreatorAndPermission($user)->persist();
         $this->logInAs($user);
 
         $resourceId = $resource->get('id');
@@ -68,7 +68,7 @@ class OfflineItemsAddControllerTest extends AppIntegrationTestCase
     {
         $user = UserFactory::make()->user()->active()->persist();
         $this->seedRbacAllow($user->get('role_id'));
-        $resource = ResourceFactory::make()->withCreatorAndPermission($user)->persist();
+        $resource = ResourceFactory::make()->v5Fields()->withCreatorAndPermission($user)->persist();
         $this->logInAs($user);
 
         $resourceId = $resource->get('id');
@@ -91,7 +91,7 @@ class OfflineItemsAddControllerTest extends AppIntegrationTestCase
     {
         $user = UserFactory::make()->user()->active()->persist();
         $this->seedRbacAllow($user->get('role_id'));
-        $resource = ResourceFactory::make()->withCreatorAndPermission($user)->persist();
+        $resource = ResourceFactory::make()->v5Fields()->withCreatorAndPermission($user)->persist();
         $this->logInAs($user);
 
         $resourceId = $resource->get('id');
@@ -213,6 +213,20 @@ class OfflineItemsAddControllerTest extends AppIntegrationTestCase
         $resourceId = $resource->get('id');
         $this->postJson("/offline/resource/$resourceId.json");
         $this->assertForbiddenError('You are not authorized to access that location.');
+    }
+
+    public function testOfflineItemsAddController_Error_ForbiddenIfItemIsV4(): void
+    {
+        $user = UserFactory::make()->user()->active()->persist();
+        $this->seedRbacAllow($user->get('role_id'));
+        $resource = ResourceFactory::make()->withCreatorAndPermission($user)->persist();
+        $this->logInAs($user);
+
+        $resourceId = $resource->get('id');
+        $this->postJson("/offline/resource/$resourceId.json");
+
+        $this->assertForbiddenError('Offline mode is only available for v5 items.');
+        $this->assertSame(0, OfflineItemFactory::count());
     }
 
     public function testOfflineItemsAddController_Error_InvalidForeignModel(): void

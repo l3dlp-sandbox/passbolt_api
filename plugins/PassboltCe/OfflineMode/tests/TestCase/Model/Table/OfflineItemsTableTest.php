@@ -79,7 +79,7 @@ class OfflineItemsTableTest extends AppTestCaseV5
     public function testOfflineItemsTable_Save_PersistsRowWhenAllRulesPass(): void
     {
         $user = UserFactory::make()->user()->active()->persist();
-        $resource = ResourceFactory::make()->withCreatorAndPermission($user)->persist();
+        $resource = ResourceFactory::make()->v5Fields()->withCreatorAndPermission($user)->persist();
 
         $entity = $this->buildEntity($this->buildPayload($user->get('id'), $resource->get('id')));
         $saved = $this->OfflineItems->save($entity);
