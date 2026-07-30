@@ -17,6 +17,7 @@ declare(strict_types=1);
 namespace Passbolt\OfflineMode;
 
 use Cake\Core\BasePlugin;
+use Cake\Core\Configure;
 use Cake\Core\ContainerInterface;
 use Cake\Core\PluginApplicationInterface;
 use Cake\Event\EventManager;
@@ -35,6 +36,7 @@ class OfflineModePlugin extends BasePlugin
     public function bootstrap(PluginApplicationInterface $app): void
     {
         parent::bootstrap($app);
+        Configure::write('passbolt.plugins.offlineMode.isInBeta', true);
         $this->attachListeners(EventManager::instance());
     }
 

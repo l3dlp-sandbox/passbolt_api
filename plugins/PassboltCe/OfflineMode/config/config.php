@@ -17,6 +17,11 @@ return [
         'plugins' => [
             'offlineMode' => [
                 'version' => '1.0.0',
+                'settingsVisibility' => [
+                    'whiteList' => [
+                        'isInBeta',
+                    ],
+                ],
             ],
         ],
     ],
