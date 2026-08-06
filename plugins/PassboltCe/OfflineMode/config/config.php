@@ -21,6 +21,9 @@ return [
                     'whiteList' => [
                         'isInBeta',
                     ],
+                    'whiteListPublic' => [
+                        'enabled',
+                    ],
                 ],
             ],
         ],

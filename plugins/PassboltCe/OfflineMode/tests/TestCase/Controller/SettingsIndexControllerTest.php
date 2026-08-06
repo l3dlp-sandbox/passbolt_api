@@ -35,9 +35,13 @@ class SettingsIndexControllerTest extends AppIntegrationTestCase
         $this->assertTrue($this->_responseJsonBody->passbolt->plugins->offlineMode->isInBeta);
     }
 
-    public function testSettingsIndexController_Success_OfflineModePluginNotVisibleToGuests(): void
+    public function testSettingsIndexController_Success_Guests(): void
     {
         $this->getJson('/settings.json');
-        $this->assertFalse(isset($this->_responseJsonBody->passbolt->plugins->offlineMode));
+        $this->assertSuccess();
+        // 'enabled' is public; 'isInBeta' and 'version' is restricted to authenticated users.
+        $this->assertTrue($this->_responseJsonBody->passbolt->plugins->offlineMode->enabled);
+        $this->assertFalse(isset($this->_responseJsonBody->passbolt->plugins->offlineMode->isInBeta));
+        $this->assertFalse(isset($this->_responseJsonBody->passbolt->plugins->offlineMode->version));
     }
 }
