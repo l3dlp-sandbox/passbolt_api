@@ -300,7 +300,7 @@ class GroupsDeleteController extends AppController
 
         foreach ($resources as $resource) {
             $resource = $resource->toArray();
-            $dto = MetadataResourceDto::fromArray($resource);
+            $dto = MetadataResourceDto::createFromArray($resource);
             $result[] = $metadataResourcesRenderService->renderResource($resource, $dto->isV5());
         }
 

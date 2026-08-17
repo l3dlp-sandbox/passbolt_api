@@ -133,7 +133,7 @@ class ShareEmailRedactor implements SubscribedEmailRedactorInterface
      */
     private function createShareEmail(User $recipient, User $owner, Resource $resource, string $secret): Email
     {
-        $resourceDto = MetadataResourceDto::fromArray($resource->toArray());
+        $resourceDto = MetadataResourceDto::createFromArray($resource->toArray());
         $isV5 = $resourceDto->isV5();
 
         $subject = (new LocaleService())->translateString(

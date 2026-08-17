@@ -156,7 +156,7 @@ class PasswordExpiryPasswordMarkedExpiredEmailRedactor implements SubscribedEmai
     private function isResourceV5(Resource $resource): bool
     {
         try {
-            $resourceDto = MetadataResourceDto::fromArray($resource->toArray());
+            $resourceDto = MetadataResourceDto::createFromArray($resource->toArray());
         } catch (Exception $e) {
             return false;
         }

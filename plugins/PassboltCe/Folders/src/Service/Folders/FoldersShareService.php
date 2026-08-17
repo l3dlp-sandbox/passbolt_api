@@ -110,7 +110,7 @@ class FoldersShareService
     {
         $folder = $this->getFolder($id, $uac);
         $this->assertUserCanShare($uac, $folder);
-        $folderDto = MetadataFolderDto::fromArray($folder->toArray());
+        $folderDto = MetadataFolderDto::createFromArray($folder->toArray());
         $folderDto->assertShareable();
 
         $permissionsData = Hash::get($data, 'permissions', []);
