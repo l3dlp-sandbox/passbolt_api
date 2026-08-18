@@ -455,7 +455,7 @@ trait ResourcesFindersTrait
      */
     public function findMetadataRotateKeyIndex(): Query
     {
-        $query = $this->find();
+        $query = $this->unhydratedFind();
 
         return $query
             ->where([
@@ -470,8 +470,7 @@ trait ResourcesFindersTrait
             ->innerJoin(['MetadataKeys' => 'metadata_keys'], [
                 'MetadataKeys.id' => new IdentifierExpression('Resources.metadata_key_id'),
                 $query->expr()->isNotNull('MetadataKeys.expired'),
-            ])
-            ->disableHydration();
+            ]);
     }
 
     /**
@@ -482,7 +481,7 @@ trait ResourcesFindersTrait
      */
     public function findMetadataUpgradeIndex(array $options): Query
     {
-        $query = $this->find('v4')->disableHydration();
+        $query = $this->unhydratedFind('v4');
 
         $containPermissions = (bool)($options['contain']['permissions'] ?? false);
         if ($containPermissions) {

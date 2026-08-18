@@ -146,12 +146,12 @@ class FoldersRelationsDetectStronglyConnectedComponentsService
      */
     private function getAllFoldersRelationsDtos(): array
     {
-        $query = $this->foldersRelationsTable->find();
-        $query = $this->foldersRelationsTable->filterByForeignModel($query, FoldersRelation::FOREIGN_MODEL_FOLDER);
-
-        return $query->select(['foreign_id', 'folder_parent_id'])
+        // The foreign_model filter is inlined (rather than via filterByForeignModel()) so the
+        // UnhydratedSelectQuery type is preserved through to toArray() for the array return type.
+        return $this->foldersRelationsTable->unhydratedFind()
+            ->where(['foreign_model' => FoldersRelation::FOREIGN_MODEL_FOLDER])
+            ->select(['foreign_id', 'folder_parent_id'])
             ->distinct()
-            ->disableHydration()
             ->all()
             ->toArray();
     }
@@ -173,10 +173,9 @@ class FoldersRelationsDetectStronglyConnectedComponentsService
      */
     private function getFoldersRelationsInvolveInScc(array $foldersRelations): array
     {
-        return $this->foldersRelationsTable->find()
+        return $this->foldersRelationsTable->unhydratedFind()
             ->select(['foreign_id', 'folder_parent_id', 'user_id'])
             ->where($this->buildFoldersRelationsTupleComparisonExpression($foldersRelations))
-            ->disableHydration()
             ->all()->toArray();
     }
 
@@ -391,10 +390,10 @@ class FoldersRelationsDetectStronglyConnectedComponentsService
      */
     public function detectInUserTree(string $userId): array
     {
-        $query = $this->foldersRelationsTable->findByUserId($userId);
+        $query = $this->foldersRelationsTable->unhydratedFind()->where(['user_id' => $userId]);
         $query = $this->foldersRelationsTable->filterByForeignModel($query, FoldersRelation::FOREIGN_MODEL_FOLDER);
         $foldersRelationsDtos = $query->select(['foreign_id', 'folder_parent_id'])
-            ->disableHydration()->all()->toArray();
+            ->all()->toArray();
         $sccs = $this->detectInFoldersRelations($foldersRelationsDtos);
 
         if (!empty($sccs)) {

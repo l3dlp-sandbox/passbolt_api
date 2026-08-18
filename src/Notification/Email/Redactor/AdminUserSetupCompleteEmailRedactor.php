@@ -96,13 +96,19 @@ class AdminUserSetupCompleteEmailRedactor implements SubscribedEmailRedactorInte
             $userWhoCompletedSetup,
             [
                 'Profiles',
-                'EntitiesHistory' => function (Query $q) {
-                    // Filter on the created action (this action can happen only once)
-                    return $q->where(['crud' => EntityHistory::CRUD_CREATE]);
-                },
-                'EntitiesHistory.ActionLogs',
-                'EntitiesHistory.ActionLogs.Users',
-                'EntitiesHistory.ActionLogs.Users.Profiles',
+                'EntitiesHistory' => [
+                    // Force strategy to `select`: the 5.4 subquery eager-loading default mis-orders the
+                    // nested join (emits "Unknown column '<Model>.<fk>' in 'ON'").
+                    'strategy' => 'select',
+                    'queryBuilder' => function (Query $q) {
+                        return $q->where(['crud' => EntityHistory::CRUD_CREATE]);
+                    },
+                    'ActionLogs' => [
+                        'Users' => [
+                            'Profiles',
+                        ],
+                    ],
+                ],
             ]
         );
 

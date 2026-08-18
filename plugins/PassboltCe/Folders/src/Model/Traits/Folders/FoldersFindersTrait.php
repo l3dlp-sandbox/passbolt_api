@@ -163,7 +163,7 @@ trait FoldersFindersTrait
      */
     public function findMetadataRotateKeyIndex(): SelectQuery
     {
-        $query = $this->find();
+        $query = $this->unhydratedFind();
 
         return $query
             ->where([
@@ -174,8 +174,7 @@ trait FoldersFindersTrait
             ->innerJoin(['MetadataKeys' => 'metadata_keys'], [
                 'MetadataKeys.id' => new IdentifierExpression('Folders.metadata_key_id'),
                 $query->expr()->isNotNull('MetadataKeys.expired'),
-            ])
-            ->disableHydration();
+            ]);
     }
 
     /**
@@ -292,7 +291,7 @@ trait FoldersFindersTrait
      */
     public function findMetadataUpgradeIndex(array $options): SelectQuery
     {
-        $query = $this->find('v4')->disableHydration();
+        $query = $this->unhydratedFind('v4');
 
         $containPermissions = (bool)($options['contain']['permissions'] ?? false);
         if ($containPermissions) {

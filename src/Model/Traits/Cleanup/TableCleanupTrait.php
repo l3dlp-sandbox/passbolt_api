@@ -167,7 +167,7 @@ trait TableCleanupTrait
         }
 
         // Find all the rows corresponding to the identified duplicated tuples.
-        $duplicatedRowsQuery = $this->selectQuery()
+        $duplicatedRowsQuery = $this->unhydratedSelectQuery()
             ->select(array_merge(['id'], $combinedKey))
             ->join([
                 'table' => $duplicatedTuplesQuery,
@@ -187,7 +187,7 @@ trait TableCleanupTrait
             $duplicatedRowsQuery->orderBy(['created' => $deleteNewest ? 'ASC' : 'DESC']);
         }
 
-        $duplicatedRows = $duplicatedRowsQuery->disableHydration()->toArray();
+        $duplicatedRows = $duplicatedRowsQuery->toArray();
 
         // Extract the rows id to delete.
         $idsToRemove = [];

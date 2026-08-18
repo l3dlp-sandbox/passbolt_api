@@ -34,6 +34,7 @@ use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\Http\Exception\InternalErrorException;
 use Cake\I18n\DateTime;
+use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
@@ -266,6 +267,20 @@ class UsersTable extends Table implements TableCleanupProviderInterface
         ]);
 
         return $rules;
+    }
+
+    /**
+     * Exclude the last_logged_in field if the user is not an admin.
+     *
+     * @param \Cake\Event\Event $event Model.beforeFind event.
+     * @param \Cake\ORM\Query $query Query under construction.
+     * @param \ArrayObject $options options to apply in the query
+     * @return void
+     */
+    public function beforeFind(Event $event, Query $query, ArrayObject $options): void
+    {
+        $showLastLoggedIn = $options['showLastLoggedIn'] ?? null;
+        $query->find('unsetLastLoggedInForNonAdmin', showLastLoggedIn: $showLastLoggedIn);
     }
 
     /**

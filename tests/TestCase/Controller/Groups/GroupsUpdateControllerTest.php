@@ -94,6 +94,7 @@ hcciUFw5
         $this->putJson("/groups/$groupId.json", ['groups_users' => $changes]);
         $this->assertSuccess();
 
+        $this->assertObjectNotHasAttribute('last_logged_in', $this->_responseJsonBody->groups_users[0]->user);
         $this->assertUserIsAdmin($groupId, $newGroupMember->id);
         $this->assertEmailQueueCount(2);
 

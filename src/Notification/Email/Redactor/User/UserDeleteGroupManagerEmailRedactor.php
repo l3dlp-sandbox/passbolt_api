@@ -31,9 +31,9 @@ use Cake\ORM\Query\SelectQuery;
 use Passbolt\Locale\Service\LocaleService;
 
 /**
- * Class UserDeleteEmailRedactor
+ * Notifies group managers when a user they manage is deleted.
  */
-class UserDeleteEmailRedactor implements SubscribedEmailRedactorInterface
+class UserDeleteGroupManagerEmailRedactor implements SubscribedEmailRedactorInterface
 {
     use LocatorAwareTrait;
     use SubscribedEmailRedactorTrait;

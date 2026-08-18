@@ -157,6 +157,7 @@ class HealthcheckIndexControllerTest extends AppIntegrationTestCase
                 'jsProd' => (Configure::read('passbolt.js.build') === 'production'),
                 'emailNotificationEnabled' => false,
                 'editionFlag' => false,
+                'sessionProvider' => true,
             ],
             'gpg' => [
                 'canDecryptVerify' => true,

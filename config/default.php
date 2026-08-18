@@ -441,6 +441,7 @@ return [
         'logger' => 'App\Error\AppErrorLogger',
         'skipLog' => [
             'Authentication\Authenticator\UnauthenticatedException',
+            'Cake\Routing\Exception\MissingRouteException',
         ],
     ],
 ];

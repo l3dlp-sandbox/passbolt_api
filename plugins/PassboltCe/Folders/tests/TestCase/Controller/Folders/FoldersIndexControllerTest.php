@@ -21,6 +21,7 @@ use App\Model\Entity\Permission;
 use App\Test\Factory\GroupFactory;
 use App\Test\Factory\UserFactory;
 use App\Test\Lib\Model\GroupsModelTrait;
+use Cake\I18n\DateTime;
 use Cake\Utility\Hash;
 use Passbolt\Folders\Test\Factory\FolderFactory;
 use Passbolt\Folders\Test\Factory\ResourceFactory;
@@ -658,7 +659,26 @@ class FoldersIndexControllerTest extends FoldersIntegrationTestCase
         $permission = $folder->permissions[0];
         $user = $permission->user;
         $this->assertObjectHasAttribute('profile', $user);
+        $this->assertObjectNotHasAttribute('last_logged_in', $user);
         $this->assertProfileAttributes($user->profile);
+    }
+
+    public function testFoldersIndexSuccess_NotContainLastLoggedInField()
+    {
+        $user = UserFactory::make()->user()->lastLoggedIn(DateTime::now()->subDays(10))->persist();
+        $admin = UserFactory::make()->admin()->lastLoggedIn(DateTime::now()->subDays(3))->persist();
+        FolderFactory::make(['created_by' => $user->get('id'), 'modified_by' => $user->get('id')])
+            ->withPermissionsFor([$user, $admin])->withFoldersRelationsFor([$user, $admin])->persist();
+        $this->logInAs($admin);
+        $this->getJson('/folders.json?contain[creator]=1&contain[modifier]=1&api-version=2');
+
+        $this->assertSuccess();
+        /** @var \Passbolt\Folders\Model\Entity\Folder[] $result */
+        $result = $this->_responseJsonBody;
+        $folder = $result[0];
+        $this->assertFolderAttributes($folder);
+        $this->assertObjectNotHasAttribute('last_logged_in', $folder->modifier);
+        $this->assertObjectNotHasAttribute('last_logged_in', $folder->creator);
     }
 
     public function testFoldersIndexError_NotJson()

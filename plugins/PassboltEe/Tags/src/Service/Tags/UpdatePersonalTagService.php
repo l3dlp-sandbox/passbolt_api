@@ -57,7 +57,6 @@ class UpdatePersonalTagService
                     'metadata' => true,
                     'metadata_key_id' => true,
                     'metadata_key_type' => true,
-                    'is_shared' => true,
                 ],
                 'validate' => 'v5',
             ];
@@ -72,7 +71,6 @@ class UpdatePersonalTagService
                     'metadata' => $dtoArray['metadata'],
                     'metadata_key_id' => $dtoArray['metadata_key_id'],
                     'metadata_key_type' => $dtoArray['metadata_key_type'],
-                    'is_shared' => $dtoArray['is_shared'],
                 ],
                 $options
             );

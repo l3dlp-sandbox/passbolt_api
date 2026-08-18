@@ -133,7 +133,11 @@ class ResourcesTagsAddService
                     unset($clearTextTags[$tagFoundIndex]);
                 }
             } else {
-                // For V5 unlink anyway
+                // V5
+                if ($tag->is_shared && !$isOwner) {
+                    $msg = __('You do not have the permission to edit shared tags on this resource.');
+                    throw new BadRequestException($msg);
+                }
                 unset($resource['tags'][$i]);
             }
         }

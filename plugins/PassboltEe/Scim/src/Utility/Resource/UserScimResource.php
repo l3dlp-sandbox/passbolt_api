@@ -707,9 +707,43 @@ class UserScimResource implements ScimResourceInterface
             return;
         }
 
-        // Check if the user is an admin
+        if ($this->isUserAdmin()) {
+            throw new ForbiddenException(__('An administrator user cannot be suspended via SCIM.'));
+        }
+    }
+
+    /**
+     * Assert that the user being deleted is not an administrator.
+     *
+     * @return void
+     * @throws \Cake\Http\Exception\ForbiddenException If trying to delete an admin and the config flag is not set.
+     */
+    protected function assertAdminDeleteAllowed(): void
+    {
+        $allowed = Configure::read('passbolt.plugins.scim.security.allowDeleteAdministrators');
+        // Fallback on allowSuspendAdministrators configuration
+        if (!is_bool($allowed)) {
+            $allowed = Configure::read('passbolt.plugins.scim.security.allowSuspendAdministrators');
+        }
+
+        if ($allowed) {
+            return;
+        }
+
+        if ($this->isUserAdmin()) {
+            throw new ForbiddenException(__('An administrator user cannot be deleted via SCIM.'));
+        }
+    }
+
+    /**
+     * Whether the loaded user holds the administrator role.
+     *
+     * @return bool
+     */
+    protected function isUserAdmin(): bool
+    {
         $query = $this->Users
-            ->find()
+            ->unhydratedFind()
             ->select(['existing' => 1])
             ->contain(['Roles'])
             ->where([
@@ -718,11 +752,8 @@ class UserScimResource implements ScimResourceInterface
             ])
             ->limit(1)
             ->epilog('FOR UPDATE');
-        $isAdmin = (bool)count($query->disableHydration()->toArray());
 
-        if ($isAdmin) {
-            throw new ForbiddenException(__('An administrator user cannot be suspended via SCIM.'));
-        }
+        return (bool)count($query->toArray());
     }
 
     /**
@@ -912,6 +943,8 @@ class UserScimResource implements ScimResourceInterface
                 )
             );
         }
+
+        $this->assertAdminDeleteAllowed();
 
         try {
             $result = $this->Users->softDelete($this->userEntity);

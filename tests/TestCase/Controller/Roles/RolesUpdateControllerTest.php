@@ -164,4 +164,20 @@ class RolesUpdateControllerTest extends RbacsIntegrationTestCase
         $reloaded = RoleFactory::get($adminRole->id);
         $this->assertSame(Role::ADMIN, $reloaded->name);
     }
+
+    public function testRolesUpdateController_Error_Name_InvisibleCharacters(): void
+    {
+        $role = RoleFactory::make(['name' => 'sales'])->persist();
+        $this->logInAsAdmin();
+
+        $this->putJson("/roles/$role->id.json", ['name' => "grow\u{00A0}th"]);
+
+        $this->assertResponseCode(400);
+        $response = $this->getResponseBodyAsArray();
+        $this->assertSame(
+            'The string should not contain invisible characters.',
+            $response['name']['noInvisibleCharacters']
+        );
+        $this->assertSame('sales', RoleFactory::get($role->id)->name);
+    }
 }
