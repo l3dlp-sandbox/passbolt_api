@@ -19,18 +19,10 @@ namespace Passbolt\OfflineMode\Service\Settings;
 use Cake\Http\Exception\ForbiddenException;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Passbolt\OfflineMode\Model\Dto\OfflineSettingsDto;
-use Passbolt\OfflineMode\Model\Entity\OfflineModeSetting;
 
 class OfflineSettingsGetService
 {
     use LocatorAwareTrait;
-
-    /**
-     * Cached settings row.
-     *
-     * @var \Passbolt\OfflineMode\Model\Entity\OfflineModeSetting|null
-     */
-    private ?OfflineModeSetting $cachedEntity = null;
 
     /**
      * Read the offline-mode settings. Returns null when the org has not configured the feature.
@@ -39,7 +31,10 @@ class OfflineSettingsGetService
      */
     public function get(): ?OfflineSettingsDto
     {
-        $entity = $this->getEntity();
+        /** @var \Passbolt\OfflineMode\Model\Table\OfflineModeSettingsTable $table */
+        $table = $this->fetchTable('Passbolt/OfflineMode.OfflineModeSettings');
+        /** @var \Passbolt\OfflineMode\Model\Entity\OfflineModeSetting|null $entity */
+        $entity = $table->find()->first();
         if ($entity === null) {
             return null;
         }
@@ -66,21 +61,5 @@ class OfflineSettingsGetService
         if (!$this->isEnabled()) {
             throw new ForbiddenException(__('Offline Mode is not enabled at the org level.'));
         }
-    }
-
-    /**
-     * @return \Passbolt\OfflineMode\Model\Entity\OfflineModeSetting|null
-     */
-    private function getEntity(): ?OfflineModeSetting
-    {
-        if (is_null($this->cachedEntity)) {
-            /** @var \Passbolt\OfflineMode\Model\Table\OfflineModeSettingsTable $table */
-            $table = $this->fetchTable('Passbolt/OfflineMode.OfflineModeSettings');
-            /** @var \Passbolt\OfflineMode\Model\Entity\OfflineModeSetting|null $entity */
-            $entity = $table->find()->first();
-            $this->cachedEntity = $entity;
-        }
-
-        return $this->cachedEntity;
     }
 }

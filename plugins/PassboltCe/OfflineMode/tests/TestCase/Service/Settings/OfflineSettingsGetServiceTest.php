@@ -114,20 +114,4 @@ class OfflineSettingsGetServiceTest extends AppTestCase
 
         $this->service->throwExceptionIfDisabled();
     }
-
-    public function testOfflineSettingsGetService_Cache_SecondCallSkipsDb(): void
-    {
-        $setting = OfflineModeSettingFactory::make()
-            ->setField('value', ['max_session_duration' => 3600, 'data_retention_period' => 7200])
-            ->persist();
-
-        $this->assertTrue($this->service->isEnabled());
-
-        $this->assertTrue($this->service->isEnabled(), 'Second isEnabled() call should hit the cache, not the DB.');
-        $this->assertSame(
-            $setting->get('id'),
-            $this->service->get()?->id,
-            'Second get() call should also hit the cache.'
-        );
-    }
 }
