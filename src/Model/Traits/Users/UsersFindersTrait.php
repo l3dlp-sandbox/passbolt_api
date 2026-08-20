@@ -600,6 +600,8 @@ trait UsersFindersTrait
      * Filter users to those allowed to perform an RBAC-controlled action:
      * admins by role, plus non-admins whose role has the given RBAC action granted with control_function=Allow.
      *
+     * Selects on role / RBAC grant only: callers must chain 'activeNotDeleted' and 'notDisabled' as needed.
+     *
      * Only returns admins-only when the Rbacs association is not registered (i.e. the Rbacs plugin is not loaded).
      *
      * @param \Cake\ORM\Query\SelectQuery $query Query to augment.

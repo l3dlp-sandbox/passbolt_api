@@ -185,6 +185,27 @@ class AccountRecoveryResponseCreatedAllAdminsEmailRedactorTest extends TestCase
         $this->assertNotContains($disabledRbacViewer->username, $recipients);
     }
 
+    public function testResponseCreatedAllAdmins_DeletedAndInactiveUsersExcluded(): void
+    {
+        /** @var \App\Model\Entity\User $requester */
+        $requester = UserFactory::make()->persist();
+        /** @var \App\Model\Entity\User[] $admins */
+        $admins = UserFactory::make(2)->admin()->persist();
+        [$actingAdmin, $activeAdmin] = $admins;
+        UserFactory::make()->admin()->deleted()->persist();
+        UserFactory::make()->admin()->inactive()->persist();
+        /** @var \App\Model\Entity\User $deletedRbacViewer */
+        $deletedRbacViewer = UserFactory::make()->deleted()->persist();
+        UserFactory::make()->inactive()->persist();
+        $action = ActionFactory::make()->name('AccountRecoveryRequestsView.view')->persist();
+        RbacFactory::make()->setAction($action)->setField('role_id', $deletedRbacViewer->role_id)->persist();
+
+        $response = $this->makeResponse($requester->id, $actingAdmin->id);
+        $recipients = $this->collectRecipients($response);
+
+        $this->assertSame([$activeAdmin->username], $recipients);
+    }
+
     public function testResponseCreatedAllAdmins_RbacWithDenyControlFunctionExcluded(): void
     {
         /** @var \App\Model\Entity\User $requester */
