@@ -22,6 +22,7 @@ use App\Model\Rule\Role\HasNoActiveUserAssociatedRule;
 use App\Model\Rule\Role\IsReservedRoleNameUnchangedRule;
 use App\Model\Rule\Role\IsReservedRoleRule;
 use App\Model\Rule\Role\MaximumNumberOfRolesAllowedRule;
+use App\Model\Validation\HasNoInvisibleCharactersValidationRule;
 use ArrayObject;
 use Cake\Database\Expression\IdentifierExpression;
 use Cake\Database\Expression\QueryExpression;
@@ -118,7 +119,8 @@ class RolesTable extends Table
             ->add('name', 'reservedRole', [
                 'rule' => [$this, 'isReservedRole'],
                 'message' => __('The name should not be reserved role.'),
-            ]);
+            ])
+            ->add('name', 'noInvisibleCharacters', new HasNoInvisibleCharactersValidationRule());
 
         $validator
             ->utf8('description', __('The description should be a valid BMP-UTF8 string.'))

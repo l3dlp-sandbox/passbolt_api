@@ -1246,8 +1246,6 @@
       <code><![CDATA[$token->token]]></code>
       <code><![CDATA[$token->token]]></code>
       <code><![CDATA[$token->token]]></code>
-      <code><![CDATA[$token->token]]></code>
-      <code><![CDATA[$token->user]]></code>
       <code><![CDATA[$token->user]]></code>
       <code><![CDATA[$token->user]]></code>
       <code><![CDATA[$token->user]]></code>
@@ -1854,11 +1852,6 @@
     <MoreSpecificImplementedParamType>
       <code><![CDATA[\Passbolt\Tags\Model\Entity\Tag getEntity()]]></code>
     </MoreSpecificImplementedParamType>
-  </file>
-  <file src="src/Controller/Settings/SettingsIndexController.php">
-    <InvalidConstantAssignmentValue>
-      <code><![CDATA[SETTINGS_VISIBILITY_KEY = 'settingsVisibility']]></code>
-    </InvalidConstantAssignmentValue>
   </file>
   <file src="src/Datasource/Paging/NumericCountAwarePaginator.php">
     <InvalidArgument>

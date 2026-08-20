@@ -95,19 +95,24 @@ class AccountRecoverySetupCompleteService extends SetupCompleteService
     public function complete(string $userId, ?array $saveOptions = []): User
     {
         $this->assertRequestSanity();
-        $user = $this->buildUserEntity($userId); // checks token and user
-        $this->uac = new UserAccessControl($user->role->name, $user->id);
 
-        // Validate additional settings
-        if ($this->isAccountRecoveryUserSettingProvided()) {
-            $userSettingService = new AccountRecoveryUserSettingsSetService($this->uac);
-            $userSetting = $userSettingService->patchEntity(
-                $this->request->getData('account_recovery_user_setting')
-            );
-            $user->set('account_recovery_user_setting', $userSetting);
-        }
+        return $this->AuthenticationTokens->getConnection()->transactional(
+            function () use ($userId, $saveOptions): User {
+                $user = $this->buildUserEntity($userId); // checks token and user
+                $this->uac = new UserAccessControl($user->role->name, $user->id);
 
-        return $this->saveUserEntity($user, $saveOptions);
+                // Validate additional settings
+                if ($this->isAccountRecoveryUserSettingProvided()) {
+                    $userSettingService = new AccountRecoveryUserSettingsSetService($this->uac);
+                    $userSetting = $userSettingService->patchEntity(
+                        $this->request->getData('account_recovery_user_setting')
+                    );
+                    $user->set('account_recovery_user_setting', $userSetting);
+                }
+
+                return $this->saveUserEntity($user, $saveOptions);
+            }
+        );
     }
 
     /**

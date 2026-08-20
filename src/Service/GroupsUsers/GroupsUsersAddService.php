@@ -221,9 +221,8 @@ class GroupsUsersAddService
             return $secretsData;
         }
 
-        $secretRevisions = $this->secretsTable->SecretRevisions
-            ->find('notDeleted')
-            ->disableHydration()
+        $secretRevisions = $this->secretsTable->SecretRevisions->getTarget()
+            ->unhydratedFind('notDeleted')
             ->select(['id', 'resource_id'])
             ->where(['resource_id IN' => $resourceIds])
             ->all();

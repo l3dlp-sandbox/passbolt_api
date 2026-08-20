@@ -25,6 +25,7 @@ use App\Model\Rule\IsNotV5PasswordStringType;
 use App\Model\Traits\Resources\ResourcesFindersTrait;
 use App\Model\Validation\ArmoredMessage\IsParsableMessageValidationRule;
 use App\Model\Validation\DateTime\IsParsableDateTimeValidationRule;
+use App\Model\Validation\HasNoInvisibleCharactersValidationRule;
 use App\Utility\Application\FeaturePluginAwareTrait;
 use App\Utility\UuidFactory;
 use ArrayObject;
@@ -164,7 +165,8 @@ class ResourcesTable extends Table implements TableCleanupProviderInterface
                 __('The name length should be maximum {0} characters.', self::NAME_MAX_LENGTH)
             )
             ->requirePresence('name', 'create', __('A name is required.'))
-            ->allowEmptyString('name', __('The name should not be empty.'), false);
+            ->allowEmptyString('name', __('The name should not be empty.'), false)
+            ->add('name', 'noInvisibleCharacters', new HasNoInvisibleCharactersValidationRule());
 
         $validator
             ->utf8Extended('username', __('The username should be a valid UTF8 string.'))

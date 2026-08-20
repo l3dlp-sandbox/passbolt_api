@@ -55,16 +55,6 @@ class HealthcheckCommand extends PassboltCommand
     ];
 
     /**
-     * @var \Cake\Console\ConsoleIo
-     */
-    private ConsoleIo $io;
-
-    /**
-     * @var \Cake\Console\Arguments
-     */
-    private Arguments $args;
-
-    /**
      * Adjusts the command exit codes and redirects warnings/errors to STDERR.
      *
      * @var bool

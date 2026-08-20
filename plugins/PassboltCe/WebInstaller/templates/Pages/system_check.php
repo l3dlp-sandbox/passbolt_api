@@ -16,7 +16,7 @@ use App\View\Helper\HealthcheckHtmlHelper;
 $healthcheckHelper = new HealthcheckHtmlHelper();
 
 ?>
-<?= $this->element('header', ['title' => __('Welcome to Passbolt Pro! Let\'s get started with the configuration.')]) ?>
+<?= $this->element('header', ['title' => __('Welcome to Passbolt! Let\'s get started with the configuration.')]) ?>
 <div class="panel main ">
     <!-- wizard steps -->
     <div class="panel left">

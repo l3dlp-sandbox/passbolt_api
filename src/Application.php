@@ -130,7 +130,6 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
             ->add(new RoutingMiddleware($this))
             ->insertAfter(RoutingMiddleware::class, ApiVersionMiddleware::class)
             ->insertAfter(RoutingMiddleware::class, UuidParserMiddleware::class)
-            ->add(new SessionPreventExtensionMiddleware())
             ->add(BodyParserMiddleware::class)
             ->add(SessionAuthPreventDeletedOrDisabledUsersMiddleware::class)
             ->insertAfter(
@@ -138,6 +137,7 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
                 new AuthenticationMiddleware($this)
             )
             ->insertAfter(AuthenticationMiddleware::class, SetUserIdentityInRequestMiddleware::class)
+            ->insertAfter(SetUserIdentityInRequestMiddleware::class, SessionPreventExtensionMiddleware::class)
             ->add(new GpgAuthHeadersMiddleware())
             ->add($csrf);
 

@@ -333,8 +333,8 @@ class ResourcesShareService
      */
     private function postUserAccessRevoked(Resource $resource, string $userId): void
     {
-        // If the user still has access to the folder, don't alter the user tree.
-        $hasAccess = $this->userHasPermissionService->check(PermissionsTable::FOLDER_ACO, $resource->id, $userId);
+        // If the user still has access to the resource, don't alter the user tree.
+        $hasAccess = $this->userHasPermissionService->check(PermissionsTable::RESOURCE_ACO, $resource->id, $userId);
         if ($hasAccess) {
             return;
         }

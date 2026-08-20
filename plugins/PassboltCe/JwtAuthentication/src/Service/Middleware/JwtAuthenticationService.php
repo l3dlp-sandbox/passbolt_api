@@ -47,7 +47,7 @@ class JwtAuthenticationService extends AuthenticationService
                     'Authentication.JwtSubject' => [
                         'resolver' => [
                             'className' => 'Authentication.Orm',
-                            'finder' => 'activeNotDeletedContainRole',
+                            'finder' => 'activeNotDeletedNotDisabledContainRole',
                         ],
                     ],
                 ],

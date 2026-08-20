@@ -58,7 +58,7 @@ class MfaDuoCallbackAuthenticationTokenServiceTest extends TestCase
         $this->assertEquals($verifiedAuthToken->id, $authToken->id);
         $this->assertEquals($verifiedAuthToken->token, $authToken->token);
         $this->assertEquals($verifiedAuthToken->type, AuthenticationToken::TYPE_MFA_SETUP);
-        $this->assertEquals($verifiedAuthToken->active, true);
+        $this->assertFalse($verifiedAuthToken->active);
         $verifiedAuthTokenData = json_decode($verifiedAuthToken->data, true);
         $this->assertEquals($verifiedAuthTokenData['provider'], MfaSettings::PROVIDER_DUO);
         $this->assertEquals($verifiedAuthTokenData['state'], $duoState);

@@ -54,7 +54,7 @@ class FoldersRelationsFinderTraitTest extends FoldersTestCase
      */
     public function findAndAssertMissingFoldersRelations(string $foreignModel, array $expectedMissingFoldersRelations): void
     {
-        $missingFoldersRelations = $this->foldersRelationsTable->findMissingFoldersRelations($foreignModel)->disableHydration()->all();
+        $missingFoldersRelations = $this->foldersRelationsTable->findMissingFoldersRelations($foreignModel)->enableHydration(false)->all();
         $this->assertCount(count($expectedMissingFoldersRelations), $missingFoldersRelations);
         foreach ($expectedMissingFoldersRelations as $expectedMissingFoldersRelation) {
             $this->assertContains(

@@ -50,11 +50,16 @@ class SessionPreventExtensionMiddleware implements MiddlewareInterface
         ServerRequestInterface $request,
         RequestHandlerInterface $handler
     ): ResponseInterface {
-        /** @var \Cake\Http\ServerRequest $request */
+        /** @var \Authentication\Identity $identity */
+        $identity = $request->getAttribute('identity');
+        if ($identity === null) {
+            return $handler->handle($request);
+        }
 
+        /** @var \Cake\Http\ServerRequest $request */
         $session = $request->getSession();
 
-        if ($this->shouldSessionExtensionPrevented($request)) {
+        if ($this->shouldSessionExtensionBePrevented($request)) {
             $time = $session->read('SessionPreventExtensionMiddleware.time');
             if ($time) {
                 $session->write('Config.time', $time);
@@ -72,7 +77,7 @@ class SessionPreventExtensionMiddleware implements MiddlewareInterface
      * @param \Cake\Http\ServerRequest $request The request.
      * @return bool
      */
-    protected function shouldSessionExtensionPrevented(ServerRequest $request): bool
+    protected function shouldSessionExtensionBePrevented(ServerRequest $request): bool
     {
         $params = $request->getAttribute('params', '');
         $controller = Hash::get($params, 'controller');

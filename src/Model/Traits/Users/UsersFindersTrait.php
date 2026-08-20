@@ -29,6 +29,7 @@ use Cake\Collection\CollectionInterface;
 use Cake\Database\Expression\IdentifierExpression;
 use Cake\Database\Expression\QueryExpression;
 use Cake\I18n\DateTime;
+use Cake\ORM\Entity;
 use Cake\ORM\Query;
 use Cake\ORM\Query\SelectQuery;
 use Cake\Utility\Hash;
@@ -231,8 +232,9 @@ trait UsersFindersTrait
      */
     public function findIndex(string $role, ?array $options = []): SelectQuery
     {
+        $showLastLoggedIn = $role === Role::ADMIN;
         /** @var \Cake\ORM\Query\SelectQuery $query */
-        $query = $this->find();
+        $query = $this->find('all', showLastLoggedIn: $showLastLoggedIn);
 
         $event = TableFindIndexBefore::create($query, FindIndexOptions::createFromArray($options), $this);
 
@@ -258,7 +260,8 @@ trait UsersFindersTrait
             $query->contain(['Profiles' => AvatarsTable::addContainAvatar()]);
         }
         if (isset($options['contain']['groups_users']) && $options['contain']['groups_users']) {
-            $query->contain('GroupsUsers');
+            // Force select strategy: ORDER BY (e.g. a joined Profiles column) + a GROUP BY, which MySQL 5.7 only_full_group_by rejects.
+            $query->contain(['GroupsUsers' => ['strategy' => 'select']]);
         }
 
         // Filter out guests and deleted users
@@ -381,7 +384,7 @@ trait UsersFindersTrait
     public function findAuthIdentifier(SelectQuery $query): SelectQuery
     {
         return $query
-            ->find('activeNotDeletedContainRole')
+            ->find('activeNotDeletedContainRole', showLastLoggedIn: true)
             ->find('notDisabled')
             ->select([
                 'Users.id',
@@ -474,8 +477,7 @@ trait UsersFindersTrait
             ->groupBy('LOWER(Users.username)')
             ->having('count(*) > 1');
 
-        return $this->find('list', keyField: 'id', valueField: 'username')
-            ->disableHydration()
+        return $this->unhydratedFind('list', keyField: 'id', valueField: 'username')
             ->select(['id', 'username'])
             ->where([
                 'LOWER(username) IN' => $subQueryOfLowerCasedUsernameDuplicates,
@@ -661,6 +663,32 @@ trait UsersFindersTrait
     }
 
     /**
+     * Unset users' last logged in date if the user role is not admin.
+     *
+     * @param \Cake\ORM\Query\SelectQuery $query query
+     * @param bool|null $showLastLoggedIn role
+     * @return \Cake\ORM\Query\SelectQuery
+     */
+    public function findUnsetLastLoggedInForNonAdmin(SelectQuery $query, ?bool $showLastLoggedIn): SelectQuery
+    {
+        if (!$showLastLoggedIn) {
+            $query->formatResults(function ($results) {
+                return $results->map(function ($user) {
+                    if (is_array($user)) {
+                        unset($user['last_logged_in']);
+                    } elseif ($user instanceof Entity) {
+                        $user->unset('last_logged_in');
+                    }
+
+                    return $user;
+                });
+            });
+        }
+
+        return $query;
+    }
+
+    /**
      * Retrieve users' last logged in date.
      *
      * @deprecated only used for populating old data. With v5.4, the field in users table is used.
@@ -717,6 +745,19 @@ trait UsersFindersTrait
     public function findActiveNotDeletedContainRole(SelectQuery $query): SelectQuery
     {
         return $query->find('activeNotDeleted')->contain('Roles');
+    }
+
+    /**
+     * Active and non deleted not disabled users only with role
+     *
+     * @param \Cake\ORM\Query\SelectQuery $query Query to carve.
+     * @return \Cake\ORM\Query\SelectQuery
+     */
+    public function findActiveNotDeletedNotDisabledContainRole(SelectQuery $query): SelectQuery
+    {
+        return $query->find('activeNotDeleted')
+            ->find('notDisabled')
+            ->contain('Roles');
     }
 
     /**

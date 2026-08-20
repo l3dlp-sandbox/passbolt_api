@@ -112,7 +112,7 @@ return [
                 'enabled' => filter_var(env('PASSBOLT_PLUGINS_MFA_POLICIES_ENABLED', true), FILTER_VALIDATE_BOOLEAN),
             ],
             'ssoRecover' => [
-                'enabled' => filter_var(env('PASSBOLT_PLUGINS_SSO_RECOVER_ENABLED', true), FILTER_VALIDATE_BOOLEAN)
+                'enabled' => filter_var(env('PASSBOLT_PLUGINS_SSO_RECOVER_ENABLED', true), FILTER_VALIDATE_BOOLEAN),
             ],
             'directorySync' => [
                 'caseSensitiveFilters' => filter_var(env('PASSBOLT_PLUGINS_DIRECTORY_SYNC_CASE_SENSITIVE_FILTERS', false), FILTER_VALIDATE_BOOLEAN),
@@ -234,6 +234,23 @@ return [
                 'sslCafile' => env('PASSBOLT_SECURITY_SSO_SSL_CAFILE', null),
                 'settings' => [
                     'editionDisabled' => filter_var(env('PASSBOLT_SECURITY_SSO_SETTINGS_EDITION_DISABLED', false), FILTER_VALIDATE_BOOLEAN),
+                ],
+                /**
+                 * SSRF egress guard
+                 */
+                'egress' => [
+                    // Master switch for the guard. Default off.
+                    // Admin needs to explicitly enables SSRF filtering.
+                    'enabled' => filter_var(env('PASSBOLT_SECURITY_SSO_EGRESS_GUARD_ENABLED', false), FILTER_VALIDATE_BOOLEAN),
+                    // Enforce vs. warn-only. `false` logs a warning but still connects; `true` blocks the connection
+                    'block' => filter_var(env('PASSBOLT_SECURITY_SSO_EGRESS_BLOCK_ENABLED', false), FILTER_VALIDATE_BOOLEAN),
+                    // Turn the always-blocked category on/off (link-local + cloud metadata)
+                    'blockLinkLocal' => filter_var(env('PASSBOLT_SECURITY_SSO_EGRESS_BLOCK_LINK_LOCAL', true), FILTER_VALIDATE_BOOLEAN),
+                    // Turn the private-range category on/off (loopback, RFC1918, unique local addresses, carrier-grade NAT)
+                    'blockPrivateRanges' => filter_var(env('PASSBOLT_SECURITY_SSO_EGRESS_BLOCK_PRIVATE_RANGES', true), FILTER_VALIDATE_BOOLEAN),
+                    // Exact IPs allowed to bypass the private-range block only (never link-local/metadata)
+                    // Comma-separated string, e.g. '10.10.5.20,10.10.5.21'
+                    'privateRangeAllowedIps' => env('PASSBOLT_SECURITY_SSO_EGRESS_PRIVATE_RANGE_ALLOWED_IPS', null),
                 ],
             ],
         ],

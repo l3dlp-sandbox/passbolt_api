@@ -118,8 +118,7 @@ class PermissionsHistoryTable extends Table
     {
         $validator
             ->uuid('id', __('The identifier should be a valid UUID.'))
-            ->requirePresence('id', 'create', __('An identifier is required.'))
-            ->notEmptyString('id', __('The identifier should not be empty.'));
+            ->allowEmptyString('id', __('The identifier should not be empty.'), 'create');
 
         $validator
             ->inList('aco', PermissionsTable::ALLOWED_ACOS, __(
@@ -176,7 +175,6 @@ class PermissionsHistoryTable extends Table
     {
         return $this->newEntity($data, [
             'accessibleFields' => [
-                'id' => true,
                 'aco' => true,
                 'aco_foreign_key' => true,
                 'aro' => true,

@@ -22,6 +22,7 @@ use Cake\Http\Exception\BadRequestException;
 use Cake\Log\Log;
 use Cake\Utility\Hash;
 use Passbolt\Metadata\MetadataPlugin;
+use Passbolt\Metadata\Model\Entity\MetadataKey;
 
 class MetadataFolderDto extends MetadataDto
 {
@@ -102,7 +103,11 @@ class MetadataFolderDto extends MetadataDto
             return;
         }
 
-        if ($this->metadataKeyType === 'user_key') {
+        if (!$this->isV5()) {
+            return;
+        }
+
+        if ($this->metadataKeyType !== MetadataKey::TYPE_SHARED_KEY) {
             throw new BadRequestException(__('Folder can not be shared'));
         }
     }

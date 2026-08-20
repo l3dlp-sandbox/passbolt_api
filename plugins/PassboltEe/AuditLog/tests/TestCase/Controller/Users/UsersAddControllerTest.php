@@ -75,13 +75,13 @@ class UsersAddControllerTest extends LogIntegrationTestCase
             'id' => $user->get('id'),
             'role_id' => $adminRoleId,
             'username' => $username,
-            'last_logged_in' => null,
             'profile' => [
                 'first_name' => $firstName,
                 'last_name' => $lastName,
                 'id' => $user->profile->id,
             ],
         ]];
+        $this->assertArrayNotHasKey('last_logged_in', $data);
         $this->assertSame($expected, $data);
         $this->assertSame($admin->id, $creator['id']);
         $this->assertSame($admin->profile->first_name, $creator['profile']['first_name']);

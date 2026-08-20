@@ -291,7 +291,7 @@ class TagsTableTest extends TagTestCase
             ->find()
             ->where(['Resources.id' => $resource->get('id')]);
         if (!$hydrateQuery) {
-            $query->disableHydration();
+            $query->enableHydration(false);
         }
         $options['contain']['all_tags'] = true;
         $options['contain']['tag'] = true;
@@ -325,7 +325,7 @@ class TagsTableTest extends TagTestCase
             ->find()
             ->where(['Resources.id' => $resource->get('id')]);
         if (!$hydrateQuery) {
-            $query->disableHydration();
+            $query->enableHydration(false);
         }
         $options['contain']['tag'] = true;
         $options['filter']['has-tag'] = $tag->get('slug');

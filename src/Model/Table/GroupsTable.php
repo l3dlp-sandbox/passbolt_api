@@ -23,6 +23,7 @@ use App\Model\Rule\IsNotSoftDeletedRule;
 use App\Model\Rule\IsNotSoleOwnerOfSharedResourcesRule;
 use App\Model\Traits\Cleanup\TableCleanupTrait;
 use App\Model\Traits\Groups\GroupsFindersTrait;
+use App\Model\Validation\HasNoInvisibleCharactersValidationRule;
 use App\Service\Secrets\SecretsFindSecretsAccessibleViaGroupOnlyService;
 use App\Utility\UserAccessControl;
 use Cake\Core\Configure;
@@ -117,7 +118,8 @@ class GroupsTable extends Table implements TableCleanupProviderInterface
             ->utf8Extended('name', __('The name should be a valid UTF8 string.'))
             ->maxLength('name', 255, __('The name length should be maximum {0} characters.', 255))
             ->requirePresence('name', 'create', __('A name is required.'))
-            ->allowEmptyString('name', __('The name should not be empty.'), false);
+            ->allowEmptyString('name', __('The name should not be empty.'), false)
+            ->add('name', 'noInvisibleCharacters', new HasNoInvisibleCharactersValidationRule());
 
         $validator
             ->boolean('deleted', __('The deleted status should be a valid boolean.'))

@@ -16,7 +16,7 @@ declare(strict_types=1);
  */
 namespace App\Test\TestCase\Controller\Notifications;
 
-use App\Notification\Email\Redactor\User\AdminDeleteEmailRedactor;
+use App\Notification\Email\Redactor\User\UserDeleteAdminEmailRedactor;
 use App\Test\Factory\GroupFactory;
 use App\Test\Factory\GroupsUserFactory;
 use App\Test\Factory\RoleFactory;
@@ -28,7 +28,7 @@ use Cake\Event\EventList;
 use Cake\Event\EventManager;
 
 /**
- * @covers \App\Notification\Email\Redactor\User\AdminDeleteEmailRedactor
+ * @covers \App\Notification\Email\Redactor\User\UserDeleteAdminEmailRedactor
  */
 class AdminDeleteNotificationTest extends AppIntegrationTestCase
 {
@@ -80,17 +80,40 @@ class AdminDeleteNotificationTest extends AppIntegrationTestCase
         );
     }
 
-    public function testAdminDeleteNotification_Delete_User_Should_Not_Send_Notification(): void
+    public function testAdminDeleteNotification_Delete_User_Should_Notify_Admins(): void
     {
         /** @var \App\Model\Entity\User $userDeleted */
         $userDeleted = UserFactory::make()->user()->persist();
+        /** @var \App\Model\Entity\User $operator */
+        $operator = UserFactory::make()->admin()->active()->persist();
+        /** @var \App\Model\Entity\User $otherAdmin */
+        $otherAdmin = UserFactory::make()->admin()->active()->persist();
+        // Should not receive a notification
+        UserFactory::make()->admin()->disabled()->persist();
 
-        $this->logInAsAdmin();
+        $this->logInAs($operator);
         $this->deleteJson("/users/{$userDeleted->id}.json");
 
         $this->assertSuccess();
-        // No emails should be sent if the deleted user is not an admin
-        $this->assertEmailQueueCount(0);
+        $this->assertEmailQueueCount(2);
+        $userFullName = $userDeleted->profile->full_name;
+        $operatorFullName = $operator->profile->full_name;
+        $this->assertEmailInBatchContains(
+            "You deleted user {$userFullName}",
+            $operator->username
+        );
+        $this->assertEmailInBatchContains(
+            "The user {$userFullName} ({$userDeleted->username}) is now deleted from the passbolt organisation.",
+            $operator->username
+        );
+        $this->assertEmailInBatchContains(
+            "{$operatorFullName} deleted user {$userFullName}",
+            $otherAdmin->username
+        );
+        $this->assertEmailInBatchContains(
+            "The user {$userFullName} ({$userDeleted->username}) is now deleted from the passbolt organisation.",
+            $otherAdmin->username
+        );
     }
 
     public function testAdminDeleteNotification_NotificationOff(): void
@@ -101,7 +124,7 @@ class AdminDeleteNotificationTest extends AppIntegrationTestCase
         $operator = UserFactory::make()->admin()->active()->persist();
         UserFactory::make()->admin()->active()->persist();
         // Turn off notification
-        Configure::write(AdminDeleteEmailRedactor::CONFIG_KEY_EMAIL_ENABLED, false);
+        Configure::write(UserDeleteAdminEmailRedactor::CONFIG_KEY_EMAIL_ENABLED, false);
 
         $this->logInAs($operator);
         $this->deleteJson("/users/{$admin->id}.json");
@@ -221,7 +244,7 @@ class AdminDeleteNotificationTest extends AppIntegrationTestCase
             ->with('Groups', $group)
             ->persist();
         // Turn on notification for user themselves who got deleted
-        Configure::write(AdminDeleteEmailRedactor::CONFIG_KEY_SEND_USER_EMAIL, true);
+        Configure::write(UserDeleteAdminEmailRedactor::CONFIG_KEY_SEND_USER_EMAIL, true);
 
         $this->logInAs($operator);
         $this->deleteJson("/users/{$admin->id}.json");

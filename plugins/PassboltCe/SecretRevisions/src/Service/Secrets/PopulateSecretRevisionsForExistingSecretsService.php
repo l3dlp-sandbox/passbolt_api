@@ -102,8 +102,7 @@ class PopulateSecretRevisionsForExistingSecretsService
         // Select resources to insert - use cursor-based iteration instead of loading all into memory
         $fn = $this->ResourcesTable->find()->func();
         $resourcesSelectQuery = $this->ResourcesTable
-            ->find()
-            ->disableHydration()
+            ->unhydratedFind()
             ->select([
                 'Resources.id',
                 'Resources.resource_type_id',
