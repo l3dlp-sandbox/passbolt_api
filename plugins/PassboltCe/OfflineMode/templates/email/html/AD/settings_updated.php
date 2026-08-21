@@ -48,6 +48,7 @@ echo $this->element('Email/module/avatar', [
 $text = __('The Offline Mode settings have been updated, the new configuration is as follows:') . '<br/>';
 $text .= __('Maximum session duration: {0} seconds', (int)$offlineSettings['max_session_duration']) . '<br/>';
 $text .= __('Data retention period: {0} seconds', (int)$offlineSettings['data_retention_period']) . '<br/>';
+$text .= __('Maximum number of offline items (per user): {0}', (int)$offlineSettings['max_items']) . '<br/>';
 
 echo $this->element('Email/module/text', [
     'text' => $text,

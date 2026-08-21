@@ -59,7 +59,7 @@ class OfflineSettingsGetServiceTest extends AppTestCase
     public function testOfflineSettingsGetService_Get_Success_ReturnsFromDB(): void
     {
         $setting = OfflineModeSettingFactory::make()
-            ->setField('value', ['max_session_duration' => 3600, 'data_retention_period' => 7200])
+            ->setField('value', ['max_session_duration' => 3600, 'data_retention_period' => 7200, 'max_items' => 1000])
             ->persist();
 
         $result = $this->service->get();
@@ -74,6 +74,7 @@ class OfflineSettingsGetServiceTest extends AppTestCase
                 'id' => $setting->get('id'),
                 'max_session_duration' => 3600,
                 'data_retention_period' => 7200,
+                'max_items' => 1000,
                 'created' => $setting->get('created')->toIso8601String(),
                 'created_by' => $setting->get('created_by'),
                 'modified' => $setting->get('modified')->toIso8601String(),
@@ -86,7 +87,7 @@ class OfflineSettingsGetServiceTest extends AppTestCase
     public function testOfflineSettingsGetService_IsEnabled_True_WhenRowExists(): void
     {
         OfflineModeSettingFactory::make()
-            ->setField('value', ['max_session_duration' => 3600, 'data_retention_period' => 7200])
+            ->setField('value', ['max_session_duration' => 3600, 'data_retention_period' => 7200, 'max_items' => 1000])
             ->persist();
         $result = $this->service->isEnabled();
         $this->assertTrue($result);

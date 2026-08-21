@@ -18,6 +18,7 @@ namespace Passbolt\OfflineMode\Test\Factory;
 
 use App\Test\Factory\OrganizationSettingFactory;
 use Cake\ORM\TableRegistry;
+use Passbolt\OfflineMode\Model\Dto\OfflineSettingsDto;
 use Passbolt\OfflineMode\Model\Table\OfflineModeSettingsTable;
 
 /**
@@ -56,6 +57,7 @@ class OfflineModeSettingFactory extends OrganizationSettingFactory
             'value' => [
                 'max_session_duration' => 3600,
                 'data_retention_period' => 7200,
+                'max_items' => OfflineSettingsDto::DEFAULT_MAX_ITEMS,
             ],
         ]);
     }
@@ -72,5 +74,18 @@ class OfflineModeSettingFactory extends OrganizationSettingFactory
     public function default()
     {
         return $this;
+    }
+
+    /**
+     * @param int $maxItems Value to set.
+     * @return $this
+     */
+    public function setMaxItems(int $maxItems)
+    {
+        /** @var array $value */
+        $value = $this->getEntity()->get('value');
+        $value['max_items'] = $maxItems;
+
+        return $this->setField('value', $value);
     }
 }

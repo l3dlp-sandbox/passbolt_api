@@ -43,7 +43,7 @@ class OfflineSettingsGetControllerTest extends AppIntegrationTestCase
     public function testOfflineSettingsGetController_Success_StoredValuesWithAuditFields(): void
     {
         $setting = OfflineModeSettingFactory::make()
-            ->setField('value', ['max_session_duration' => 3600, 'data_retention_period' => 7200])
+            ->setField('value', ['max_session_duration' => 3600, 'data_retention_period' => 7200, 'max_items' => 1000])
             ->persist();
 
         $this->logInAsUser();
@@ -54,6 +54,7 @@ class OfflineSettingsGetControllerTest extends AppIntegrationTestCase
         $this->assertSame($setting->get('id'), $body['id']);
         $this->assertSame(3600, $body['max_session_duration']);
         $this->assertSame(7200, $body['data_retention_period']);
+        $this->assertSame(1000, $body['max_items']);
         $this->assertArrayHasKey('created', $body);
         $this->assertArrayHasKey('created_by', $body);
         $this->assertArrayHasKey('modified', $body);
@@ -63,7 +64,7 @@ class OfflineSettingsGetControllerTest extends AppIntegrationTestCase
     public function testOfflineSettingsGetController_Success_AdminSeesSameShape(): void
     {
         OfflineModeSettingFactory::make()
-            ->setField('value', ['max_session_duration' => 3600, 'data_retention_period' => 7200])
+            ->setField('value', ['max_session_duration' => 3600, 'data_retention_period' => 7200, 'max_items' => 1000])
             ->persist();
 
         $this->logInAsAdmin();

@@ -22,11 +22,15 @@ use Passbolt\OfflineMode\Model\Entity\OfflineModeSetting;
 
 class OfflineSettingsDto
 {
-    public const DEFAULT_MAX_SESSION_DURATION = 86400;
-    public const DEFAULT_DATA_RETENTION_PERIOD = 120000;
+    public const DEFAULT_MAX_SESSION_DURATION = 86400; // in seconds
+    public const DEFAULT_DATA_RETENTION_PERIOD = 120000; // in seconds
+    public const DEFAULT_MAX_ITEMS = 1000; // a count, not seconds
+    public const MIN_MAX_ITEMS = 1;
+    public const MAX_MAX_ITEMS = 5000;
 
     public int $max_session_duration;
     public int $data_retention_period;
+    public int $max_items;
     public ?string $id = null;
     public ?DateTime $created = null;
     public ?string $created_by = null;
@@ -36,6 +40,7 @@ class OfflineSettingsDto
     /**
      * @param int $maxSessionDuration Maximum session duration (in seconds).
      * @param int $dataRetentionPeriod Data retention period (in seconds).
+     * @param int $maxItems Maximum number of offline items per user.
      * @param string|null $id Backing organization-settings row id, when present.
      * @param \Cake\I18n\DateTime|null $created Row creation timestamp, when present.
      * @param string|null $createdBy Creator user id, when present.
@@ -45,6 +50,7 @@ class OfflineSettingsDto
     public function __construct(
         int $maxSessionDuration,
         int $dataRetentionPeriod,
+        int $maxItems,
         ?string $id = null,
         ?DateTime $created = null,
         ?string $createdBy = null,
@@ -53,6 +59,7 @@ class OfflineSettingsDto
     ) {
         $this->max_session_duration = $maxSessionDuration;
         $this->data_retention_period = $dataRetentionPeriod;
+        $this->max_items = $maxItems;
         $this->id = $id;
         $this->created = $created;
         $this->created_by = $createdBy;
@@ -69,10 +76,12 @@ class OfflineSettingsDto
     {
         self::assertMaxSessionDuration($data);
         self::assertDataRetentionPeriod($data);
+        self::assertMaxItems($data);
 
         return new self(
             $data['max_session_duration'],
             $data['data_retention_period'],
+            $data['max_items'],
             $data['id'] ?? null,
             $data['created'] ?? null,
             $data['created_by'] ?? null,
@@ -116,6 +125,7 @@ class OfflineSettingsDto
             'id' => $this->id,
             'max_session_duration' => $this->max_session_duration,
             'data_retention_period' => $this->data_retention_period,
+            'max_items' => $this->max_items,
             'created' => $this->created,
             'created_by' => $this->created_by,
             'modified' => $this->modified,
@@ -147,6 +157,20 @@ class OfflineSettingsDto
         if (!array_key_exists('data_retention_period', $data) || !is_int($data['data_retention_period'])) {
             throw new InvalidArgumentException(
                 'OfflineSettingsDto: `data_retention_period` is required and must be an integer.'
+            );
+        }
+    }
+
+    /**
+     * @param array $data
+     * @return void
+     * @throws \InvalidArgumentException When the max_items value doesn't pass the assertions.
+     */
+    private static function assertMaxItems(array $data): void
+    {
+        if (!array_key_exists('max_items', $data) || !is_int($data['max_items'])) {
+            throw new InvalidArgumentException(
+                'OfflineSettingsDto: `max_items` is required and must be an integer.'
             );
         }
     }

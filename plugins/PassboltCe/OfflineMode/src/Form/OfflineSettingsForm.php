@@ -19,6 +19,7 @@ namespace Passbolt\OfflineMode\Form;
 use Cake\Form\Form;
 use Cake\Form\Schema;
 use Cake\Validation\Validator;
+use Passbolt\OfflineMode\Model\Dto\OfflineSettingsDto;
 
 class OfflineSettingsForm extends Form
 {
@@ -30,7 +31,8 @@ class OfflineSettingsForm extends Form
     {
         return $schema
             ->addField('max_session_duration', ['type' => 'integer'])
-            ->addField('data_retention_period', ['type' => 'integer']);
+            ->addField('data_retention_period', ['type' => 'integer'])
+            ->addField('max_items', ['type' => 'integer']);
     }
 
     /**
@@ -49,6 +51,19 @@ class OfflineSettingsForm extends Form
             ->integer('data_retention_period', __('The setting should be a valid integer.'))
             ->greaterThan('data_retention_period', 0, __('The setting should be a positive integer.'));
 
+        $validator
+            ->requirePresence('max_items', true, __('The setting is required.'))
+            ->integer('max_items', __('The setting should be a valid integer.'))
+            ->range(
+                'max_items',
+                [OfflineSettingsDto::MIN_MAX_ITEMS, OfflineSettingsDto::MAX_MAX_ITEMS],
+                __(
+                    'The setting should be between {0} and {1}.',
+                    OfflineSettingsDto::MIN_MAX_ITEMS,
+                    OfflineSettingsDto::MAX_MAX_ITEMS
+                )
+            );
+
         return $validator;
     }
 
@@ -64,13 +79,14 @@ class OfflineSettingsForm extends Form
 
     /**
      * @param array $data Input payload.
-     * @return array{max_session_duration: mixed, data_retention_period: mixed}
+     * @return array{max_session_duration: mixed, data_retention_period: mixed, max_items: mixed}
      */
     protected function sanitizeData(array $data): array
     {
         return [
             'max_session_duration' => $data['max_session_duration'] ?? null,
             'data_retention_period' => $data['data_retention_period'] ?? null,
+            'max_items' => $data['max_items'] ?? null,
         ];
     }
 }

@@ -60,6 +60,7 @@ class OfflineSettingsSetService
             [
                 'max_session_duration' => (int)$validated['max_session_duration'],
                 'data_retention_period' => (int)$validated['data_retention_period'],
+                'max_items' => (int)$validated['max_items'],
             ],
             $uac
         );

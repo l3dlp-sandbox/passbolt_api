@@ -17,6 +17,7 @@ declare(strict_types=1);
 namespace Passbolt\OfflineMode\Test\TestCase\Controller;
 
 use App\Test\Lib\AppIntegrationTestCase;
+use Passbolt\OfflineMode\Model\Dto\OfflineSettingsDto;
 use Passbolt\OfflineMode\OfflineModePlugin;
 use Passbolt\OfflineMode\Test\Factory\OfflineModeSettingFactory;
 
@@ -40,6 +41,7 @@ class OfflineSettingsPostControllerTest extends AppIntegrationTestCase
         $this->postJson('/offline/settings.json', [
             'max_session_duration' => 3600,
             'data_retention_period' => 7200,
+            'max_items' => 1000,
         ]);
 
         $this->assertResponseOk();
@@ -49,6 +51,7 @@ class OfflineSettingsPostControllerTest extends AppIntegrationTestCase
                 'id' => $row->get('id'),
                 'max_session_duration' => 3600,
                 'data_retention_period' => 7200,
+                'max_items' => 1000,
                 'created' => $row->get('created')->toIso8601String(),
                 'created_by' => $row->get('created_by'),
                 'modified' => $row->get('modified')->toIso8601String(),
@@ -62,13 +65,14 @@ class OfflineSettingsPostControllerTest extends AppIntegrationTestCase
     public function testOfflineSettingsPostController_Success_UpdatesExistingRow(): void
     {
         $original = OfflineModeSettingFactory::make()
-            ->setField('value', ['max_session_duration' => 1000, 'data_retention_period' => 2000])
+            ->setField('value', ['max_session_duration' => 1000, 'data_retention_period' => 2000, 'max_items' => 1000])
             ->persist();
         $this->logInAsAdmin();
 
         $this->postJson('/offline/settings.json', [
             'max_session_duration' => 3600,
             'data_retention_period' => 7200,
+            'max_items' => 1000,
         ]);
 
         $this->assertResponseOk();
@@ -77,6 +81,7 @@ class OfflineSettingsPostControllerTest extends AppIntegrationTestCase
         $this->assertSame($original->get('id'), $body['id'], 'Update preserves the row id.');
         $this->assertSame(3600, $body['max_session_duration']);
         $this->assertSame(7200, $body['data_retention_period']);
+        $this->assertSame(1000, $body['max_items']);
         $this->assertSame($row->get('modified_by'), $body['modified_by']);
         $this->assertSame(1, OfflineModeSettingFactory::find()->count());
     }
@@ -86,6 +91,7 @@ class OfflineSettingsPostControllerTest extends AppIntegrationTestCase
         $this->postJson('/offline/settings.json', [
             'max_session_duration' => 3600,
             'data_retention_period' => 7200,
+            'max_items' => 1000,
         ]);
 
         $this->assertAuthenticationError();
@@ -98,6 +104,7 @@ class OfflineSettingsPostControllerTest extends AppIntegrationTestCase
         $this->postJson('/offline/settings.json', [
             'max_session_duration' => 3600,
             'data_retention_period' => 7200,
+            'max_items' => 1000,
         ]);
 
         $this->assertForbiddenError('Access restricted to administrators');
@@ -119,8 +126,14 @@ class OfflineSettingsPostControllerTest extends AppIntegrationTestCase
         $this->postJson('/offline/settings.json', [
             'max_session_duration' => 'not-an-int',
             'data_retention_period' => -1,
+            'max_items' => OfflineSettingsDto::MAX_MAX_ITEMS + 1,
         ]);
 
         $this->assertBadRequestError('Could not validate offline settings data');
+        $response = $this->getResponseBodyAsArray();
+        $this->assertCount(3, $response);
+        $this->assertArrayHasAttributes(['integer', 'greaterThan'], $response['max_session_duration']);
+        $this->assertArrayHasKey('greaterThan', $response['data_retention_period']);
+        $this->assertArrayHasKey('range', $response['max_items']);
     }
 }

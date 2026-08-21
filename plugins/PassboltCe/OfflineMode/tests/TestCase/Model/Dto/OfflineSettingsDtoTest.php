@@ -33,10 +33,12 @@ class OfflineSettingsDtoTest extends TestCase
         $dto = OfflineSettingsDto::createFromArray([
             'max_session_duration' => 86400,
             'data_retention_period' => 120000,
+            'max_items' => 1000,
         ]);
 
         $this->assertSame(86400, $dto->max_session_duration);
         $this->assertSame(120000, $dto->data_retention_period);
+        $this->assertSame(1000, $dto->max_items);
         $this->assertNull($dto->id);
         $this->assertNull($dto->created);
         $this->assertNull($dto->created_by);
@@ -53,6 +55,7 @@ class OfflineSettingsDtoTest extends TestCase
         $dto = OfflineSettingsDto::createFromArray([
             'max_session_duration' => 86400,
             'data_retention_period' => 120000,
+            'max_items' => 1000,
             'id' => UuidFactory::uuid('row'),
             'created' => $created,
             'created_by' => $userId,
@@ -83,7 +86,11 @@ class OfflineSettingsDtoTest extends TestCase
      */
     public function testOfflineSettingsDto_CreateFromArray_Error_InvalidMaxSessionDuration(mixed $invalidValue): void
     {
-        $data = ['data_retention_period' => 7200, 'max_session_duration' => $invalidValue];
+        $data = [
+            'data_retention_period' => 7200,
+            'max_items' => 1000,
+            'max_session_duration' => $invalidValue,
+        ];
         if (is_null($invalidValue)) {
             unset($data['max_session_duration']);
         }
@@ -110,13 +117,48 @@ class OfflineSettingsDtoTest extends TestCase
      */
     public function testOfflineSettingsDto_CreateFromArray_Error_InvalidDataRetentionPeriod(mixed $invalidValue): void
     {
-        $data = ['data_retention_period' => $invalidValue, 'max_session_duration' => 120000];
+        $data = [
+            'max_session_duration' => 120000,
+            'max_items' => 1000,
+            'data_retention_period' => $invalidValue,
+        ];
         if (is_null($invalidValue)) {
             unset($data['data_retention_period']);
         }
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessageMatches('/data_retention_period/');
+
+        OfflineSettingsDto::createFromArray($data);
+    }
+
+    public static function invalidMaxItemsValuesProvider(): array
+    {
+        return [
+            [null],
+            ['string'],
+            [[]],
+        ];
+    }
+
+    /**
+     * @dataProvider invalidMaxItemsValuesProvider
+     * @param mixed $invalidValue Invalid value.
+     * @return void
+     */
+    public function testOfflineSettingsDto_CreateFromArray_Error_InvalidMaxItems(mixed $invalidValue): void
+    {
+        $data = [
+            'max_session_duration' => 86400,
+            'data_retention_period' => 120000,
+            'max_items' => $invalidValue,
+        ];
+        if (is_null($invalidValue)) {
+            unset($data['max_items']);
+        }
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessageMatches('/max_items/');
 
         OfflineSettingsDto::createFromArray($data);
     }
@@ -130,7 +172,7 @@ class OfflineSettingsDtoTest extends TestCase
 
         $entity = new OfflineModeSetting([
             'id' => $rowId,
-            'value' => ['max_session_duration' => 3600, 'data_retention_period' => 7200],
+            'value' => ['max_session_duration' => 3600, 'data_retention_period' => 7200, 'max_items' => 1000],
             'created' => $created,
             'created_by' => $userId,
             'modified' => $modified,
@@ -141,6 +183,7 @@ class OfflineSettingsDtoTest extends TestCase
 
         $this->assertSame(3600, $dto->max_session_duration);
         $this->assertSame(7200, $dto->data_retention_period);
+        $this->assertSame(1000, $dto->max_items);
         $this->assertSame($rowId, $dto->id);
         $this->assertSame($created, $dto->created);
         $this->assertSame($userId, $dto->created_by);
