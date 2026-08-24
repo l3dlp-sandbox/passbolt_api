@@ -81,8 +81,8 @@ class OfflineSettingsSetEmailRedactorTest extends AppTestCase
                 $this->assertStringContainsString('edited the Offline Mode settings', $email->getSubject());
                 $this->assertStringContainsString($actor->profile->first_name, $email->getSubject());
             }
-            $this->assertSame(3600, $body['settings']['max_session_duration']);
-            $this->assertSame(7200, $body['settings']['data_retention_period']);
+            $this->assertSame(300, $body['settings']['max_session_duration']);
+            $this->assertSame(604800, $body['settings']['data_retention_period']);
             $this->assertSame(1000, $body['settings']['max_items']);
             $this->assertSame('127.0.0.1', $body['ip']);
             $this->assertSame('test-user-agent', $body['user_agent']);
@@ -116,8 +116,8 @@ class OfflineSettingsSetEmailRedactorTest extends AppTestCase
     {
         $event = new Event(OfflineSettingsSetService::EVENT_SETTINGS_UPDATED);
         $dto = OfflineSettingsDto::createFromArray([
-            'max_session_duration' => 3600,
-            'data_retention_period' => 7200,
+            'max_session_duration' => 300,
+            'data_retention_period' => 604800,
             'max_items' => 1000,
         ]);
         $event->setData(['dto' => $dto]);
@@ -140,8 +140,8 @@ class OfflineSettingsSetEmailRedactorTest extends AppTestCase
             'test-user-agent'
         );
         $dto = OfflineSettingsDto::createFromArray([
-            'max_session_duration' => 3600,
-            'data_retention_period' => 7200,
+            'max_session_duration' => 300,
+            'data_retention_period' => 604800,
             'max_items' => 1000,
         ]);
         $event = new Event(OfflineSettingsSetService::EVENT_SETTINGS_UPDATED);

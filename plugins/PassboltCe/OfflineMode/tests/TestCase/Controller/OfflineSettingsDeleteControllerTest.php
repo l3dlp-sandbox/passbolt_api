@@ -38,7 +38,7 @@ class OfflineSettingsDeleteControllerTest extends AppIntegrationTestCase
     public function testOfflineSettingsDeleteController_Success_DeletesRow(): void
     {
         $row = OfflineModeSettingFactory::make()
-            ->setField('value', json_encode(['max_session_duration' => 3600, 'data_retention_period' => 7200]))
+            ->setField('value', json_encode(['max_session_duration' => 300, 'data_retention_period' => 604800]))
             ->persist();
         $this->logInAsAdmin();
 
@@ -69,7 +69,7 @@ class OfflineSettingsDeleteControllerTest extends AppIntegrationTestCase
     public function testOfflineSettingsDeleteController_Error_NotAuthenticated(): void
     {
         $row = OfflineModeSettingFactory::make()
-            ->setField('value', json_encode(['max_session_duration' => 3600, 'data_retention_period' => 7200]))
+            ->setField('value', json_encode(['max_session_duration' => 300, 'data_retention_period' => 604800]))
             ->persist();
 
         $id = $row->get('id');
@@ -81,7 +81,7 @@ class OfflineSettingsDeleteControllerTest extends AppIntegrationTestCase
     public function testOfflineSettingsDeleteController_Error_NotAdmin(): void
     {
         $row = OfflineModeSettingFactory::make()
-            ->setField('value', json_encode(['max_session_duration' => 3600, 'data_retention_period' => 7200]))
+            ->setField('value', json_encode(['max_session_duration' => 300, 'data_retention_period' => 604800]))
             ->persist();
         $this->logInAsUser();
 
@@ -94,7 +94,7 @@ class OfflineSettingsDeleteControllerTest extends AppIntegrationTestCase
     public function testOfflineSettingsDeleteController_Error_NotJson(): void
     {
         $row = OfflineModeSettingFactory::make()
-            ->setField('value', json_encode(['max_session_duration' => 3600, 'data_retention_period' => 7200]))
+            ->setField('value', json_encode(['max_session_duration' => 300, 'data_retention_period' => 604800]))
             ->persist();
         $this->logInAsAdmin();
 

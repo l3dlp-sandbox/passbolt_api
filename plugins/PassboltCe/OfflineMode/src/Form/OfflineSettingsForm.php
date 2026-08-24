@@ -44,19 +44,44 @@ class OfflineSettingsForm extends Form
         $validator
             ->requirePresence('max_session_duration', true, __('The setting is required.'))
             ->integer('max_session_duration', __('The setting should be a valid integer.'))
-            ->greaterThan('max_session_duration', 0, __('The setting should be a positive integer.'));
+            ->range(
+                'max_session_duration',
+                [
+                    OfflineSettingsDto::MIN_MAX_SESSION_DURATION,
+                    OfflineSettingsDto::MAX_MAX_SESSION_DURATION,
+                ],
+                __(
+                    'The setting should be between {0} and {1}.',
+                    OfflineSettingsDto::MIN_MAX_SESSION_DURATION,
+                    OfflineSettingsDto::MAX_MAX_SESSION_DURATION
+                )
+            );
 
         $validator
             ->requirePresence('data_retention_period', true, __('The setting is required.'))
             ->integer('data_retention_period', __('The setting should be a valid integer.'))
-            ->greaterThan('data_retention_period', 0, __('The setting should be a positive integer.'));
+            ->range(
+                'data_retention_period',
+                [
+                    OfflineSettingsDto::MIN_DATA_RETENTION_PERIOD,
+                    OfflineSettingsDto::MAX_DATA_RETENTION_PERIOD,
+                ],
+                __(
+                    'The setting should be between {0} and {1}.',
+                    OfflineSettingsDto::MIN_DATA_RETENTION_PERIOD,
+                    OfflineSettingsDto::MAX_DATA_RETENTION_PERIOD
+                )
+            );
 
         $validator
             ->requirePresence('max_items', true, __('The setting is required.'))
             ->integer('max_items', __('The setting should be a valid integer.'))
             ->range(
                 'max_items',
-                [OfflineSettingsDto::MIN_MAX_ITEMS, OfflineSettingsDto::MAX_MAX_ITEMS],
+                [
+                    OfflineSettingsDto::MIN_MAX_ITEMS,
+                    OfflineSettingsDto::MAX_MAX_ITEMS,
+                ],
                 __(
                     'The setting should be between {0} and {1}.',
                     OfflineSettingsDto::MIN_MAX_ITEMS,

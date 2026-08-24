@@ -54,26 +54,34 @@ class OfflineModeSettingFactory extends OrganizationSettingFactory
         $this->patchData([
             'property' => $registry->getProperty(),
             'property_id' => $registry->getPropertyId(),
-            'value' => [
-                'max_session_duration' => 3600,
-                'data_retention_period' => 7200,
-                'max_items' => OfflineSettingsDto::DEFAULT_MAX_ITEMS,
-            ],
+            'value' => self::defaultSettingsValue(),
         ]);
     }
 
     /**
-     * Named state — canonical "enabled feature" row.
-     *
-     * Currently a no-op placeholder. The JSON shape lands in WP 2.2 along with
-     * `OfflineSettingsDto`; this method becomes the authoritative way to seed a
-     * default-enabled row once that exists.
+     * Sets default organization settings values.
      *
      * @return $this
      */
     public function default()
     {
-        return $this;
+        return $this->setField('value', self::defaultSettingsValue());
+    }
+
+    /**
+     * Returns default settings values.
+     *
+     * @return array
+     */
+    private static function defaultSettingsValue(): array
+    {
+        $dto = OfflineSettingsDto::createFromDefault();
+
+        return [
+            'max_session_duration' => $dto->max_session_duration,
+            'data_retention_period' => $dto->data_retention_period,
+            'max_items' => $dto->max_items,
+        ];
     }
 
     /**

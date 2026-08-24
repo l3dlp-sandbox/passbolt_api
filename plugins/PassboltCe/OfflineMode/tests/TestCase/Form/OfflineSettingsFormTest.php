@@ -42,9 +42,9 @@ class OfflineSettingsFormTest extends TestCase
     public static function getDefaultData(): array
     {
         return [
-            'max_session_duration' => 3600,
-            'data_retention_period' => 7200,
-            'max_items' => 1000,
+            'max_session_duration' => OfflineSettingsDto::DEFAULT_MAX_SESSION_DURATION,
+            'data_retention_period' => OfflineSettingsDto::DEFAULT_DATA_RETENTION_PERIOD,
+            'max_items' => OfflineSettingsDto::DEFAULT_MAX_ITEMS,
         ];
     }
 
@@ -130,6 +130,52 @@ class OfflineSettingsFormTest extends TestCase
     public function testOfflineSettingsForm_MaxItemsBoundaries(int $value, bool $expected): void
     {
         $data = array_merge(self::getDefaultData(), ['max_items' => $value]);
+
+        $this->assertSame($expected, $this->form->execute($data));
+    }
+
+    public static function maxSessionDurationBoundaryProvider(): array
+    {
+        return [
+            'below lower bound' => [OfflineSettingsDto::MIN_MAX_SESSION_DURATION - 1, false],
+            'lower bound' => [OfflineSettingsDto::MIN_MAX_SESSION_DURATION, true],
+            'upper bound' => [OfflineSettingsDto::MAX_MAX_SESSION_DURATION, true],
+            'above upper bound' => [OfflineSettingsDto::MAX_MAX_SESSION_DURATION + 1, false],
+        ];
+    }
+
+    /**
+     * @dataProvider maxSessionDurationBoundaryProvider
+     * @param int $value Value under test.
+     * @param bool $expected Whether the form should accept the value.
+     * @return void
+     */
+    public function testOfflineSettingsForm_MaxSessionDurationBoundaries(int $value, bool $expected): void
+    {
+        $data = array_merge(self::getDefaultData(), ['max_session_duration' => $value]);
+
+        $this->assertSame($expected, $this->form->execute($data));
+    }
+
+    public static function dataRetentionPeriodBoundaryProvider(): array
+    {
+        return [
+            'below lower bound' => [OfflineSettingsDto::MIN_DATA_RETENTION_PERIOD - 1, false],
+            'lower bound' => [OfflineSettingsDto::MIN_DATA_RETENTION_PERIOD, true],
+            'upper bound' => [OfflineSettingsDto::MAX_DATA_RETENTION_PERIOD, true],
+            'above upper bound' => [OfflineSettingsDto::MAX_DATA_RETENTION_PERIOD + 1, false],
+        ];
+    }
+
+    /**
+     * @dataProvider dataRetentionPeriodBoundaryProvider
+     * @param int $value Value under test.
+     * @param bool $expected Whether the form should accept the value.
+     * @return void
+     */
+    public function testOfflineSettingsForm_DataRetentionPeriodBoundaries(int $value, bool $expected): void
+    {
+        $data = array_merge(self::getDefaultData(), ['data_retention_period' => $value]);
 
         $this->assertSame($expected, $this->form->execute($data));
     }

@@ -22,9 +22,24 @@ use Passbolt\OfflineMode\Model\Entity\OfflineModeSetting;
 
 class OfflineSettingsDto
 {
-    public const DEFAULT_MAX_SESSION_DURATION = 86400; // in seconds
-    public const DEFAULT_DATA_RETENTION_PERIOD = 120000; // in seconds
-    public const DEFAULT_MAX_ITEMS = 1000; // a count, not seconds
+    /**
+     * Settings - session_duration. In seconds.
+     */
+    public const DEFAULT_MAX_SESSION_DURATION = 300;
+    public const MIN_MAX_SESSION_DURATION = 300;
+    public const MAX_MAX_SESSION_DURATION = 86400;
+
+    /**
+     * Settings - data_retention_period. In seconds.
+     */
+    public const DEFAULT_DATA_RETENTION_PERIOD = 604800;
+    public const MIN_DATA_RETENTION_PERIOD = 86400;
+    public const MAX_DATA_RETENTION_PERIOD = 2592000;
+
+    /**
+     * Settings - max_items.
+     */
+    public const DEFAULT_MAX_ITEMS = 1000;
     public const MIN_MAX_ITEMS = 1;
     public const MAX_MAX_ITEMS = 5000;
 
@@ -87,6 +102,20 @@ class OfflineSettingsDto
             $data['created_by'] ?? null,
             $data['modified'] ?? null,
             $data['modified_by'] ?? null,
+        );
+    }
+
+    /**
+     * The organisation defaults, as served when nothing has been configured.
+     *
+     * @return self
+     */
+    public static function createFromDefault(): self
+    {
+        return new self(
+            self::DEFAULT_MAX_SESSION_DURATION,
+            self::DEFAULT_DATA_RETENTION_PERIOD,
+            self::DEFAULT_MAX_ITEMS
         );
     }
 
