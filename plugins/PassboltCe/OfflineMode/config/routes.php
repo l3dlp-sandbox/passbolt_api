@@ -11,7 +11,7 @@
  * @copyright     Copyright (c) Passbolt SA (https://www.passbolt.com)
  * @license       https://opensource.org/licenses/AGPL-3.0 AGPL License
  * @link          https://www.passbolt.com Passbolt(tm)
- * @since         5.14.0
+ * @since         5.16.0
  */
 use Cake\Routing\RouteBuilder;
 
