@@ -112,10 +112,11 @@ class ResourcesShareService
         array $secrets = []
     ): Resource {
         $resource = $this->getResource($resourceId);
+        $entitiesChanges = new EntitiesChangesDto();
 
         $this->Resources->getConnection()->transactional(
-            function () use ($uac, $resource, $changes, $secrets): void {
-                $entitiesChanges = $this->updatePermissions($uac, $resource, $changes);
+            function () use ($uac, $resource, $changes, $secrets, $entitiesChanges): void {
+                $entitiesChanges->merge($this->updatePermissions($uac, $resource, $changes));
                 $entitiesChanges->merge($this->updateSecrets($uac, $resource, $secrets));
                 $this->postAccessesGranted($uac, $entitiesChanges->getAddedEntities(Permission::class));
                 $this->postAccessesRevoked($uac, $resource, $entitiesChanges->getDeletedEntities(Permission::class));
@@ -129,6 +130,7 @@ class ResourcesShareService
             'resource' => $resource,
             'secrets' => $secrets,
             'ownerId' => $uac->getId(),
+            'entitiesChanges' => $entitiesChanges,
         ]);
         $this->getEventManager()->dispatch($event);
 

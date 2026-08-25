@@ -47,6 +47,7 @@ use Passbolt\Metadata\Model\Rule\IsV4ToV5UpgradeAllowedRule;
 use Passbolt\Metadata\Model\Rule\IsValidEncryptedMetadataRule;
 use Passbolt\Metadata\Model\Rule\MetadataKeyIdExistsInRule;
 use Passbolt\Metadata\Model\Rule\MetadataKeyIdNotExpiredRule;
+use Passbolt\OfflineMode\Model\Table\OfflineItemsTable;
 use Passbolt\ResourceTypes\Model\Entity\ResourceType;
 use Passbolt\ResourceTypes\Model\Table\ResourceTypesTable;
 use Throwable;
@@ -89,6 +90,8 @@ class ResourcesTable extends Table implements TableCleanupProviderInterface
     public const URI_MAX_LENGTH = 1024;
     public const USERNAME_MAX_LENGTH = 255;
 
+    public const EVENT_MODEL_RESOURCE_AFTER_SOFT_DELETE = 'Model.Resource.afterSoftDelete';
+
     /**
      * Initialize method
      *
@@ -112,6 +115,11 @@ class ResourcesTable extends Table implements TableCleanupProviderInterface
         ]);
         $this->hasOne('Favorites', [
             'foreignKey' => 'foreign_key',
+        ]);
+        $this->hasOne('Offline', [
+            'className' => 'Passbolt/OfflineMode.OfflineItems',
+            'foreignKey' => 'foreign_key',
+            'conditions' => ['Offline.foreign_model' => OfflineItemsTable::FOREIGN_MODEL_RESOURCE],
         ]);
         $this->hasOne('Modifier', [
             'className' => 'Users',
@@ -623,7 +631,7 @@ class ResourcesTable extends Table implements TableCleanupProviderInterface
         }
 
         // Notify other components about the resource soft delete.
-        $event = new Event('Model.Resource.afterSoftDelete', $resource);
+        $event = new Event(self::EVENT_MODEL_RESOURCE_AFTER_SOFT_DELETE, $resource);
         $this->getEventManager()->dispatch($event);
 
         return true;
