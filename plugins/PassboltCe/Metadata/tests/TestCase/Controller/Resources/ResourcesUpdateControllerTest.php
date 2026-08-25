@@ -120,7 +120,7 @@ class ResourcesUpdateControllerTest extends AppIntegrationTestCaseV5
         $this->assertEventFiredWith(
             ResourcesUpdateService::UPDATE_SUCCESS_EVENT_NAME,
             'isV5',
-            true
+            true,
         );
         $this->assertEmailQueueCount(2);
         $this->assertEmailIsInQueue(['email' => $user->username, 'subject' => 'You edited a resource']);

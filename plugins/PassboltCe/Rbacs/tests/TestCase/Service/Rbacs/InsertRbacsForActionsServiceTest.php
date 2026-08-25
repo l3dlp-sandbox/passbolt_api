@@ -78,25 +78,25 @@ class InsertRbacsForActionsServiceTest extends RbacsTestCase
             0,
             RbacFactory::find()
                 ->where(['role_id' => $guestRole->id, 'foreign_model' => Rbac::FOREIGN_MODEL_ACTION])
-                ->count()
+                ->count(),
         );
         $this->assertSame(
             0,
             RbacFactory::find()
                 ->where(['role_id' => $adminRole->id, 'foreign_model' => Rbac::FOREIGN_MODEL_ACTION])
-                ->count()
+                ->count(),
         );
         $this->assertSame(
             3,
             RbacFactory::find()
                 ->where(['role_id' => $userRole->id, 'foreign_model' => Rbac::FOREIGN_MODEL_ACTION, 'control_function' => Rbac::CONTROL_FUNCTION_DENY])
-                ->count()
+                ->count(),
         );
         $this->assertSame(
             3,
             RbacFactory::find()
                 ->where(['role_id' => $customRole->get('id'), 'foreign_model' => Rbac::FOREIGN_MODEL_ACTION, 'control_function' => Rbac::CONTROL_FUNCTION_DENY])
-                ->count()
+                ->count(),
         );
     }
 
@@ -133,25 +133,25 @@ class InsertRbacsForActionsServiceTest extends RbacsTestCase
             0,
             RbacFactory::find()
                 ->where(['role_id' => $guestRole->id, 'foreign_model' => Rbac::FOREIGN_MODEL_ACTION])
-                ->count()
+                ->count(),
         );
         $this->assertSame(
             0,
             RbacFactory::find()
                 ->where(['role_id' => $adminRole->id, 'foreign_model' => Rbac::FOREIGN_MODEL_ACTION])
-                ->count()
+                ->count(),
         );
         $this->assertSame(
             1,
             RbacFactory::find()
                 ->where(['role_id' => $userRole->id, 'foreign_model' => Rbac::FOREIGN_MODEL_ACTION, 'control_function' => Rbac::CONTROL_FUNCTION_DENY])
-                ->count()
+                ->count(),
         );
         $this->assertSame(
             1,
             RbacFactory::find()
                 ->where(['role_id' => $customRole->get('id'), 'foreign_model' => Rbac::FOREIGN_MODEL_ACTION, 'control_function' => Rbac::CONTROL_FUNCTION_DENY])
-                ->count()
+                ->count(),
         );
     }
 
@@ -182,19 +182,19 @@ class InsertRbacsForActionsServiceTest extends RbacsTestCase
             0,
             RbacFactory::find()
                 ->where(['role_id' => $deletedRole->get('id'), 'foreign_model' => Rbac::FOREIGN_MODEL_ACTION])
-                ->count()
+                ->count(),
         );
         $this->assertSame(
             2,
             RbacFactory::find()
                 ->where(['role_id' => $userRole->id, 'foreign_model' => Rbac::FOREIGN_MODEL_ACTION])
-                ->count()
+                ->count(),
         );
         $this->assertSame(
             2,
             RbacFactory::find()
                 ->where(['role_id' => $customRole->get('id'), 'foreign_model' => Rbac::FOREIGN_MODEL_ACTION])
-                ->count()
+                ->count(),
         );
     }
 

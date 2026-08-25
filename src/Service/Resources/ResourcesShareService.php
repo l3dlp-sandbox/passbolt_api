@@ -84,7 +84,7 @@ class ResourcesShareService
      * @param \App\Service\Resources\ResourcesExpireResourcesServiceInterface $resourcesExpireResourcesService Service to expire resources that were consumed by users who lost access to them.
      */
     public function __construct(
-        ResourcesExpireResourcesServiceInterface $resourcesExpireResourcesService
+        ResourcesExpireResourcesServiceInterface $resourcesExpireResourcesService,
     ) {
         $this->GroupsUsers = $this->fetchTable('GroupsUsers');
         $this->Resources = $this->fetchTable('Resources');
@@ -109,7 +109,7 @@ class ResourcesShareService
         UserAccessControl $uac,
         string $resourceId,
         array $changes = [],
-        array $secrets = []
+        array $secrets = [],
     ): Resource {
         $resource = $this->getResource($resourceId);
         $entitiesChanges = new EntitiesChangesDto();
@@ -121,9 +121,9 @@ class ResourcesShareService
                 $this->postAccessesGranted($uac, $entitiesChanges->getAddedEntities(Permission::class));
                 $this->postAccessesRevoked($uac, $resource, $entitiesChanges->getDeletedEntities(Permission::class));
                 $this->resourcesExpireResourcesService->expireResourcesForSecrets(
-                    $entitiesChanges->getDeletedEntities(Secret::class)
+                    $entitiesChanges->getDeletedEntities(Secret::class),
                 );
-            }
+            },
         );
 
         $event = new Event(self::SHARE_SUCCESS_EVENT_NAME, $this, [
@@ -377,7 +377,7 @@ class ResourcesShareService
 
                 // Don't commit the transaction.
                 return false;
-            }
+            },
         );
 
         // Extract the users that will require the secrets to be encrypted for.

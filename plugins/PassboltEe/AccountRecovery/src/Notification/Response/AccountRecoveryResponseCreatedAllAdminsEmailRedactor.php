@@ -125,7 +125,7 @@ class AccountRecoveryResponseCreatedAllAdminsEmailRedactor implements Subscribed
         User $user,
         User $recipient,
         User $actingUser,
-        AccountRecoveryResponse $response
+        AccountRecoveryResponse $response,
     ): Email {
         $status = $response->isApproved() ? __('approved') : __('rejected');
         $locale = (new GetUserLocaleService())->getLocale($recipient->username);
@@ -135,9 +135,9 @@ class AccountRecoveryResponseCreatedAllAdminsEmailRedactor implements Subscribed
                 return __(
                     'Account recovery response set to {0} by {1}.',
                     $status,
-                    $actingUser->profile->first_name
+                    $actingUser->profile->first_name,
                 );
-            }
+            },
         );
 
         $data = [

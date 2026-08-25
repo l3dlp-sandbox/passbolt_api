@@ -372,7 +372,7 @@ class UsersTable extends Table implements TableCleanupProviderInterface
                         ],
                     ],
                 ],
-            ]
+            ],
         );
     }
 

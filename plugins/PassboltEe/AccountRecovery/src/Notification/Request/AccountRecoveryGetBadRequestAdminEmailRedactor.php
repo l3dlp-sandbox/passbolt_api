@@ -115,7 +115,7 @@ class AccountRecoveryGetBadRequestAdminEmailRedactor implements SubscribedEmailR
         User $admin,
         User $user,
         string $requestId,
-        string $clientIp
+        string $clientIp,
     ): Email {
         $locale = (new GetUserLocaleService())->getLocale($admin->username);
         $subject = (new LocaleService())->translateString(
@@ -124,9 +124,9 @@ class AccountRecoveryGetBadRequestAdminEmailRedactor implements SubscribedEmailR
                 return __(
                     'Suspicious account recovery request issued from IP {0} for {1}',
                     $clientIp,
-                    $user->profile->first_name
+                    $user->profile->first_name,
                 );
-            }
+            },
         );
 
         $data = [

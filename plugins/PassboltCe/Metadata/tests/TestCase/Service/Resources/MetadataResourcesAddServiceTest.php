@@ -169,7 +169,7 @@ class MetadataResourcesAddServiceTest extends AppTestCaseV5
         } catch (ValidationException $exception) {
             $this->assertSame(
                 'The resource type does not exist.',
-                $exception->getErrors()['resource_type_id']['resource_type_exists']
+                $exception->getErrors()['resource_type_id']['resource_type_exists'],
             );
         }
     }
@@ -193,7 +193,7 @@ class MetadataResourcesAddServiceTest extends AppTestCaseV5
         } catch (ValidationException $exception) {
             $this->assertSame(
                 'The resource type should not be deleted.',
-                $exception->getErrors()['resource_type_id']['resource_type_is_not_soft_deleted']
+                $exception->getErrors()['resource_type_id']['resource_type_is_not_soft_deleted'],
             );
         }
     }
@@ -216,7 +216,7 @@ class MetadataResourcesAddServiceTest extends AppTestCaseV5
         } catch (ValidationException $exception) {
             $this->assertSame(
                 'The resource type should be one of the following: v5-password-string, v5-default, v5-totp-standalone, v5-default-with-totp, v5-custom-fields, v5-note, v5-pin-code.',
-                $exception->getErrors()['resource_type_id']['inList']
+                $exception->getErrors()['resource_type_id']['inList'],
             );
         }
     }
@@ -257,7 +257,7 @@ class MetadataResourcesAddServiceTest extends AppTestCaseV5
         } catch (ValidationException $exception) {
             $this->assertSame(
                 'The message should be a valid ASCII-armored OpenPGP message.',
-                $exception->getErrors()['metadata']['isMetadataParsable']
+                $exception->getErrors()['metadata']['isMetadataParsable'],
             );
         }
     }

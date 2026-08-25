@@ -53,7 +53,7 @@ class ResourcesAddController extends AppController
         // Add the new resource
         $resource = $resourcesAddService->add(
             $this->User->getAccessControl(),
-            $resourceDto
+            $resourceDto,
         );
 
         // Retrieve the saved resource.

@@ -58,7 +58,7 @@ class MetadataFolderDto extends MetadataDto
         ?string $folderParentId = null,
         ?string $metadata = null,
         ?string $metadataKeyId = null,
-        ?string $metadataKeyType = null
+        ?string $metadataKeyType = null,
     ) {
         $this->name = $name;
         $this->folderParentId = $folderParentId;

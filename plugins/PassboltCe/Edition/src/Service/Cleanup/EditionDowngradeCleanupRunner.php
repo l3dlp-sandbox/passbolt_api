@@ -77,7 +77,7 @@ class EditionDowngradeCleanupRunner
                 throw new RuntimeException(sprintf(
                     '%s must implement %s.',
                     $fqcn,
-                    EditionDowngradeCleanupServiceInterface::class
+                    EditionDowngradeCleanupServiceInterface::class,
                 ));
             }
 

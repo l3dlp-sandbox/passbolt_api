@@ -205,7 +205,7 @@ class MetadataUpgradeResourcesPostControllerTest extends AppIntegrationTestCaseV
         $resource = ResourceFactory::make()
             ->with(
                 'ResourceTypes',
-                ResourceTypeFactory::make()->deleted()
+                ResourceTypeFactory::make()->deleted(),
             )->persist();
 
         $this->logInAsAdmin();

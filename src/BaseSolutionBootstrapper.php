@@ -80,7 +80,7 @@ class BaseSolutionBootstrapper
             $app,
             'MultiFactorAuthentication',
             ['bootstrap' => true, 'routes' => true],
-            true
+            true,
         );
 
         $logEnabled = Configure::read('passbolt.plugins.log.enabled');
@@ -120,7 +120,7 @@ class BaseSolutionBootstrapper
         PluginApplicationInterface $app,
         string $name,
         array $config = [],
-        bool|callable $isEnabledByDefault = false
+        bool|callable $isEnabledByDefault = false,
     ): self {
         $config = array_merge(['bootstrap' => true, 'routes' => true], $config);
 
