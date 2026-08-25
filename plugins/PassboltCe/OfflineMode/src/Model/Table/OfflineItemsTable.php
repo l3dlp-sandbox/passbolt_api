@@ -114,8 +114,8 @@ class OfflineItemsTable extends Table implements TableCleanupProviderInterface
                 self::ALLOWED_FOREIGN_MODELS,
                 __(
                     'The offline item object type should be one of the following: {0}.',
-                    implode(', ', self::ALLOWED_FOREIGN_MODELS)
-                )
+                    implode(', ', self::ALLOWED_FOREIGN_MODELS),
+                ),
             )
             ->requirePresence('foreign_model', 'create', __('The offline item object type is required.'))
             ->notEmptyString('foreign_model', __('The offline item object type should not be empty.'));
@@ -157,7 +157,7 @@ class OfflineItemsTable extends Table implements TableCleanupProviderInterface
         $rules->addCreate(
             $rules->existsIn('foreign_key', 'Resources'),
             'resource_exists',
-            ['errorField' => 'foreign_key', 'message' => __('The resource does not exist.')]
+            ['errorField' => 'foreign_key', 'message' => __('The resource does not exist.')],
         );
         $rules->addCreate(new IsNotSoftDeletedRule(), 'resource_is_not_soft_deleted', [
             'table' => 'Resources',
@@ -177,9 +177,9 @@ class OfflineItemsTable extends Table implements TableCleanupProviderInterface
         $rules->addCreate(
             $rules->isUnique(
                 ['user_id', 'foreign_model', 'foreign_key'],
-                __('This item is already available offline for this user.')
+                __('This item is already available offline for this user.'),
             ),
-            'offline_item_unique'
+            'offline_item_unique',
         );
 
         return $rules;
@@ -212,7 +212,7 @@ class OfflineItemsTable extends Table implements TableCleanupProviderInterface
                     $query->expr()->equalFields('Users.id', 'OfflineItems.user_id'),
                     'Users.deleted' => false,
                 ],
-                ['Users.deleted' => 'boolean']
+                ['Users.deleted' => 'boolean'],
             )
             ->innerJoin(
                 ['Rbacs' => 'rbacs'],
@@ -220,14 +220,14 @@ class OfflineItemsTable extends Table implements TableCleanupProviderInterface
                     $query->expr()->equalFields('Rbacs.role_id', 'Users.role_id'),
                     'Rbacs.foreign_model' => Rbac::FOREIGN_MODEL_ACTION,
                     'Rbacs.control_function' => Rbac::CONTROL_FUNCTION_DENY,
-                ]
+                ],
             )
             ->innerJoin(
                 ['Actions' => 'actions'],
                 [
                     $query->expr()->equalFields('Actions.id', 'Rbacs.foreign_id'),
                     'Actions.name' => RbacsControlledActionsInsertService::NAME_OFFLINE_ITEMS_VIEW,
-                ]
+                ],
             );
 
         $rows = $query->disableHydration()->toArray();

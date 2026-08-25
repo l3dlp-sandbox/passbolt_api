@@ -240,7 +240,7 @@ class OfflineItemsAddControllerTest extends AppIntegrationTestCase
         $this->postJson("/offline/widget/$resourceId.json");
 
         $this->assertBadRequestError(
-            'The offline item object type should be one of the following: Resource.'
+            'The offline item object type should be one of the following: Resource.',
         );
     }
 

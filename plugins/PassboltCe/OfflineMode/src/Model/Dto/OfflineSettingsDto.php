@@ -70,7 +70,7 @@ class OfflineSettingsDto
         ?DateTime $created = null,
         ?string $createdBy = null,
         ?DateTime $modified = null,
-        ?string $modifiedBy = null
+        ?string $modifiedBy = null,
     ) {
         $this->max_session_duration = $maxSessionDuration;
         $this->data_retention_period = $dataRetentionPeriod;
@@ -115,7 +115,7 @@ class OfflineSettingsDto
         return new self(
             self::DEFAULT_MAX_SESSION_DURATION,
             self::DEFAULT_DATA_RETENTION_PERIOD,
-            self::DEFAULT_MAX_ITEMS
+            self::DEFAULT_MAX_ITEMS,
         );
     }
 
@@ -171,7 +171,7 @@ class OfflineSettingsDto
     {
         if (!array_key_exists('max_session_duration', $data) || !is_int($data['max_session_duration'])) {
             throw new InvalidArgumentException(
-                'OfflineSettingsDto: `max_session_duration` is required and must be an integer.'
+                'OfflineSettingsDto: `max_session_duration` is required and must be an integer.',
             );
         }
     }
@@ -185,7 +185,7 @@ class OfflineSettingsDto
     {
         if (!array_key_exists('data_retention_period', $data) || !is_int($data['data_retention_period'])) {
             throw new InvalidArgumentException(
-                'OfflineSettingsDto: `data_retention_period` is required and must be an integer.'
+                'OfflineSettingsDto: `data_retention_period` is required and must be an integer.',
             );
         }
     }
@@ -199,7 +199,7 @@ class OfflineSettingsDto
     {
         if (!array_key_exists('max_items', $data) || !is_int($data['max_items'])) {
             throw new InvalidArgumentException(
-                'OfflineSettingsDto: `max_items` is required and must be an integer.'
+                'OfflineSettingsDto: `max_items` is required and must be an integer.',
             );
         }
     }

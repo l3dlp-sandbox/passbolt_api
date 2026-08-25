@@ -60,7 +60,7 @@ class OfflineItemsSecretDeleteListenerTest extends AppTestCase
                 GroupsUsersDeleteService::AFTER_GROUP_USER_DELETED_EVENT_NAME => 'handleSecretsBatchDeleted',
                 GroupsTable::EVENT_MODEL_GROUP_AFTER_SOFT_DELETE => 'handleSecretsBatchDeleted',
             ],
-            $this->listener->implementedEvents()
+            $this->listener->implementedEvents(),
         );
     }
 
@@ -106,10 +106,10 @@ class OfflineItemsSecretDeleteListenerTest extends AppTestCase
 
         $this->assertSame(2, OfflineItemFactory::count());
         $this->assertNotNull(
-            OfflineItemFactory::find()->where(['id' => $survivorSameResource->get('id')])->first()
+            OfflineItemFactory::find()->where(['id' => $survivorSameResource->get('id')])->first(),
         );
         $this->assertNotNull(
-            OfflineItemFactory::find()->where(['id' => $survivorSameUser->get('id')])->first()
+            OfflineItemFactory::find()->where(['id' => $survivorSameUser->get('id')])->first(),
         );
     }
 
@@ -138,7 +138,7 @@ class OfflineItemsSecretDeleteListenerTest extends AppTestCase
         $event = new Event(
             'irrelevant.for.handler',
             null,
-            ['entitiesChanges' => new EntitiesChangesDto()]
+            ['entitiesChanges' => new EntitiesChangesDto()],
         );
         $this->listener->handleSecretsBatchDeleted($event);
 
@@ -176,7 +176,7 @@ class OfflineItemsSecretDeleteListenerTest extends AppTestCase
 
         $this->assertSame(1, OfflineItemFactory::count());
         $this->assertNull(
-            OfflineItemFactory::find()->where(['id' => $viewerOfflineItem->get('id')])->first()
+            OfflineItemFactory::find()->where(['id' => $viewerOfflineItem->get('id')])->first(),
         );
     }
 
@@ -205,7 +205,7 @@ class OfflineItemsSecretDeleteListenerTest extends AppTestCase
 
         $this->assertSame(1, OfflineItemFactory::count());
         $this->assertNull(
-            OfflineItemFactory::find()->where(['id' => $memberOfflineItem->get('id')])->first()
+            OfflineItemFactory::find()->where(['id' => $memberOfflineItem->get('id')])->first(),
         );
     }
 

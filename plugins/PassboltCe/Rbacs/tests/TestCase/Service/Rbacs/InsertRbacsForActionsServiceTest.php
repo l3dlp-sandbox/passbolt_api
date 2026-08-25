@@ -227,19 +227,19 @@ class InsertRbacsForActionsServiceTest extends RbacsTestCase
             0,
             RbacFactory::find()
                 ->where(['role_id' => $deletedRole->get('id'), 'foreign_model' => Rbac::FOREIGN_MODEL_ACTION])
-                ->count()
+                ->count(),
         );
         $this->assertSame(
             3,
             RbacFactory::find()
                 ->where(['role_id' => $userRole->id, 'foreign_model' => Rbac::FOREIGN_MODEL_ACTION, 'control_function' => Rbac::CONTROL_FUNCTION_ALLOW])
-                ->count()
+                ->count(),
         );
         $this->assertSame(
             3,
             RbacFactory::find()
                 ->where(['role_id' => $customRole->get('id'), 'foreign_model' => Rbac::FOREIGN_MODEL_ACTION, 'control_function' => Rbac::CONTROL_FUNCTION_ALLOW])
-                ->count()
+                ->count(),
         );
     }
 

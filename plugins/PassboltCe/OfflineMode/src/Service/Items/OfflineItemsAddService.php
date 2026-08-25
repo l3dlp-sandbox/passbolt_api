@@ -45,7 +45,7 @@ class OfflineItemsAddService
         if (!in_array($foreignModel, OfflineItemsTable::ALLOWED_FOREIGN_MODELS, true)) {
             throw new BadRequestException(__(
                 'The offline item object type should be one of the following: {0}.',
-                implode(', ', OfflineItemsTable::ALLOWED_FOREIGN_MODELS)
+                implode(', ', OfflineItemsTable::ALLOWED_FOREIGN_MODELS),
             ));
         }
         if (!Validation::uuid($foreignKey)) {
@@ -69,7 +69,7 @@ class OfflineItemsAddService
                     'foreign_key' => true,
                     'created_by' => true,
                 ],
-            ]
+            ],
         );
 
         if (!$OfflineItems->save($entity)) {

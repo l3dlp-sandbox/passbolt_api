@@ -177,7 +177,7 @@ class GroupsUsersDeleteService
     private function dispatchGroupUserRemovedEvent(
         UserAccessControl $uac,
         GroupsUser $groupUser,
-        EntitiesChangesDto $entitiesChanges
+        EntitiesChangesDto $entitiesChanges,
     ): void {
         $eventData = [
             'groupUser' => $groupUser,

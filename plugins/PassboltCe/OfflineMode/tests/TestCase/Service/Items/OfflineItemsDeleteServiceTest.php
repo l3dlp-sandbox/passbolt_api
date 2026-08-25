@@ -102,7 +102,7 @@ class OfflineItemsDeleteServiceTest extends AppTestCase
             // Row must still be in the DB.
             $this->assertSame(1, OfflineItemFactory::count());
             $this->assertNotNull(
-                OfflineItemFactory::find()->where(['id' => $offlineItem->get('id')])->first()
+                OfflineItemFactory::find()->where(['id' => $offlineItem->get('id')])->first(),
             );
         }
     }

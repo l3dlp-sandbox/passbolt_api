@@ -67,8 +67,8 @@ class OfflineSettingsSetEmailRedactorTest extends AppTestCase
 
         $this->assertCount(2, $emails);
         $recipientIds = array_map(
-            fn ($e) => $e->getData()['body']['recipient']->id,
-            $emails
+            fn($e) => $e->getData()['body']['recipient']->id,
+            $emails,
         );
         $this->assertContains($actor->id, $recipientIds);
         $this->assertContains($otherAdmin->id, $recipientIds);
@@ -137,7 +137,7 @@ class OfflineSettingsSetEmailRedactorTest extends AppTestCase
             $actor->id,
             $actor->username,
             '127.0.0.1',
-            'test-user-agent'
+            'test-user-agent',
         );
         $dto = OfflineSettingsDto::createFromArray([
             'max_session_duration' => 300,

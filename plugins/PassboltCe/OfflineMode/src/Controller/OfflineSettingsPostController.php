@@ -33,7 +33,7 @@ class OfflineSettingsPostController extends AppController
 
         $dto = (new OfflineSettingsSetService())->set(
             $this->User->getExtendAccessControl(),
-            $this->getRequest()->getData()
+            $this->getRequest()->getData(),
         );
 
         $this->success(__('The operation was successful.'), $dto->toArray());

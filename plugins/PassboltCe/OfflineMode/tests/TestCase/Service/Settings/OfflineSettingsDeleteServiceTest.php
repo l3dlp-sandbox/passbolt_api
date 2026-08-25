@@ -114,7 +114,7 @@ class OfflineSettingsDeleteServiceTest extends AppTestCase
                     'created_by' => true,
                     'modified_by' => true,
                 ],
-            ]
+            ],
         );
         $generic->saveOrFail($entity);
 

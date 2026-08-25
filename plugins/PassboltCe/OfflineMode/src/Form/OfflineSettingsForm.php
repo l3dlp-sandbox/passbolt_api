@@ -53,8 +53,8 @@ class OfflineSettingsForm extends Form
                 __(
                     'The setting should be between {0} and {1}.',
                     OfflineSettingsDto::MIN_MAX_SESSION_DURATION,
-                    OfflineSettingsDto::MAX_MAX_SESSION_DURATION
-                )
+                    OfflineSettingsDto::MAX_MAX_SESSION_DURATION,
+                ),
             );
 
         $validator
@@ -69,8 +69,8 @@ class OfflineSettingsForm extends Form
                 __(
                     'The setting should be between {0} and {1}.',
                     OfflineSettingsDto::MIN_DATA_RETENTION_PERIOD,
-                    OfflineSettingsDto::MAX_DATA_RETENTION_PERIOD
-                )
+                    OfflineSettingsDto::MAX_DATA_RETENTION_PERIOD,
+                ),
             );
 
         $validator
@@ -85,8 +85,8 @@ class OfflineSettingsForm extends Form
                 __(
                     'The setting should be between {0} and {1}.',
                     OfflineSettingsDto::MIN_MAX_ITEMS,
-                    OfflineSettingsDto::MAX_MAX_ITEMS
-                )
+                    OfflineSettingsDto::MAX_MAX_ITEMS,
+                ),
             );
 
         return $validator;

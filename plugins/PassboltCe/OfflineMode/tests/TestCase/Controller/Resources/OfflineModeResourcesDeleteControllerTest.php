@@ -53,7 +53,7 @@ class OfflineModeResourcesDeleteControllerTest extends AppIntegrationTestCase
 
         $this->assertSame(1, OfflineItemFactory::count());
         $this->assertNotNull(
-            OfflineItemFactory::find()->where(['id' => $survivorItem->get('id')])->first()
+            OfflineItemFactory::find()->where(['id' => $survivorItem->get('id')])->first(),
         );
     }
 }

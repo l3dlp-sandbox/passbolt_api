@@ -80,7 +80,7 @@ class OfflineSettingsGetServiceTest extends AppTestCase
                 'modified' => $setting->get('modified')->toIso8601String(),
                 'modified_by' => $setting->get('modified_by'),
             ],
-            $expectedResult
+            $expectedResult,
         );
     }
 
