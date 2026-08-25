@@ -91,6 +91,7 @@ class AccountRecoveryRequestCreatedAdminEmailRedactor implements SubscribedEmail
         $recipients = $this->Users
             ->find('adminsOrRbacActionGrantees', rbacActionName: RbacsControlledActionsInsertService::NAME_ACCOUNT_RECOVERY_REQUESTS_VIEW) // phpcs:ignore
             ->find('notDisabled')
+            ->find('activeNotDeleted')
             ->where(['Users.id <>' => $user->id])
             ->contain(['Profiles' => AvatarsTable::addContainAvatar()])
             ->all();
