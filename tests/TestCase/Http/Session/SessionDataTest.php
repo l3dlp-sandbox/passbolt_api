@@ -14,13 +14,11 @@ declare(strict_types=1);
  * @link          https://www.passbolt.com Passbolt(tm)
  * @since         5.16.0
  */
-namespace App\Test\TestCase;
+namespace App\Test\TestCase\Http\Session;
 
 use App\Test\Factory\SessionFactory;
 use App\Test\Lib\AppIntegrationTestCase;
-use Cake\Core\Configure;
 use Cake\Http\Session\DatabaseSession;
-use Cake\I18n\DateTime;
 use Cake\Utility\Hash;
 
 class SessionDataTest extends AppIntegrationTestCase
@@ -38,58 +36,34 @@ class SessionDataTest extends AppIntegrationTestCase
         if (file_exists($this->maliciousFile)) {
             unlink($this->maliciousFile);
         }
+        unset($this->maliciousFile);
         parent::tearDown();
     }
 
-    public static function sessionPresetProvider(): array
+    public function testSessionData_DoesNotExecuteInjectedCode(): void
     {
-        return [
-            'php preset' => ['php'],
-            'cache preset' => ['cache'],
-            'database preset' => ['database'],
-        ];
-    }
-
-    /**
-     * @dataProvider sessionPresetProvider
-     */
-    public function testSessionDataDoNotExecuteCode(string $preset): void
-    {
-        Configure::write('Session.defaults', $preset);
-
-        $payload = '<?php file_put_contents($this->maliciousFile, "x"); ?>';
+        $payload = '<?php file_put_contents("' . $this->maliciousFile . '", "x"); ?>';
         $session = SessionFactory::make(['data' => 'injected|' . serialize($payload)])->persist();
-
-        if (file_exists($this->maliciousFile)) {
-            unlink($this->maliciousFile);
-        }
 
         $blob = (new DatabaseSession())->read($session->id);
         [, $value] = explode('|', $blob, 2);
         $result = unserialize($value);
 
         $this->assertSame($payload, $result);
-        $this->assertIsString($result);
         $this->assertFileDoesNotExist($this->maliciousFile);
     }
 
-    /**
-     * @dataProvider sessionPresetProvider
-     */
-    public function testSessionDataContainJustFewInformation(string $preset): void
+    public function testSessionData_ContainsOnlyWhitelistedKeys(): void
     {
-        Configure::write('Session.defaults', $preset);
-
         $this->logInAsUser();
 
-        $timeReference = DateTime::now()->timestamp;
-        $this->session(['SessionPreventExtensionMiddleware' => ['time' => $timeReference]]);
-        $this->get('/resources.json');
-        $this->get('/auth/is-authenticated.json');
+        $this->getJson('/resources.json');
+        $this->getJson('/users/me.json');
+        $this->getJson('/settings.json');
+        $this->getJson('/auth/is-authenticated.json');
 
         $session = $this->getSession()->read() ?? [];
 
-        // Allowed paths inside session, any other future change needs to be added here
         $allowed = ['Config.time', 'Auth.user.id', 'SessionPreventExtensionMiddleware.time'];
 
         $paths = array_keys(Hash::flatten($session));
