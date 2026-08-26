@@ -25,6 +25,7 @@ use Cake\ORM\Table;
 use Cake\Utility\Hash;
 use Cake\Validation\Validator;
 use Passbolt\OfflineMode\Model\Rule\IsForeignItemV5Rule;
+use Passbolt\OfflineMode\Model\Rule\MaxOfflineItemsRule;
 use Passbolt\Rbacs\Model\Entity\Rbac;
 use Passbolt\Rbacs\Service\Actions\RbacsControlledActionsInsertService;
 
@@ -173,6 +174,10 @@ class OfflineItemsTable extends Table implements TableCleanupProviderInterface
         $rules->addCreate(new IsForeignItemV5Rule(), 'offline_item_is_v5', [
             'errorField' => 'foreign_key',
             'message' => __('Offline mode is only available for v5 items.'),
+        ]);
+        $rules->addCreate(new MaxOfflineItemsRule(), 'max_items', [
+            'errorField' => 'max_items',
+            'message' => __('You have reached the maximum number of offline items.'),
         ]);
         $rules->addCreate(
             $rules->isUnique(

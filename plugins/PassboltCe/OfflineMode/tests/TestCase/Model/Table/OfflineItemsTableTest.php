@@ -25,6 +25,7 @@ use Cake\ORM\TableRegistry;
 use Passbolt\OfflineMode\Model\Entity\OfflineItem;
 use Passbolt\OfflineMode\Model\Table\OfflineItemsTable;
 use Passbolt\OfflineMode\Test\Factory\OfflineItemFactory;
+use Passbolt\OfflineMode\Test\Factory\OfflineModeSettingFactory;
 
 /**
  * @covers \Passbolt\OfflineMode\Model\Table\OfflineItemsTable
@@ -183,6 +184,42 @@ class OfflineItemsTableTest extends AppTestCaseV5
 
         $this->assertFalse($this->OfflineItems->save($entity));
         $this->assertNotEmpty($entity->getErrors()['user_id']['offline_item_unique'] ?? null);
+    }
+
+    public function testOfflineItemsTable_BuildRules_RejectsWhenUserIsAtMaxItems(): void
+    {
+        OfflineModeSettingFactory::make()->setMaxItems(2)->persist();
+        $user = UserFactory::make()->user()->active()->persist();
+        OfflineItemFactory::make(2)->setUser($user)->persist();
+        $resource = ResourceFactory::make()->v5Fields()->withCreatorAndPermission($user)->persist();
+
+        $entity = $this->buildEntity($this->buildPayload($user->get('id'), $resource->get('id')));
+
+        $this->assertFalse($this->OfflineItems->save($entity));
+        $this->assertArrayHasKey('max_items', $entity->getErrors());
+        $this->assertSame(
+            'You have reached the maximum number of offline items (2).',
+            $entity->getErrors()['max_items']['max_items']
+        );
+        $this->assertSame(2, OfflineItemFactory::count());
+    }
+
+    public function testOfflineItemsTable_BuildRules_AcceptsWhenUserIsBelowMaxItems(): void
+    {
+        OfflineModeSettingFactory::make()->setMaxItems(2)->persist();
+        $user = UserFactory::make()->user()->active()->persist();
+        OfflineItemFactory::make()->setUser($user)->persist();
+        $resource = ResourceFactory::make()->v5Fields()->withCreatorAndPermission($user)->persist();
+        // Other user
+        $user2 = UserFactory::make()->user()->active()->persist();
+        OfflineItemFactory::make(2)->setUser($user2)->persist();
+
+        $entity = $this->buildEntity($this->buildPayload($user->get('id'), $resource->get('id')));
+        $result = $this->OfflineItems->save($entity);
+
+        $this->assertInstanceOf(OfflineItem::class, $result);
+        $this->assertEmpty($entity->getErrors());
+        $this->assertSame(2, OfflineItemFactory::find()->where(['user_id' => $user->get('id')])->count());
     }
 
     public function testOfflineItemsTable_Entity_NoFieldIsMassAssignable(): void

@@ -38,6 +38,7 @@ class OfflineItemsAddController extends AppController
      * @throws \Cake\Http\Exception\ForbiddenException RBAC deny for the user's role, Offline Mode disabled, or target item is not v5.
      * @throws \Cake\Http\Exception\BadRequestException Invalid uuid or unknown foreign model.
      * @throws \Cake\Http\Exception\NotFoundException Object missing / soft-deleted / no access.
+     * @throws \App\Error\Exception\ValidationException The user is at the `max_items` limit.
      */
     public function add(
         RoleActionAccessControlServiceInterface $accessControlService,

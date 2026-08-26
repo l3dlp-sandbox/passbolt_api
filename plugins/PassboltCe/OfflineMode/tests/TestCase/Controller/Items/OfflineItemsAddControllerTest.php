@@ -244,6 +244,24 @@ class OfflineItemsAddControllerTest extends AppIntegrationTestCase
         );
     }
 
+    public function testOfflineItemsAddController_Error_MaxItemsReached(): void
+    {
+        $this->disableOfflineMode();
+        OfflineModeSettingFactory::make()->setMaxItems(1)->persist();
+        $user = UserFactory::make()->user()->active()->persist();
+        $this->seedRbacAllow($user->get('role_id'));
+        OfflineItemFactory::make()->setUser($user)->persist();
+        $resource = ResourceFactory::make()->v5Fields()->withCreatorAndPermission($user)->persist();
+
+        $this->logInAs($user);
+        $resourceId = $resource->get('id');
+        $this->postJson("/offline/resource/$resourceId.json");
+
+        $this->assertBadRequestError('Could not validate offline item data');
+        $this->assertArrayHasKey('max_items', $this->getResponseBodyAsArray());
+        $this->assertSame(1, OfflineItemFactory::count());
+    }
+
     private function seedRbacAllow(string $roleId): void
     {
         $action = ActionFactory::make()
