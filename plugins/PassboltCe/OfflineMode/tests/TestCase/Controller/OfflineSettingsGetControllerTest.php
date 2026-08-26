@@ -43,7 +43,7 @@ class OfflineSettingsGetControllerTest extends AppIntegrationTestCase
     public function testOfflineSettingsGetController_Success_StoredValuesWithAuditFields(): void
     {
         $setting = OfflineModeSettingFactory::make()
-            ->setField('value', ['max_session_duration' => 300, 'data_retention_period' => 604800, 'max_items' => 1000])
+            ->setField('value', ['max_session_duration' => 300, 'data_retention_period' => 7, 'max_items' => 1000])
             ->persist();
 
         $this->logInAsUser();
@@ -53,7 +53,7 @@ class OfflineSettingsGetControllerTest extends AppIntegrationTestCase
         $body = $this->getResponseBodyAsArray();
         $this->assertSame($setting->get('id'), $body['id']);
         $this->assertSame(300, $body['max_session_duration']);
-        $this->assertSame(604800, $body['data_retention_period']);
+        $this->assertSame(7, $body['data_retention_period']);
         $this->assertSame(1000, $body['max_items']);
         $this->assertArrayHasKey('created', $body);
         $this->assertArrayHasKey('created_by', $body);
@@ -64,7 +64,7 @@ class OfflineSettingsGetControllerTest extends AppIntegrationTestCase
     public function testOfflineSettingsGetController_Success_AdminSeesSameShape(): void
     {
         OfflineModeSettingFactory::make()
-            ->setField('value', ['max_session_duration' => 300, 'data_retention_period' => 604800, 'max_items' => 1000])
+            ->setField('value', ['max_session_duration' => 300, 'data_retention_period' => 7, 'max_items' => 1000])
             ->persist();
 
         $this->logInAsAdmin();
@@ -84,7 +84,7 @@ class OfflineSettingsGetControllerTest extends AppIntegrationTestCase
         $this->assertResponseOk();
         $body = $this->getResponseBodyAsArray();
         $this->assertSame(300, $body['max_session_duration']);
-        $this->assertSame(604800, $body['data_retention_period']);
+        $this->assertSame(7, $body['data_retention_period']);
         $this->assertSame(1000, $body['max_items']);
     }
 

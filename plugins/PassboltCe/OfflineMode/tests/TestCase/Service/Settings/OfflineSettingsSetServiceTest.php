@@ -53,7 +53,7 @@ class OfflineSettingsSetServiceTest extends AppTestCase
 
         $dto = $this->service->set($uac, [
             'max_session_duration' => 300,
-            'data_retention_period' => 604800,
+            'data_retention_period' => 7,
             'max_items' => 1000,
         ]);
 
@@ -67,7 +67,7 @@ class OfflineSettingsSetServiceTest extends AppTestCase
             [
                 'id' => $row->get('id'),
                 'max_session_duration' => 300,
-                'data_retention_period' => 604800,
+                'data_retention_period' => 7,
                 'max_items' => 1000,
                 'created' => $row->get('created')->toIso8601String(),
                 'created_by' => $uac->getId(),
@@ -79,7 +79,7 @@ class OfflineSettingsSetServiceTest extends AppTestCase
         $this->assertSame(
             [
                 'max_session_duration' => 300,
-                'data_retention_period' => 604800,
+                'data_retention_period' => 7,
                 'max_items' => 1000,
             ],
             $row->get('value')
@@ -92,19 +92,19 @@ class OfflineSettingsSetServiceTest extends AppTestCase
     public function testOfflineSettingsSetService_Success_UpdatesExistingRow(): void
     {
         $original = OfflineModeSettingFactory::make()
-            ->setField('value', ['max_session_duration' => 600, 'data_retention_period' => 1209600, 'max_items' => 500])
+            ->setField('value', ['max_session_duration' => 600, 'data_retention_period' => 14, 'max_items' => 500])
             ->persist();
         $uac = $this->mockExtendedAdminAccessControl();
 
         $dto = $this->service->set($uac, [
             'max_session_duration' => 300,
-            'data_retention_period' => 604800,
+            'data_retention_period' => 7,
             'max_items' => 1000,
         ]);
 
         $this->assertSame($original->get('id'), $dto->id, 'Update preserves the row id.');
         $this->assertSame(300, $dto->max_session_duration);
-        $this->assertSame(604800, $dto->data_retention_period);
+        $this->assertSame(7, $dto->data_retention_period);
         $this->assertSame(1000, $dto->max_items);
         $this->assertSame($uac->getId(), $dto->modified_by);
         $this->assertSame(1, OfflineModeSettingFactory::find()->count());
@@ -118,7 +118,7 @@ class OfflineSettingsSetServiceTest extends AppTestCase
 
         $this->service->set($uac, [
             'max_session_duration' => 300,
-            'data_retention_period' => 604800,
+            'data_retention_period' => 7,
             'max_items' => 1000,
         ]);
     }
