@@ -115,7 +115,7 @@ class OfflineSettingsDeleteEmailRedactorTest extends AppTestCase
     {
         $event = new Event(OfflineSettingsDeleteService::EVENT_SETTINGS_DELETED);
         $entity = OfflineModeSettingFactory::make()
-            ->setField('value', json_encode(['max_session_duration' => 300, 'data_retention_period' => 604800]))
+            ->setField('value', json_encode(['max_session_duration' => 300, 'data_retention_period' => 7]))
             ->getEntity();
         $event->setData(['entity' => $entity]);
 
@@ -137,7 +137,7 @@ class OfflineSettingsDeleteEmailRedactorTest extends AppTestCase
             'test-user-agent'
         );
         $entity = OfflineModeSettingFactory::make()
-            ->setField('value', json_encode(['max_session_duration' => 300, 'data_retention_period' => 604800]))
+            ->setField('value', json_encode(['max_session_duration' => 300, 'data_retention_period' => 7]))
             ->getEntity();
         $event = new Event(OfflineSettingsDeleteService::EVENT_SETTINGS_DELETED);
 

@@ -30,11 +30,11 @@ class OfflineSettingsDto
     public const MAX_MAX_SESSION_DURATION = 86400;
 
     /**
-     * Settings - data_retention_period. In seconds.
+     * Settings - data_retention_period. In days.
      */
-    public const DEFAULT_DATA_RETENTION_PERIOD = 604800;
-    public const MIN_DATA_RETENTION_PERIOD = 86400;
-    public const MAX_DATA_RETENTION_PERIOD = 2592000;
+    public const DEFAULT_DATA_RETENTION_PERIOD = 7;
+    public const MIN_DATA_RETENTION_PERIOD = 1;
+    public const MAX_DATA_RETENTION_PERIOD = 30;
 
     /**
      * Settings - max_items.
@@ -54,7 +54,7 @@ class OfflineSettingsDto
 
     /**
      * @param int $maxSessionDuration Maximum session duration (in seconds).
-     * @param int $dataRetentionPeriod Data retention period (in seconds).
+     * @param int $dataRetentionPeriod Data retention period (in days).
      * @param int $maxItems Maximum number of offline items per user.
      * @param string|null $id Backing organization-settings row id, when present.
      * @param \Cake\I18n\DateTime|null $created Row creation timestamp, when present.
