@@ -145,7 +145,8 @@
             "Passbolt\\UserKeyPolicies\\": "./plugins/PassboltCe/UserKeyPolicies/src",
             "Passbolt\\ExportPolicies\\": "./plugins/PassboltCe/ExportPolicies/src",
             "Passbolt\\Scim\\": "./plugins/PassboltEe/Scim/src",
-            "Passbolt\\Edition\\": "./plugins/PassboltCe/Edition/src"
+            "Passbolt\\Edition\\": "./plugins/PassboltCe/Edition/src",
+            "Passbolt\\OfflineModePolicies\\": "./plugins/PassboltEe/OfflineModePolicies/src"
         }
     },
     "autoload-dev": {
