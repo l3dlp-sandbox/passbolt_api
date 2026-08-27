@@ -24,6 +24,7 @@ use Cake\Core\PluginCollection;
 use Cake\TestSuite\IntegrationTestTrait;
 use Passbolt\Edition\Model\Dto\EditionDto;
 use Passbolt\Edition\Test\Factory\EditionOrganizationSettingFactory;
+use Passbolt\OfflineModePolicies\OfflineModePoliciesPlugin;
 use Passbolt\PasswordExpiry\PasswordExpiryPlugin;
 use Passbolt\PasswordExpiryPolicies\PasswordExpiryPoliciesPlugin;
 use Passbolt\PasswordPoliciesUpdate\PasswordPoliciesUpdatePlugin;
@@ -84,6 +85,7 @@ class EeSolutionBootstrapperTest extends SolutionBootstrapperTestCase
         'Passbolt/ExportPolicies',
         'Passbolt/Scim',
         'Passbolt/SecretRevisions',
+        'Passbolt/OfflineModePolicies',
     ];
 
     public function setUp(): void
@@ -147,6 +149,7 @@ class EeSolutionBootstrapperTest extends SolutionBootstrapperTestCase
         $this->enableFeaturePlugin(PasswordExpiryPlugin::class);
         $this->enableFeaturePlugin(PasswordExpiryPoliciesPlugin::class);
         $this->enableFeaturePlugin(ScimPlugin::class);
+        $this->enableFeaturePlugin(OfflineModePoliciesPlugin::class);
         // These plugins are enabled by default if not defined
         Configure::delete('passbolt.plugins.ee.enabled');
         Configure::delete('passbolt.plugins.multiFactorAuthentication.enabled');
