@@ -30,6 +30,16 @@ class OfflineItemsAddService
 {
     use LocatorAwareTrait;
 
+    private OfflineItemsTable $offlineItemsTable;
+
+    /**
+     * Constructor.
+     */
+    public function __construct()
+    {
+        $this->offlineItemsTable = $this->fetchTable('Passbolt/OfflineMode.OfflineItems');
+    }
+
     /**
      * @param \App\Utility\UserAccessControl $uac The caller.
      * @param string $foreignModel Object type (`Resource` for phase 1).
@@ -38,6 +48,7 @@ class OfflineItemsAddService
      * @throws \Cake\Http\Exception\BadRequestException Invalid uuid or unknown foreign model.
      * @throws \Cake\Http\Exception\NotFoundException Resource missing, soft-deleted, or no read access.
      * @throws \Cake\Http\Exception\ForbiddenException Target item is not a v5 object.
+     * @throws \App\Error\Exception\ValidationException The user is at the `max_items` limit.
      */
     public function add(UserAccessControl $uac, string $foreignModel, string $foreignKey): OfflineItem
     {
@@ -55,7 +66,7 @@ class OfflineItemsAddService
         /** @var \Passbolt\OfflineMode\Model\Table\OfflineItemsTable $OfflineItems */
         $OfflineItems = $this->fetchTable('Passbolt/OfflineMode.OfflineItems');
 
-        $entity = $OfflineItems->newEntity(
+        $entity = $this->offlineItemsTable->newEntity(
             [
                 'user_id' => $uac->getId(),
                 'foreign_model' => $foreignModel,
@@ -72,7 +83,7 @@ class OfflineItemsAddService
             ]
         );
 
-        if (!$OfflineItems->save($entity)) {
+        if (!$this->offlineItemsTable->save($entity)) {
             $errors = $entity->getErrors();
             if (
                 isset($errors['user_id']['offline_item_unique'])
@@ -90,7 +101,7 @@ class OfflineItemsAddService
 
                 return $existing;
             }
-            $this->handleValidationErrors($entity, $OfflineItems);
+            $this->handleValidationErrors($entity);
         }
 
         return $entity;
@@ -100,13 +111,12 @@ class OfflineItemsAddService
      * Map known buildRules / validation errors to HTTP exceptions.
      *
      * @param \Passbolt\OfflineMode\Model\Entity\OfflineItem $entity Entity to inspect.
-     * @param \Passbolt\OfflineMode\Model\Table\OfflineItemsTable $table The owning table.
      * @return void
      * @throws \Cake\Http\Exception\NotFoundException Resource missing, soft-deleted, or no access.
      * @throws \Cake\Http\Exception\ForbiddenException Target item is not a v5 object.
      * @throws \App\Error\Exception\ValidationException Any other unhandled validation error.
      */
-    private function handleValidationErrors(OfflineItem $entity, OfflineItemsTable $table): void
+    private function handleValidationErrors(OfflineItem $entity): void
     {
         $errors = $entity->getErrors();
         if (empty($errors)) {
@@ -125,6 +135,10 @@ class OfflineItemsAddService
             throw new ForbiddenException(__('Offline mode is only available for v5 items.'));
         }
 
-        throw new ValidationException(__('Could not validate offline item data.'), $entity, $table);
+        throw new ValidationException(
+            __('Could not validate offline item data.'),
+            $entity,
+            $this->offlineItemsTable
+        );
     }
 }
