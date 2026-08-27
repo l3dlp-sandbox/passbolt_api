@@ -72,7 +72,7 @@ class UpdatePersonalTagServiceTest extends AppTestCase
         $newData = ['slug' => $newSlug];
 
         $uac = $this->makeUac($user);
-        $tagDto = MetadataTagDto::fromArray($newData);
+        $tagDto = MetadataTagDto::createFromArray($newData);
         $this->expectExceptionMessage('You do not have the permission to change a personal tag into shared tag.');
         $this->expectException(BadRequestException::class);
         $this->service->update($uac, $tagDto, $tag);
@@ -91,7 +91,7 @@ class UpdatePersonalTagServiceTest extends AppTestCase
         $newData = ['slug' => $newSlug];
 
         $uac = $this->makeUac($user);
-        $tagDto = MetadataTagDto::fromArray($newData);
+        $tagDto = MetadataTagDto::createFromArray($newData);
         $this->service->update($uac, $tagDto, $tag);
 
         $tagUpdated = TagFactory::firstOrFail();
@@ -118,7 +118,7 @@ class UpdatePersonalTagServiceTest extends AppTestCase
         $newData = ['slug' => $newSlug];
 
         $uac = $this->makeUac($user1);
-        $tagDto = MetadataTagDto::fromArray($newData);
+        $tagDto = MetadataTagDto::createFromArray($newData);
         $this->service->update($uac, $tagDto, $tagToRename);
 
         $tagUpdated = TagFactory::firstOrFail(['id' => $tagToMergeOnto->id]);
@@ -151,7 +151,7 @@ class UpdatePersonalTagServiceTest extends AppTestCase
         $newData = ['slug' => $newSlug];
 
         $uac = $this->makeUac($user1);
-        $tagDto = MetadataTagDto::fromArray($newData);
+        $tagDto = MetadataTagDto::createFromArray($newData);
         /** @var \Passbolt\Tags\Model\Entity\Tag $tagUpdated */
         $tagUpdated = $this->service->update($uac, $tagDto, $tagOfUser1);
 

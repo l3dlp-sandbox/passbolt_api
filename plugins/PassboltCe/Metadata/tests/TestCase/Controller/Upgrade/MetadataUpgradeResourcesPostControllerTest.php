@@ -118,10 +118,10 @@ class MetadataUpgradeResourcesPostControllerTest extends AppIntegrationTestCaseV
             ->persist();
         $resource1 = ResourceFactory::make()->withPermissionsFor([$user1])->persist();
         $resource2 = ResourceFactory::make()->withPermissionsFor([$user2])->persist();
-        $dto = MetadataFolderDto::fromArray($resource1->toArray());
+        $dto = MetadataFolderDto::createFromArray($resource1->toArray());
         $metadataArray = $dto->getClearTextMetadata();
         $metadata1 = $this->encryptForUser(json_encode($metadataArray), $user1, $this->getAdaNoPassphraseKeyInfo());
-        $dto = MetadataFolderDto::fromArray($resource1->toArray());
+        $dto = MetadataFolderDto::createFromArray($resource1->toArray());
         $metadataArray = $dto->getClearTextMetadata();
         $metadata2 = $this->encryptForUser(json_encode($metadataArray), $user2, $this->getAdaNoPassphraseKeyInfo());
 

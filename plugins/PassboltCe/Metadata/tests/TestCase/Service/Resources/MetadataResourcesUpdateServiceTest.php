@@ -82,7 +82,7 @@ class MetadataResourcesUpdateServiceTest extends AppTestCaseV5
         $resourceTypeId = ResourceTypeFactory::make()->v5Default()->persist()->get('id');
         $metadataKeyId = $metadataKey->get('id');
         $resource = ResourceFactory::make(['resource_type_id' => $v4ResourceTypeId])->withPermissionsFor([$user])->persist();
-        $resourceDto = MetadataResourceDto::fromArray($resource->toArray());
+        $resourceDto = MetadataResourceDto::createFromArray($resource->toArray());
         $clearTextMetadata = json_encode($resourceDto->getClearTextMetadata());
         $metadata = $this->encryptForMetadataKey($clearTextMetadata);
         $metadataKeyType = 'shared_key';

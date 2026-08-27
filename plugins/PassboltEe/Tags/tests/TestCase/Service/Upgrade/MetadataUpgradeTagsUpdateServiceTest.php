@@ -81,7 +81,7 @@ class MetadataUpgradeTagsUpdateServiceTest extends AppTestCaseV5
 
         $uac = $this->mockAdminAccessControl();
         $metadataForT1 = $this->encryptForUser($tagPersonal->slug, $user, $this->getAdaNoPassphraseKeyInfo());
-        $tagDto = MetadataTagDto::fromArray($tagShared->toArray());
+        $tagDto = MetadataTagDto::createFromArray($tagShared->toArray());
         $clearTextMetadata = json_encode($tagDto->getClearTextMetadata());
         $metadataForT2 = $this->encryptForMetadataKey($clearTextMetadata);
         $data = [

@@ -223,7 +223,7 @@ class TagsTable extends Table
         ArrayObject $options,
         string $operation
     ): void {
-        $dto = MetadataTagDto::fromArray($entity->toArray());
+        $dto = MetadataTagDto::createFromArray($entity->toArray());
 
         if (!$dto->isV5()) {
             // This is little hack to not call `buildRulesV5` rules,
@@ -339,7 +339,7 @@ class TagsTable extends Table
                                 $tag = is_object($tag) ? $tag->toArray() : $tag;
 
                                 try {
-                                    $tagDto = MetadataTagDto::fromArray($tag);
+                                    $tagDto = MetadataTagDto::createFromArray($tag);
                                     $isV5 = $tagDto->isV5();
                                 } catch (Exception $e) {
                                     if (Configure::read('debug')) {
@@ -415,7 +415,7 @@ class TagsTable extends Table
                 $tag = ['slug' => $tag];
             }
 
-            $dto = MetadataTagDto::fromArray($tag);
+            $dto = MetadataTagDto::createFromArray($tag);
 
             try {
                 $collection[$i] = $this->buildEntityOrFail($dto);

@@ -16,6 +16,7 @@ declare(strict_types=1);
  */
 namespace Passbolt\Tags\Model\Dto;
 
+use App\Model\Dto\RequestDtoInterface;
 use App\Utility\Application\FeaturePluginAwareTrait;
 use Cake\Core\Configure;
 use Cake\Http\Exception\BadRequestException;
@@ -23,7 +24,7 @@ use Cake\Log\Log;
 use Cake\Utility\Hash;
 use Passbolt\Metadata\MetadataPlugin;
 
-class MetadataTagDto
+class MetadataTagDto implements RequestDtoInterface
 {
     use FeaturePluginAwareTrait;
 
@@ -54,7 +55,7 @@ class MetadataTagDto
      * @throws \Cake\Http\Exception\BadRequestException If the data provided is v5 but incomplete
      * @throws \Cake\Http\Exception\BadRequestException If v4 fields are set along with v5 fields
      */
-    public function __construct(
+    final public function __construct(
         ?string $slug = null,
         ?bool $isShared = null,
         ?string $metadata = null,
@@ -72,11 +73,11 @@ class MetadataTagDto
 
     /**
      * @param array $data Array data.
-     * @return self
+     * @return static
      * @throws \Cake\Http\Exception\BadRequestException If the data provided is v5 but incomplete
      * @throws \Cake\Http\Exception\BadRequestException If v4 fields are set along with v5 fields
      */
-    public static function fromArray(array $data): self
+    public static function createFromArray(array $data): static
     {
         $name = Hash::get($data, 'slug');
         $isShared = Hash::get($data, 'is_shared');
@@ -93,7 +94,7 @@ class MetadataTagDto
             $isShared = (bool)$isShared;
         }
 
-        return new self($name, $isShared, $metadata, $metadataKeyId, $metadataKeyType);
+        return new static($name, $isShared, $metadata, $metadataKeyId, $metadataKeyType);
     }
 
     /**
