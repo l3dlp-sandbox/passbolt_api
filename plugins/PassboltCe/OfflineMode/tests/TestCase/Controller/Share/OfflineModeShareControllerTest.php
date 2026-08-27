@@ -66,7 +66,7 @@ class OfflineModeShareControllerTest extends AppIntegrationTestCase
 
         $this->assertSame(1, OfflineItemFactory::count());
         $this->assertNull(
-            OfflineItemFactory::find()->where(['id' => $viewerOfflineItem->get('id')])->first()
+            OfflineItemFactory::find()->where(['id' => $viewerOfflineItem->get('id')])->first(),
         );
     }
 }

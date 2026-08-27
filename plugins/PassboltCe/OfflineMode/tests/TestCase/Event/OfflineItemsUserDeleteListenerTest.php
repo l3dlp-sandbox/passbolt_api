@@ -55,7 +55,7 @@ class OfflineItemsUserDeleteListenerTest extends AppTestCase
 
         $this->assertSame(1, OfflineItemFactory::count());
         $this->assertNotNull(
-            OfflineItemFactory::find()->where(['id' => $offlineB->get('id')])->first()
+            OfflineItemFactory::find()->where(['id' => $offlineB->get('id')])->first(),
         );
     }
 

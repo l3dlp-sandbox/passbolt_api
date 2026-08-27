@@ -509,7 +509,7 @@ class SoftDeleteTest extends AppTestCase
                 /** @var \App\Model\Entity\User $subject */
                 $subject = $event->getSubject();
                 $observed = $subject->get('deleted');
-            }
+            },
         );
 
         $this->Users->softDelete($user);
@@ -525,7 +525,7 @@ class SoftDeleteTest extends AppTestCase
             UsersTable::EVENT_MODEL_USERS_AFTER_SOFT_DELETE,
             function (): void {
                 throw new RuntimeException('boom');
-            }
+            },
         );
 
         try {

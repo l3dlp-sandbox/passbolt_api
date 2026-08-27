@@ -60,7 +60,7 @@ class MetadataTagDto implements RequestDtoInterface
         ?bool $isShared = null,
         ?string $metadata = null,
         ?string $metadataKeyId = null,
-        ?string $metadataKeyType = null
+        ?string $metadataKeyType = null,
     ) {
         $this->slug = $slug;
         $this->isShared = $isShared;
@@ -113,9 +113,7 @@ class MetadataTagDto implements RequestDtoInterface
     public function isPersonal(): bool
     {
         if (!$this->isV5()) {
-            // @codingStandardsIgnoreStart
-            return @mb_substr($this->slug, 0, 1, 'utf-8') !== '#';
-            // @codingStandardsIgnoreEnd
+            return @mb_substr($this->slug, 0, 1, 'utf-8') !== '#'; // phpcs:ignore
         }
 
         return !$this->isShared;

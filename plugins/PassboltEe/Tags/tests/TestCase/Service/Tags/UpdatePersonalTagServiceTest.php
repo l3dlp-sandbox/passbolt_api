@@ -129,7 +129,7 @@ class UpdatePersonalTagServiceTest extends AppTestCase
         $this->assertSame(3, ResourcesTagFactory::count());
         $this->assertSame(
             2,
-            ResourcesTagFactory::find()->where(['user_id' => $user1->id, 'tag_id' => $tagToMergeOnto->id])->all()->count()
+            ResourcesTagFactory::find()->where(['user_id' => $user1->id, 'tag_id' => $tagToMergeOnto->id])->all()->count(),
         );
         $this->assertSame($newSlug, TagFactory::firstOrFail(['id' => $tagToMergeOnto->id])->slug);
         $this->assertSame($newSlug, TagFactory::firstOrFail(['id' => $tagOfAnotherUserWithSameSlugToIgnore->id])->slug);

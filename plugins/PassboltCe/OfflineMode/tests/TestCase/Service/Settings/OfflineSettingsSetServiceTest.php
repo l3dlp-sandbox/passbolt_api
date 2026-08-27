@@ -74,7 +74,7 @@ class OfflineSettingsSetServiceTest extends AppTestCase
                 'modified' => $row->get('modified')->toIso8601String(),
                 'modified_by' => $uac->getId(),
             ],
-            $expectedResult
+            $expectedResult,
         );
         $this->assertSame(
             [
@@ -82,7 +82,7 @@ class OfflineSettingsSetServiceTest extends AppTestCase
                 'data_retention_period' => 7,
                 'max_items' => 1000,
             ],
-            $row->get('value')
+            $row->get('value'),
         );
         // assert event payload
         $this->assertEventFiredWith(OfflineSettingsSetService::EVENT_SETTINGS_UPDATED, 'dto', $dto);

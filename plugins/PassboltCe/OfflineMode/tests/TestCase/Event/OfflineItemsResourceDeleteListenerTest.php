@@ -47,7 +47,7 @@ class OfflineItemsResourceDeleteListenerTest extends AppTestCase
     {
         $this->assertSame(
             [ResourcesTable::EVENT_MODEL_RESOURCE_AFTER_SOFT_DELETE => 'handleResourceAfterSoftDelete'],
-            $this->listener->implementedEvents()
+            $this->listener->implementedEvents(),
         );
     }
 
@@ -83,7 +83,7 @@ class OfflineItemsResourceDeleteListenerTest extends AppTestCase
 
         $this->assertSame(1, OfflineItemFactory::count());
         $this->assertNotNull(
-            OfflineItemFactory::find()->where(['id' => $survivor->get('id')])->first()
+            OfflineItemFactory::find()->where(['id' => $survivor->get('id')])->first(),
         );
     }
 

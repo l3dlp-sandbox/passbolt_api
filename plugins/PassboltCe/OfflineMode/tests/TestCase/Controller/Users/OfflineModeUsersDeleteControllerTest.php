@@ -50,7 +50,7 @@ class OfflineModeUsersDeleteControllerTest extends AppIntegrationTestCase
         $this->assertSame(1, OfflineItemFactory::count(), 'Only the survivor row should remain');
         $this->assertNotNull(
             OfflineItemFactory::find()->where(['id' => $survivorItem->get('id')])->first(),
-            "Survivor's offline_items row should be untouched"
+            "Survivor's offline_items row should be untouched",
         );
     }
 

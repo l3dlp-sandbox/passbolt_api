@@ -61,7 +61,7 @@ class OfflineSettingsPostControllerTest extends AppIntegrationTestCase
                 'modified' => $row->get('modified')->toIso8601String(),
                 'modified_by' => $row->get('modified_by'),
             ],
-            $this->getResponseBodyAsArray()
+            $this->getResponseBodyAsArray(),
         );
         $this->assertSame(1, OfflineModeSettingFactory::find()->count());
     }

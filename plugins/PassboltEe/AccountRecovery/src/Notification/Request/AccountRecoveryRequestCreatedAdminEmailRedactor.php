@@ -117,7 +117,7 @@ class AccountRecoveryRequestCreatedAdminEmailRedactor implements SubscribedEmail
             $locale,
             function () use ($user) {
                 return __('{0} has initiated a recovery request', $user->profile->full_name);
-            }
+            },
         );
 
         $data = [

@@ -108,7 +108,7 @@ class GroupsDeleteController extends AppController
      */
     public function delete(
         string $id,
-        ResourcesExpireResourcesServiceInterface $resourcesExpireResourcesService
+        ResourcesExpireResourcesServiceInterface $resourcesExpireResourcesService,
     ) {
         $this->assertJson();
         $group = null;

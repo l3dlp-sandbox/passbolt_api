@@ -125,7 +125,7 @@ class ResourceDeleteEmailRedactor implements SubscribedEmailRedactorInterface
                 }
 
                 return $sub;
-            }
+            },
         );
 
         $data = [

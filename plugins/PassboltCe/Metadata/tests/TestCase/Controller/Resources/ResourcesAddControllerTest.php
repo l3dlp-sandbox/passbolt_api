@@ -113,7 +113,7 @@ class ResourcesAddControllerTest extends AppIntegrationTestCaseV5
         $this->assertEventFiredWith(
             ResourcesAddService::ADD_SUCCESS_EVENT_NAME,
             'isV5',
-            true
+            true,
         );
     }
 

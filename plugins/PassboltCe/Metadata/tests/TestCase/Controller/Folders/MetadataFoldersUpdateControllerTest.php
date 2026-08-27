@@ -98,7 +98,7 @@ class MetadataFoldersUpdateControllerTest extends AppIntegrationTestCaseV5
         $this->assertEventFiredWith(
             FoldersUpdateService::FOLDERS_UPDATE_FOLDER_EVENT,
             'isV5',
-            true
+            true,
         );
     }
 
@@ -141,7 +141,7 @@ class MetadataFoldersUpdateControllerTest extends AppIntegrationTestCaseV5
         $this->assertEventFiredWith(
             FoldersUpdateService::FOLDERS_UPDATE_FOLDER_EVENT,
             'isV5',
-            true
+            true,
         );
     }
 

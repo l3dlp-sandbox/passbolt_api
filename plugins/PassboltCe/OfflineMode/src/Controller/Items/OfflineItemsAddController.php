@@ -43,7 +43,7 @@ class OfflineItemsAddController extends AppController
     public function add(
         RoleActionAccessControlServiceInterface $accessControlService,
         string $foreignModel,
-        string $foreignKey
+        string $foreignKey,
     ): void {
         $this->assertJson();
 
@@ -57,7 +57,7 @@ class OfflineItemsAddController extends AppController
         $result = (new OfflineItemsAddService())->add(
             $this->User->getAccessControl(),
             $foreignModel,
-            $foreignKey
+            $foreignKey,
         );
 
         $this->success(__('The operation was successful.'), $result);

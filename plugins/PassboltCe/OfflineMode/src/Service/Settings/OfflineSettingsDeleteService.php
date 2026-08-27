@@ -54,7 +54,7 @@ class OfflineSettingsDeleteService
                 $offlineModeSettingsTable->deleteOrFail($entity);
 
                 $this->dispatchEvent(self::EVENT_SETTINGS_DELETED, compact('entity', 'uac'));
-            }
+            },
         );
     }
 }

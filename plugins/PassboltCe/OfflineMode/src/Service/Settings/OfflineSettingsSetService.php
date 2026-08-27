@@ -46,7 +46,7 @@ class OfflineSettingsSetService
         if (!$form->execute($data)) {
             throw new CustomValidationException(
                 __('Could not validate offline settings data.'),
-                $form->getErrors()
+                $form->getErrors(),
             );
         }
 
@@ -62,7 +62,7 @@ class OfflineSettingsSetService
                 'data_retention_period' => (int)$validated['data_retention_period'],
                 'max_items' => (int)$validated['max_items'],
             ],
-            $uac
+            $uac,
         );
 
         $dto = OfflineSettingsDto::createFromEntity($entity);

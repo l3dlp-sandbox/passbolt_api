@@ -81,7 +81,7 @@ class ResourcesTagsAddService
             throw new ValidationException(
                 __('Could not save the tags, try again later.'),
                 $resource,
-                $this->Resources
+                $this->Resources,
             );
         } catch (Exception $e) {
             $msg = __('Could not save the tags, try again later.');

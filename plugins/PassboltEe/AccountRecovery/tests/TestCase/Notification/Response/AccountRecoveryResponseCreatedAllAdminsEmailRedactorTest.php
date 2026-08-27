@@ -60,7 +60,7 @@ class AccountRecoveryResponseCreatedAllAdminsEmailRedactorTest extends TestCase
     private function makeResponse(
         string $requesterId,
         string $actingUserId,
-        string $status = AccountRecoveryResponse::STATUS_APPROVED
+        string $status = AccountRecoveryResponse::STATUS_APPROVED,
     ): AccountRecoveryResponse {
         /** @var \Passbolt\AccountRecovery\Model\Entity\AccountRecoveryRequest $request */
         $request = AccountRecoveryRequestFactory::make()->withUser($requesterId)->persist();

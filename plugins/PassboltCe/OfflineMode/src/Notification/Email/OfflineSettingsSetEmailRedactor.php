@@ -87,7 +87,7 @@ class OfflineSettingsSetEmailRedactor implements SubscribedEmailRedactorInterfac
 
         foreach ($admins as $recipient) {
             $emailCollection->addEmail(
-                $this->createEmail($recipient, $operator, $dto, $uac->getUserIp(), $uac->getUserAgent())
+                $this->createEmail($recipient, $operator, $dto, $uac->getUserIp(), $uac->getUserAgent()),
             );
         }
 
@@ -107,7 +107,7 @@ class OfflineSettingsSetEmailRedactor implements SubscribedEmailRedactorInterfac
         User $operator,
         OfflineSettingsDto $dto,
         string $clientIp,
-        string $userAgent
+        string $userAgent,
     ): Email {
         $subject = $this->getSubject($recipient, $operator);
 
@@ -124,7 +124,7 @@ class OfflineSettingsSetEmailRedactor implements SubscribedEmailRedactorInterfac
                 ],
                 'title' => $subject,
             ],
-            self::TEMPLATE
+            self::TEMPLATE,
         );
     }
 
@@ -141,7 +141,7 @@ class OfflineSettingsSetEmailRedactor implements SubscribedEmailRedactorInterfac
                 return $operator->id === $recipient->id
                     ? __('You edited the Offline Mode settings')
                     : __('{0} edited the Offline Mode settings', $operator->profile->first_name);
-            }
+            },
         );
     }
 }

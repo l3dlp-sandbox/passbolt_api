@@ -59,7 +59,7 @@ class MetadataFolderDto extends MetadataDto implements RequestDtoInterface
         ?string $folderParentId = null,
         ?string $metadata = null,
         ?string $metadataKeyId = null,
-        ?string $metadataKeyType = null
+        ?string $metadataKeyType = null,
     ) {
         $this->name = $name;
         $this->folderParentId = $folderParentId;

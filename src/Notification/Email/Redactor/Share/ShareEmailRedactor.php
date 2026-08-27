@@ -102,7 +102,7 @@ class ShareEmailRedactor implements SubscribedEmailRedactorInterface
 
             foreach ($users as $user) {
                 $emailCollection->addEmail(
-                    $this->createShareEmail($user, $owner, $resource, $secrets[$user->id])
+                    $this->createShareEmail($user, $owner, $resource, $secrets[$user->id]),
                 );
             }
         }
@@ -145,7 +145,7 @@ class ShareEmailRedactor implements SubscribedEmailRedactorInterface
                 }
 
                 return $subject;
-            }
+            },
         );
 
         $data = [

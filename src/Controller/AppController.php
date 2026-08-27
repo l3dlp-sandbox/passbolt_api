@@ -223,7 +223,7 @@ class AppController extends Controller
      */
     public function paginate(
         RepositoryInterface|QueryInterface|string|null $object = null,
-        array $settings = []
+        array $settings = [],
     ): PaginatedInterface {
         $paginatedResults = parent::paginate($object, $settings);
 
