@@ -25,12 +25,13 @@ class OfflineSettingsGetController extends AppController
     /**
      * Read the org-level Offline Mode settings.
      *
+     * @param \Passbolt\OfflineMode\Service\Settings\OfflineSettingsGetService $offlineSettingsGetService Offline settings get service.
      * @return void
      */
-    public function get(): void
+    public function get(OfflineSettingsGetService $offlineSettingsGetService): void
     {
         $this->assertJson();
-        $dto = (new OfflineSettingsGetService())->get();
+        $dto = $offlineSettingsGetService->get();
 
         if ($dto === null) {
             $body = new stdClass();

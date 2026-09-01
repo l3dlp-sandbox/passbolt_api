@@ -22,6 +22,7 @@ use App\Test\Lib\Utility\ExtendedUserAccessControlTestTrait;
 use Cake\Event\EventList;
 use Cake\Event\EventManager;
 use Cake\Http\Exception\ForbiddenException;
+use Passbolt\OfflineMode\Form\OfflineSettingsDefaultsForm;
 use Passbolt\OfflineMode\Service\Settings\OfflineSettingsSetService;
 use Passbolt\OfflineMode\Test\Factory\OfflineModeSettingFactory;
 
@@ -37,7 +38,7 @@ class OfflineSettingsSetServiceTest extends AppTestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->service = new OfflineSettingsSetService();
+        $this->service = new OfflineSettingsSetService(new OfflineSettingsDefaultsForm());
         EventManager::instance()->setEventList(new EventList());
     }
 

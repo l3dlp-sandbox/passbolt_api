@@ -26,7 +26,11 @@ use Passbolt\OfflineMode\Event\OfflineItemsSecretDeleteListener;
 use Passbolt\OfflineMode\Event\OfflineItemsSettingsDeleteListener;
 use Passbolt\OfflineMode\Event\OfflineItemsUserDeleteListener;
 use Passbolt\OfflineMode\Event\OfflineResourceIndexListener;
+use Passbolt\OfflineMode\Form\OfflineSettingsDefaultsForm;
+use Passbolt\OfflineMode\Form\OfflineSettingsFormInterface;
 use Passbolt\OfflineMode\Notification\Email\OfflineModeSettingsRedactorPool;
+use Passbolt\OfflineMode\Service\Settings\OfflineSettingsGetService;
+use Passbolt\OfflineMode\Service\Settings\OfflineSettingsSetService;
 
 class OfflineModePlugin extends BasePlugin
 {
@@ -62,5 +66,12 @@ class OfflineModePlugin extends BasePlugin
      */
     public function services(ContainerInterface $container): void
     {
+        $container->add(OfflineSettingsFormInterface::class)
+            ->setConcrete(OfflineSettingsDefaultsForm::class);
+
+        $container->add(OfflineSettingsGetService::class)
+            ->addArgument(OfflineSettingsFormInterface::class);
+        $container->add(OfflineSettingsSetService::class)
+            ->addArgument(OfflineSettingsFormInterface::class);
     }
 }

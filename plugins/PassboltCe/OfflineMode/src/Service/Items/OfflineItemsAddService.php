@@ -138,7 +138,7 @@ class OfflineItemsAddService
         throw new ValidationException(
             __('Could not validate offline item data.'),
             $entity,
-            $this->offlineItemsTable
+            $this->offlineItemsTable,
         );
     }
 }

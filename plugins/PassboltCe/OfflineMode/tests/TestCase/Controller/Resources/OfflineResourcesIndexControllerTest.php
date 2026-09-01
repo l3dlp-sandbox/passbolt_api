@@ -157,6 +157,27 @@ class OfflineResourcesIndexControllerTest extends AppIntegrationTestCase
         $this->assertNull($body[0]['offline']);
     }
 
+    public function testOfflineResourcesIndexController_InvalidSettingsValue_ReturnOfflineKeyAsNull(): void
+    {
+        /** @var \Passbolt\OfflineMode\Model\Table\OfflineModeSettingsTable $offlineModeSettingsTable */
+        $offlineModeSettingsTable = OfflineModeSettingFactory::make()->getTable();
+        $offlineModeSettingsTable->deleteAll(['property' => $offlineModeSettingsTable->getProperty()]);
+        // invalid settings value
+        OfflineModeSettingFactory::make()->setField('value', 'not-an-array')->persist();
+        $user = UserFactory::make()->user()->active()->persist();
+        $this->seedRbacAllow($user->get('role_id'));
+        $resource = ResourceFactory::make()->withCreatorAndPermission($user)->persist();
+        OfflineItemFactory::make()->setUser($user)->setResource($resource)->persist();
+
+        $this->logInAs($user);
+        $this->getJson('/resources.json?contain[offline]=1');
+
+        $this->assertSuccess();
+        $body = $this->getResponseBodyAsArray();
+        $this->assertArrayHasKey('offline', $body[0]);
+        $this->assertNull($body[0]['offline']);
+    }
+
     // ---------------------------
     // Helper methods
     // ---------------------------

@@ -17,7 +17,24 @@ declare(strict_types=1);
 namespace Passbolt\OfflineModePolicies;
 
 use Cake\Core\BasePlugin;
+use Cake\Core\ContainerInterface;
+use Passbolt\OfflineMode\Form\OfflineSettingsFormInterface;
+use Passbolt\OfflineModePolicies\Form\OfflineSettingsUpdateForm;
 
 class OfflineModePoliciesPlugin extends BasePlugin
 {
+    /**
+     * @param \Cake\Core\ContainerInterface $container Container.
+     * @return void
+     */
+    public function services(ContainerInterface $container): void
+    {
+        if ($container->has(OfflineSettingsFormInterface::class)) {
+            $container->extend(OfflineSettingsFormInterface::class)
+                ->setConcrete(OfflineSettingsUpdateForm::class);
+        } else {
+            $container->add(OfflineSettingsFormInterface::class)
+                ->setConcrete(OfflineSettingsUpdateForm::class);
+        }
+    }
 }

@@ -29,17 +29,21 @@ class OfflineItemsDeleteController extends AppController
      * Unmark the caller's offline item.
      *
      * @param \Passbolt\Rbacs\Service\ActionAccessControl\RoleActionAccessControlServiceInterface $accessControlService RBAC service resolved via DI.
+     * @param \Passbolt\OfflineMode\Service\Settings\OfflineSettingsGetService $offlineSettingsGetService Offline settings get service.
      * @param string $id The offline_items row id.
      * @return void
      * @throws \Cake\Http\Exception\ForbiddenException RBAC deny for the user's role, or Offline Mode disabled.
      * @throws \Cake\Http\Exception\BadRequestException Invalid uuid (raised by the service).
      * @throws \Cake\Http\Exception\NotFoundException Id missing, or row belongs to another user.
      */
-    public function delete(RoleActionAccessControlServiceInterface $accessControlService, string $id): void
-    {
+    public function delete(
+        RoleActionAccessControlServiceInterface $accessControlService,
+        OfflineSettingsGetService $offlineSettingsGetService,
+        string $id,
+    ): void {
         $this->assertJson();
 
-        (new OfflineSettingsGetService())->throwExceptionIfDisabled();
+        $offlineSettingsGetService->throwExceptionIfDisabled();
 
         $accessControlService->controlUserRoleActionAccess(
             $this->User->getRoleEntity(),

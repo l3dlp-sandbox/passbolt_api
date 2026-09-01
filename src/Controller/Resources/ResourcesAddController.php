@@ -62,7 +62,7 @@ class ResourcesAddController extends AppController
     public function add(
         #[MetadataRequestToDto]
         MetadataResourceDto $resourceDto,
-        ResourcesAddService $resourcesAddService
+        ResourcesAddService $resourcesAddService,
     ) {
         // Add the new resource
         $resource = $resourcesAddService->add(

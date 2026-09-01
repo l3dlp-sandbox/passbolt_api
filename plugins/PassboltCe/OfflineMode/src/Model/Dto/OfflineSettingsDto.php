@@ -163,6 +163,20 @@ class OfflineSettingsDto
     }
 
     /**
+     * The three settings fields values only.
+     *
+     * @return array
+     */
+    public function toSettingsArray(): array
+    {
+        return [
+            'max_session_duration' => $this->max_session_duration,
+            'data_retention_period' => $this->data_retention_period,
+            'max_items' => $this->max_items,
+        ];
+    }
+
+    /**
      * @param array $data
      * @return void
      * @throws \InvalidArgumentException When the max_session_duration value doesn't pass the assertions.

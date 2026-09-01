@@ -32,6 +32,7 @@ class OfflineItemsAddController extends AppController
      * Mark an item as available offline for the authenticated user.
      *
      * @param \Passbolt\Rbacs\Service\ActionAccessControl\RoleActionAccessControlServiceInterface $accessControlService RBAC service resolved via DI.
+     * @param \Passbolt\OfflineMode\Service\Settings\OfflineSettingsGetService $offlineSettingsGetService Offline settings get service.
      * @param string $foreignModel Foreign model (i.e. `resource`, `folder`).
      * @param string $foreignKey The target object id.
      * @return void
@@ -42,12 +43,13 @@ class OfflineItemsAddController extends AppController
      */
     public function add(
         RoleActionAccessControlServiceInterface $accessControlService,
+        OfflineSettingsGetService $offlineSettingsGetService,
         string $foreignModel,
         string $foreignKey,
     ): void {
         $this->assertJson();
 
-        (new OfflineSettingsGetService())->throwExceptionIfDisabled();
+        $offlineSettingsGetService->throwExceptionIfDisabled();
 
         $accessControlService->controlUserRoleActionAccess(
             $this->User->getRoleEntity(),
