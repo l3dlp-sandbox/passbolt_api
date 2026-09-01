@@ -73,7 +73,7 @@ class ResourcesUpdateController extends AppController
         string $id,
         #[MetadataRequestToDto]
         MetadataResourceDto $resourceDto,
-        ResourcesUpdateService $resourcesUpdateService
+        ResourcesUpdateService $resourcesUpdateService,
     ): void {
         $uac = $this->User->getAccessControl();
         $resource = $resourcesUpdateService->update($uac, $id, $resourceDto);

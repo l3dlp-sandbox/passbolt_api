@@ -29,6 +29,8 @@ class OfflineSettingsGetControllerTest extends AppIntegrationTestCase
     {
         parent::setUp();
         $this->enableFeaturePlugin(OfflineModePlugin::class);
+        $this->mockUserAgent();
+        $this->mockUserIp();
     }
 
     public function testOfflineSettingsGetController_Success_EmptyBodyWhenNoRow(): void
@@ -86,6 +88,34 @@ class OfflineSettingsGetControllerTest extends AppIntegrationTestCase
         $this->assertSame(300, $body['max_session_duration']);
         $this->assertSame(7, $body['data_retention_period']);
         $this->assertSame(1000, $body['max_items']);
+    }
+
+    public function testOfflineSettingsGetController_Error_UnusableStoredValue(): void
+    {
+        OfflineModeSettingFactory::make()->setField('value', 'not-an-array')->persist();
+        $this->logInAsUser();
+
+        $this->getJson('/offline/settings.json');
+
+        $this->assertBadRequestError('Could not validate offline settings data');
+        $this->assertArrayHasKey('invalid', $this->getResponseBodyAsArray()['value']);
+    }
+
+    public function testOfflineSettingsGetController_Error_ValuesRefusedByThisEdition(): void
+    {
+        OfflineModeSettingFactory::make()
+            ->setField('value', [
+                'max_session_duration' => 600,
+                'data_retention_period' => 14,
+                'max_items' => 500,
+            ])
+            ->persist();
+        $this->logInAsUser();
+
+        $this->getJson('/offline/settings.json');
+
+        $this->assertBadRequestError('Could not validate offline settings data');
+        $this->assertArrayHasKey('default_only', $this->getResponseBodyAsArray()['max_session_duration']);
     }
 
     public function testOfflineSettingsGetController_Error_NotAuthenticated(): void

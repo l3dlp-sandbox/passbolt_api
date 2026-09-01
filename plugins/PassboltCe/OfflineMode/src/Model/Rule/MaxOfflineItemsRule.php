@@ -19,7 +19,8 @@ namespace Passbolt\OfflineMode\Model\Rule;
 use Cake\Datasource\EntityInterface;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\Validation\Validation;
-use Passbolt\OfflineMode\Service\Settings\OfflineSettingsGetService;
+use InvalidArgumentException;
+use Passbolt\OfflineMode\Model\Dto\OfflineSettingsDto;
 
 class MaxOfflineItemsRule
 {
@@ -37,18 +38,30 @@ class MaxOfflineItemsRule
             return true;
         }
 
-        $settings = (new OfflineSettingsGetService())->get();
-        if ($settings === null) {
+        /** @var \Passbolt\OfflineMode\Model\Entity\OfflineModeSetting $entity */
+        $entity = $this->fetchTable('Passbolt/OfflineMode.OfflineModeSettings')->find()->first();
+        if ($entity === null) {
             return true;
         }
 
-        $table = $this->fetchTable('Passbolt/OfflineMode.OfflineItems');
-        $count = $table->find()->where(['user_id' => $userId])->count();
-        if ($count < $settings->max_items) {
+        try {
+            $offlineSettingsDto = OfflineSettingsDto::createFromEntity($entity);
+        } catch (InvalidArgumentException) {
+            // Bad settings values, no need to fail this rule
+            return true;
+        }
+
+        $maxItems = $offlineSettingsDto->max_items;
+
+        $count = $this->fetchTable('Passbolt/OfflineMode.OfflineItems')
+            ->find()
+            ->where(['user_id' => $userId])
+            ->count();
+        if ($count < $maxItems) {
             return true;
         }
 
         // Replaces the static message declared in buildRules()
-        return __('You have reached the maximum number of offline items ({0}).', $settings->max_items);
+        return __('You have reached the maximum number of offline items ({0}).', $maxItems);
     }
 }

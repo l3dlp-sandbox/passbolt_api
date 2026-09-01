@@ -20,7 +20,7 @@ use App\Error\Exception\CustomValidationException;
 use App\Utility\ExtendedUserAccessControl;
 use Cake\Event\EventDispatcherTrait;
 use Cake\ORM\Locator\LocatorAwareTrait;
-use Passbolt\OfflineMode\Form\OfflineSettingsForm;
+use Passbolt\OfflineMode\Form\OfflineSettingsFormInterface;
 use Passbolt\OfflineMode\Model\Dto\OfflineSettingsDto;
 use Passbolt\OfflineMode\Model\Entity\OfflineModeSetting;
 
@@ -30,6 +30,16 @@ class OfflineSettingsSetService
     use LocatorAwareTrait;
 
     public const EVENT_SETTINGS_UPDATED = 'OfflineSettings.afterSet.success';
+
+    private OfflineSettingsFormInterface $form;
+
+    /**
+     * @param \Passbolt\OfflineMode\Form\OfflineSettingsFormInterface $form The settings form.
+     */
+    public function __construct(OfflineSettingsFormInterface $form)
+    {
+        $this->form = $form;
+    }
 
     /**
      * @param \App\Utility\ExtendedUserAccessControl $uac Acting user.
@@ -42,26 +52,19 @@ class OfflineSettingsSetService
     {
         $uac->assertIsAdmin();
 
-        $form = new OfflineSettingsForm();
-        if (!$form->execute($data)) {
+        if (!$this->form->execute($data)) {
             throw new CustomValidationException(
                 __('Could not validate offline settings data.'),
-                $form->getErrors(),
+                $this->form->getErrors(),
             );
         }
-
-        $validated = $form->getData();
 
         /** @var \Passbolt\OfflineMode\Model\Table\OfflineModeSettingsTable $offlineModeSettingsTable */
         $offlineModeSettingsTable = $this->fetchTable('Passbolt/OfflineMode.OfflineModeSettings');
         /** @var \Passbolt\OfflineMode\Model\Entity\OfflineModeSetting $entity */
         $entity = $offlineModeSettingsTable->createOrUpdateSetting(
             OfflineModeSetting::PROPERTY_NAME,
-            [
-                'max_session_duration' => (int)$validated['max_session_duration'],
-                'data_retention_period' => (int)$validated['data_retention_period'],
-                'max_items' => (int)$validated['max_items'],
-            ],
+            $this->form->getSettings(),
             $uac,
         );
 

@@ -135,4 +135,21 @@ class OfflineModeSettingsTable extends OrganizationSettingsTable
     {
         return $this->getPropertyId();
     }
+
+    /**
+     * Checks if offline mode settings is present in the DB or not.
+     * Considers a row present in valid state (JSON) as feature enabled and no row as disabled.
+     *
+     * @return bool
+     */
+    public function isOfflineModeFeatureEnabled(): bool
+    {
+        /** @var \Passbolt\OfflineMode\Model\Entity\OfflineModeSetting|null $entity */
+        $entity = $this->find()->first();
+        if ($entity === null) {
+            return false;
+        }
+
+        return is_array($entity->get('value'));
+    }
 }

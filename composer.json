@@ -193,7 +193,8 @@
             "Passbolt\\UserKeyPolicies\\Test\\": "./plugins/PassboltCe/UserKeyPolicies/tests",
             "Passbolt\\ExportPolicies\\Test\\": "./plugins/PassboltCe/ExportPolicies/tests",
             "Passbolt\\Scim\\Test\\": "./plugins/PassboltEe/Scim/tests",
-            "Passbolt\\Edition\\Test\\": "./plugins/PassboltCe/Edition/tests"
+            "Passbolt\\Edition\\Test\\": "./plugins/PassboltCe/Edition/tests",
+            "Passbolt\\OfflineModePolicies\\Test\\": "./plugins/PassboltEe/OfflineModePolicies/tests"
         }
     },
     "scripts": {

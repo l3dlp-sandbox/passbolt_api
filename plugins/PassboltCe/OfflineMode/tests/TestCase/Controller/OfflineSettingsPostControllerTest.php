@@ -146,9 +146,10 @@ class OfflineSettingsPostControllerTest extends AppIntegrationTestCase
         $this->assertBadRequestError('Could not validate offline settings data');
         $response = $this->getResponseBodyAsArray();
         $this->assertCount(3, $response);
-        $this->assertArrayHasAttributes(['integer', 'range'], $response['max_session_duration']);
-        $this->assertArrayHasKey('range', $response['data_retention_period']);
-        $this->assertArrayHasKey('range', $response['max_items']);
+        // Assert only CE rules are applied
+        $this->assertArrayHasAttributes(['integer', 'default_only'], $response['max_session_duration']);
+        $this->assertArrayHasKey('default_only', $response['data_retention_period']);
+        $this->assertArrayHasKey('default_only', $response['max_items']);
     }
 
     public function testOfflineSettingsPostController_Error_MaxSessionDurationOutOfRange(): void

@@ -27,7 +27,6 @@ use Cake\Event\EventInterface;
 use Cake\Event\EventListenerInterface;
 use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
-use Passbolt\OfflineMode\Service\Settings\OfflineSettingsGetService;
 use Passbolt\Rbacs\Service\Actions\RbacsControlledActionsInsertService;
 
 class OfflineResourceIndexListener implements EventListenerInterface
@@ -90,7 +89,9 @@ class OfflineResourceIndexListener implements EventListenerInterface
         $actionId = UuidFactory::uuid(RbacsControlledActionsInsertService::NAME_OFFLINE_ITEMS_VIEW);
         $this->isRbacAllowed = $role->isAdmin() || $rbacsTable->isActionAllowedForRole($role->id, $actionId);
 
-        $this->isFeatureEnabled = (new OfflineSettingsGetService())->isEnabled();
+        /** @var \Passbolt\OfflineMode\Model\Table\OfflineModeSettingsTable $settingsTable */
+        $settingsTable = TableRegistry::getTableLocator()->get('Passbolt/OfflineMode.OfflineModeSettings');
+        $this->isFeatureEnabled = $settingsTable->isOfflineModeFeatureEnabled();
     }
 
     /**

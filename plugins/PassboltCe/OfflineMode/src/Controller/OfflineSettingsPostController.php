@@ -24,14 +24,15 @@ class OfflineSettingsPostController extends AppController
     /**
      * Enable / update Offline Mode settings.
      *
+     * @param \Passbolt\OfflineMode\Service\Settings\OfflineSettingsSetService $offlineSettingsSetService Offline settings get service.
      * @return void
      */
-    public function post(): void
+    public function post(OfflineSettingsSetService $offlineSettingsSetService): void
     {
         $this->User->assertIsAdmin();
         $this->assertNotEmptyArrayData();
 
-        $dto = (new OfflineSettingsSetService())->set(
+        $dto = $offlineSettingsSetService->set(
             $this->User->getExtendAccessControl(),
             $this->getRequest()->getData(),
         );

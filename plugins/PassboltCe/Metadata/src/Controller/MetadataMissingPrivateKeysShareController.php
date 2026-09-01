@@ -54,7 +54,7 @@ class MetadataMissingPrivateKeysShareController extends AppController
      */
     public function share(
         #[RequestToDto]
-        MetadataPrivateKeysCreateManyDto $dto
+        MetadataPrivateKeysCreateManyDto $dto,
     ) {
         (new MetadataPrivateKeysCreateService())->createMany($this->User->getAccessControl(), $dto);
 
