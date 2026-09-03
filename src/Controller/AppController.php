@@ -92,7 +92,7 @@ class AppController extends Controller
         parent::beforeRender($event);
 
         // Required to support automatic view switching for 'ajax', which was supported by deprecated RequestHandlerComponent
-        if ($this->request->is('ajax')) {
+        if ($this->request->is('ajax') && !$this->request->is('json')) {
             $this->viewBuilder()->setClassName('Ajax');
         }
     }
