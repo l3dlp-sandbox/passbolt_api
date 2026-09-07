@@ -16,15 +16,19 @@ declare(strict_types=1);
  */
 namespace App\Test\TestCase\Cache\Engine;
 
-use App\Cache\Engine\PhpRedisEngine;
+use Cake\Cache\Engine\RedisEngine;
 use Cake\TestSuite\TestCase;
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use Redis;
 use RedisException;
 
-#[CoversClass(PhpRedisEngine::class)]
-class PhpRedisEngineTest extends TestCase
+/**
+ * Test cases to make sure RedisEngine is working with php redis extension.
+ *
+ * Earlier the test cases were covering a custom PhpRedisEngine class with the stream options fix.
+ * But it is now fixed in the core since (cakephp version v5.4.2).
+ */
+class RedisEngineTest extends TestCase
 {
     private const CA_FILE = '/etc/ssl/certs/ca.pem';
     private const KEY_FILE = '/etc/ssl/private/redis.key';
@@ -40,11 +44,11 @@ class PhpRedisEngineTest extends TestCase
      * Creates an engine that connects with the given phpredis client.
      *
      * @param \Redis $phpredis The phpredis client.
-     * @return \App\Cache\Engine\PhpRedisEngine
+     * @return RedisEngine
      */
-    private function createRedisEngineMock(Redis $phpredis): PhpRedisEngine
+    private function createRedisEngineMock(Redis $phpredis): RedisEngine
     {
-        $engine = $this->getMockBuilder(PhpRedisEngine::class)
+        $engine = $this->getMockBuilder(RedisEngine::class)
             ->onlyMethods(['_createRedisInstance'])
             ->getMock();
         $engine->method('_createRedisInstance')->willReturn($phpredis);
@@ -65,7 +69,7 @@ class PhpRedisEngineTest extends TestCase
         return $phpredis;
     }
 
-    public function testPhpRedisEngine_ConnectTransient_Success_StreamContext(): void
+    public function testRedisEngine_ConnectTransient_Success_StreamContext(): void
     {
         $phpredis = $this->createRedisInstanceMock();
         $phpredis->expects($this->once())
@@ -90,13 +94,13 @@ class PhpRedisEngineTest extends TestCase
         $this->assertTrue($result);
     }
 
-    public function testPhpRedisEngine_ConnectTransient_Success_AllStreamOptions(): void
+    public function testRedisEngine_ConnectTransient_Success_AllStreamOptions(): void
     {
         $phpredis = $this->createRedisInstanceMock();
         $phpredis->expects($this->once())
             ->method('connect')
             ->with(
-                '127.0.0.1',
+                'tls://127.0.0.1',
                 6379,
                 0.0,
                 null,
@@ -112,6 +116,7 @@ class PhpRedisEngineTest extends TestCase
 
         $result = $this->createRedisEngineMock($phpredis)->init([
             'persistent' => false,
+            'tls' => true,
             'ssl_ca' => self::CA_FILE,
             'ssl_key' => self::KEY_FILE,
             'ssl_cert' => self::CERT_FILE,
@@ -120,7 +125,7 @@ class PhpRedisEngineTest extends TestCase
         $this->assertTrue($result);
     }
 
-    public function testPhpRedisEngine_ConnectTransient_Success_NoContext(): void
+    public function testRedisEngine_ConnectTransient_Success_NoContext(): void
     {
         $phpredis = $this->createRedisInstanceMock();
         $phpredis->expects($this->once())
@@ -133,7 +138,7 @@ class PhpRedisEngineTest extends TestCase
         $this->assertTrue($result);
     }
 
-    public function testPhpRedisEngine_ConnectPersistent_Success_StreamContext(): void
+    public function testRedisEngine_ConnectPersistent_Success_StreamContext(): void
     {
         $phpredis = $this->createRedisInstanceMock();
         $phpredis->expects($this->once())
@@ -157,7 +162,7 @@ class PhpRedisEngineTest extends TestCase
         $this->assertTrue($result);
     }
 
-    public function testPhpRedisEngine_ConnectPersistent_Success_PersistentId(): void
+    public function testRedisEngine_ConnectPersistent_Success_PersistentId(): void
     {
         $phpredis = $this->createRedisInstanceMock();
         $phpredis->expects($this->once())
@@ -169,7 +174,7 @@ class PhpRedisEngineTest extends TestCase
                 '638023',
                 0,
                 0.0,
-                ['stream' => ['cafile' => self::CA_FILE]],
+                null,
             )
             ->willReturn(true);
 
@@ -183,7 +188,7 @@ class PhpRedisEngineTest extends TestCase
         $this->assertTrue($result);
     }
 
-    public function testPhpRedisEngine_ConnectPersistent_Success_NoContext(): void
+    public function testRedisEngine_ConnectPersistent_Success_NoContext(): void
     {
         $phpredis = $this->createRedisInstanceMock();
         $phpredis->expects($this->once())
@@ -196,7 +201,7 @@ class PhpRedisEngineTest extends TestCase
         $this->assertTrue($result);
     }
 
-    public function testPhpRedisEngine_Connect_Error_ConnectionFailure(): void
+    public function testRedisEngine_Connect_Error_ConnectionFailure(): void
     {
         $phpredis = $this->createMock(Redis::class);
         $phpredis->method('connect')->willThrowException(new RedisException('Connection refused.'));
