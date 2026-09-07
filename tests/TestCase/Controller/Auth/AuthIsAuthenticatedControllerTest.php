@@ -89,6 +89,7 @@ class AuthIsAuthenticatedControllerTest extends AppIntegrationTestCase
         $this->configRequest(['headers' => ['X-Requested-With' => 'XMLHttpRequest']]);
         $this->getJson('/auth/is-authenticated.json');
         $this->assertResponseOk();
+        $this->assertContentType('application/json');
         $this->assertSame(['id' => $user->get('id')], $this->getSession()->read('Auth.user'));
         $this->assertTextContains('success', $this->_responseJsonHeader->status);
     }
